@@ -105,12 +105,7 @@ if (isTag()) {
 }
 
 
-tasks.named("publishDefaultPublicationToOssStagingRepository").configure {
-    dependsOn(tasks.named("signPluginMavenPublication"))
-    dependsOn(tasks.named("signDefaultPublication"))
-}
-
-tasks.named("publishPluginMavenPublicationToOssStagingRepository").configure {
-    dependsOn(tasks.named("signPluginMavenPublication"))
-    dependsOn(tasks.named("signDefaultPublication"))
+tasks.withType<AbstractPublishToMaven>().configureEach {
+    val signingTasks = tasks.withType<Sign>()
+    mustRunAfter(signingTasks)
 }
