@@ -77,7 +77,7 @@ signing {
 gradlePlugin {
     plugins {
         create("nmcp") {
-            id = "nmcp"
+            id = "com.gradleup.nmcp"
             implementationClass = "nmcp.NmcpPlugin"
             description = pluginDescription
         }
