@@ -103,3 +103,8 @@ if (isTag()) {
         dependsOn(tasks.named("publishAllPublicationsToOssStagingRepository"))
     }
 }
+
+
+tasks.named("publishDefaultPublicationToOssStagingRepository").configure {
+    dependsOn(tasks.named("signPluginMavenPublication"))
+}
