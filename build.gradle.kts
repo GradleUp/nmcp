@@ -7,19 +7,21 @@ plugins {
     id("signing")
 }
 
+val pluginDescription = "Plugin that helps you publish to the Central Portal (https://central.sonatype.org/)"
+
 gradlePlugin {
     plugins {
         create("nmcp") {
             id = "com.gradleup.nmcp"
             implementationClass = "nmcp.NmcpPlugin"
-            description = pluginDescription
+            this.description = pluginDescription
+            this.displayName = "nmcp"
         }
     }
 }
 
 group = "com.gradleup.nmcp"
 version = "0.0.1"
-val pluginDescription = "Plugin that helps you publish to the Central Portal (https://central.sonatype.org/)"
 
 publishing {
     repositories {
@@ -34,7 +36,7 @@ publishing {
             }
         }
     }
-    publications.all {
+    publications.configureEach {
         this as MavenPublication
         if (name == "pluginMaven") {
             artifact(tasks.register("emptySources", Jar::class.java) {
