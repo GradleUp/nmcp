@@ -44,6 +44,8 @@ class NmcpExtension(private val project: Project) {
             it.dependsOn(publishToNmcpTaskProvider)
             it.from(m2Dir)
             it.eachFile {
+                // Exclude maven-metadata files or the bundle is not recognized
+                // See https://slack-chats.kotlinlang.org/t/16407246/anyone-tried-the-https-central-sonatype-org-publish-publish-#c8738fe5-8051-4f64-809f-ca67a645216e
                 if (it.name.startsWith("maven-metadata")) {
                     it.exclude()
                 }
