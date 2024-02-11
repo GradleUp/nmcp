@@ -7,6 +7,16 @@ plugins {
     id("signing")
 }
 
+gradlePlugin {
+    plugins {
+        create("nmcp") {
+            id = "com.gradleup.nmcp"
+            implementationClass = "nmcp.NmcpPlugin"
+            description = pluginDescription
+        }
+    }
+}
+
 group = "com.gradleup.nmcp"
 version = "0.0.1"
 val pluginDescription = "Plugin that helps you publish to the Central Portal (https://central.sonatype.org/)"
@@ -24,9 +34,9 @@ publishing {
             }
         }
     }
-    publications {
-        create("default", MavenPublication::class.java) {
-            from(project.components.findByName("java"))
+    publications.all {
+        this as MavenPublication
+        if (name == "pluginMaven") {
             artifact(tasks.register("emptySources", Jar::class.java) {
                 archiveClassifier = "sources"
             })
@@ -37,31 +47,31 @@ publishing {
             groupId = project.rootProject.group.toString()
             version = project.rootProject.version.toString()
             artifactId = project.name
+        }
 
-            pom {
-                name.set(project.name)
-                packaging = "jar"
-                description.set(pluginDescription)
+        pom {
+            name.set(project.name)
+            packaging = "jar"
+            description.set(pluginDescription)
+            url.set("https://github.com/gradleup/nmcp")
+
+            scm {
                 url.set("https://github.com/gradleup/nmcp")
+                connection.set("https://github.com/gradleup/nmcp")
+                developerConnection.set("https://github.com/gradleup/nmcp")
+            }
 
-                scm {
-                    url.set("https://github.com/gradleup/nmcp")
-                    connection.set("https://github.com/gradleup/nmcp")
-                    developerConnection.set("https://github.com/gradleup/nmcp")
+            licenses {
+                license {
+                    name.set("MIT License")
+                    url.set("https://github.com/gradleup/nmcp/blob/master/LICENSE")
                 }
+            }
 
-                licenses {
-                    license {
-                        name.set("MIT License")
-                        url.set("https://github.com/gradleup/nmcp/blob/master/LICENSE")
-                    }
-                }
-
-                developers {
-                    developer {
-                        id.set("GradleUp developers")
-                        name.set("GradleUp developers")
-                    }
+            developers {
+                developer {
+                    id.set("GradleUp developers")
+                    name.set("GradleUp developers")
                 }
             }
         }
@@ -74,15 +84,6 @@ signing {
     useInMemoryPgpKeys(System.getenv("GPG_KEY"), System.getenv("GPG_KEY_PASSWORD"))
 }
 
-gradlePlugin {
-    plugins {
-        create("nmcp") {
-            id = "com.gradleup.nmcp"
-            implementationClass = "nmcp.NmcpPlugin"
-            description = pluginDescription
-        }
-    }
-}
 
 dependencies {
     implementation("com.squareup.okio:okio:3.8.0")
@@ -108,4 +109,8 @@ if (isTag()) {
 tasks.withType<AbstractPublishToMaven>().configureEach {
     val signingTasks = tasks.withType<Sign>()
     mustRunAfter(signingTasks)
+}
+
+tasks.withType(Sign::class.java).configureEach {
+    isEnabled = System.getenv("GPG_KEY").isNullOrBlank().not()
 }
