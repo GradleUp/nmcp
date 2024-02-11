@@ -51,7 +51,6 @@ publishing {
 
         pom {
             name.set(project.name)
-            packaging = "jar"
             description.set(pluginDescription)
             url.set("https://github.com/gradleup/nmcp")
 
