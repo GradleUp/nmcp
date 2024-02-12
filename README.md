@@ -10,7 +10,7 @@ Nmcp does not create publications or apply the `maven-publish` plugin. This must
 
 ```kotlin
 plugins {
-    id("com.gradleup.nmcp").version("0.0.1")
+    id("com.gradleup.nmcp").version("0.0.2")
 }
 
 // Create your publications
@@ -24,6 +24,36 @@ nmcp {
         publicationType = "USER_MANAGED"
         // or if you want to publish automatically
         publicationType = "AUTOMATIC"
+    }
+}
+```
+
+### Multi-module:
+
+If you have a lot of publications, use the "quick" way:
+
+```kotlin
+nmcp {
+  publishAllSubprojectsProbablyBreakingProjectIsolation {
+    username = TODO()
+    password = TODO()
+    publicationType = "USER_MANAGED"
+  }
+}
+```
+
+Or the project-isolation compatible way by listing all modules:
+
+```kotlin
+nmcp {
+    publishAggregation {
+        project(":module1")
+        project(":module2")
+        project(":module3")
+
+        username = TODO()
+        password = TODO()
+        publicationType = "USER_MANAGED"
     }
 }
 ```
