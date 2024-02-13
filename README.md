@@ -30,9 +30,10 @@ nmcp {
 
 ### Multi-module:
 
-If you have a lot of publications, use the "quick" way:
+If you have a lot of publications, use the "quick" way by configuring your root project:
 
 ```kotlin
+// root/build.gradle[.kts]
 plugins {
     id("com.gradleup.nmcp").version("0.0.4")
 }
