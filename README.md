@@ -33,6 +33,10 @@ nmcp {
 If you have a lot of publications, use the "quick" way:
 
 ```kotlin
+plugins {
+    id("com.gradleup.nmcp").version("0.0.2")
+}
+
 nmcp {
   publishAllSubprojectsProbablyBreakingProjectIsolation {
     username = TODO()
@@ -42,9 +46,25 @@ nmcp {
 }
 ```
 
-Or the project-isolation compatible way by listing all modules:
+Or the project-isolation compatible way by adding the plugin to each module:
 
 ```kotlin
+plugins {
+    id("com.gradleup.nmcp").version("0.0.2")
+}
+
+nmcp {
+  publishAllPublications {}
+}
+```
+
+And then listing all modules in yout root project:
+
+```kotlin
+plugins {
+    id("com.gradleup.nmcp").version("0.0.2")
+}
+
 nmcp {
     publishAggregation {
         project(":module1")
