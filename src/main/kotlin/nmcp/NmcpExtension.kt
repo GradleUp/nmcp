@@ -125,7 +125,7 @@ class NmcpExtension(private val project: Project) {
         val zipTaskProvider = project.tasks.register("zipAggregationPublication", Zip::class.java) {
             it.from(configuration.elements.map {
                 check (it.isNotEmpty()) {
-                    "nmcp: no aggregate dependencies found"
+                    "nmcp: no aggregate dependencies found, please apply the 'com.gradleup.nmcp' in your submodules"
                 }
                 it.map {
                     project.zipTree(it)
