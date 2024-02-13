@@ -10,7 +10,7 @@ Nmcp does not create publications or apply the `maven-publish` plugin. This must
 
 ```kotlin
 plugins {
-    id("com.gradleup.nmcp").version("0.0.3")
+    id("com.gradleup.nmcp").version("0.0.4")
 }
 
 // Create your publications
@@ -34,7 +34,7 @@ If you have a lot of publications, use the "quick" way:
 
 ```kotlin
 plugins {
-    id("com.gradleup.nmcp").version("0.0.3")
+    id("com.gradleup.nmcp").version("0.0.4")
 }
 
 nmcp {
@@ -53,7 +53,7 @@ nmcp {
 ```kotlin
 //root/moduleN/build.gradle.kts
 plugins {
-    id("com.gradleup.nmcp").version("0.0.3")
+    id("com.gradleup.nmcp").version("0.0.4")
 }
 
 nmcp {
@@ -66,7 +66,7 @@ And then list all modules in your root project:
 ```kotlin
 //root/build.gradle.kts
 plugins {
-    id("com.gradleup.nmcp").version("0.0.3")
+    id("com.gradleup.nmcp").version("0.0.4")
 }
 
 nmcp {
