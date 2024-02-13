@@ -8,6 +8,7 @@ import org.gradle.configurationcache.extensions.capitalized
 
 class NmcpExtension(private val project: Project) {
     private var mavenPublishFound = false
+    private val publishAllPublicationsToCentralPortal = project.tasks.register("publishAllPublicationsToCentralPortal")
 
     private fun register(publicationName: String?, spec: NmcpSpec) {
         if (publicationName != null) {
@@ -66,11 +67,15 @@ class NmcpExtension(private val project: Project) {
         }
 
 
-        project.tasks.register("publish${capitalized}PublicationToCentralPortal", NmcpPublishTask::class.java) {
+        val publishTaskProvider = project.tasks.register("publish${capitalized}PublicationToCentralPortal", NmcpPublishTask::class.java) {
             it.inputFile.set(zipTaskProvider.flatMap { it.archiveFile })
             it.username.set(spec.username)
             it.password.set(spec.password)
             it.publicationType.set(spec.publicationType)
+        }
+
+        publishAllPublicationsToCentralPortal.configure {
+            it.dependsOn((publishTaskProvider))
         }
 
         project.artifacts.add(configurationName, zipTaskProvider)
@@ -96,14 +101,32 @@ class NmcpExtension(private val project: Project) {
         }
     }
 
+    /**
+     * Adds a `publish${PublicationName}PublicationToCentralPortal` task to publish the publication to the central portal.
+     *
+     * This function requires the `maven-publish` plugin to be applied.
+     */
     fun publish(publicationName: String, action: Action<NmcpSpec>) {
         publishInternal(publicationName, action)
     }
 
+    /**
+     * Adds a `publishAllPublicationsToCentralPortal` task to publish all the publications to the central portal.
+     *
+     * Each publication is uploaded as a separate bundle.
+     *
+     * This function requires the `maven-publish` plugin to be applied.
+     *
+     */
     fun publishAllPublications(action: Action<NmcpSpec>) {
         publishInternal(null, action)
     }
 
+    /**
+     * Adds a `publishAggregatedPublicationToCentralPortal` task to publish a bundle containing all projects.
+     *
+     * This function requires [publishAllPublications] or [publish] to be called from at least one submodule.
+     */
     fun publishAggregation(action: Action<NmcpAggregation>) {
         val configuration = project.configurations.create("nmcpConsumer") {
             it.isCanBeResolved = true
@@ -144,9 +167,13 @@ class NmcpExtension(private val project: Project) {
         }
     }
 
-    fun publishAllSubprojectsProbablyBreakingProjectIsolation(action: Action<NmcpSpec>) {
+    /**
+     * Applies the `com.gradleup.nmcp` plugin to every project that also applies `maven-publish` and adds the
+     * `publishAggregatedPublicationToCentralPortal` task to publish a bundle containing all projects.
+     */
+    fun publishAllProjectsProbablyBreakingProjectIsolation(action: Action<NmcpSpec>) {
         check(project === project.rootProject) {
-            "publishAggregationUsingAllProjects() must be called from root project"
+            "publishAllProjectsProbablyBreakingProjectIsolation() must be called from root project"
         }
 
         val spec = NmcpSpec(
@@ -157,13 +184,15 @@ class NmcpExtension(private val project: Project) {
         action.execute(spec)
 
         publishAggregation { aggregation ->
-            project.subprojects {
-                aggregation.project(it.path)
+            project.allprojects { aproject ->
+                aproject.pluginManager.withPlugin("maven-publish") {
+                    aggregation.project(aproject.path)
 
-                it.pluginManager.apply("com.gradleup.nmcp")
+                    aproject.pluginManager.apply("com.gradleup.nmcp")
 
-                it.extensions.getByType(NmcpExtension::class.java).apply {
-                    publishAllPublications(action)
+                    aproject.extensions.getByType(NmcpExtension::class.java).apply {
+                        publishAllPublications(action)
+                    }
                 }
             }
 
