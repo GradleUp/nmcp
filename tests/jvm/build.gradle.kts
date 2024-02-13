@@ -1,10 +1,10 @@
 plugins {
     id("org.jetbrains.kotlin.jvm").version("1.9.22").apply(false)
-    id("com.gradleup.nmcp").version("0.0.2")
+    id("com.gradleup.nmcp").version("0.0.3")
 }
 
 val projectGroup = "net.mbonnin.tnmcp"
-val projectVersion = "0.0.2"
+val projectVersion = "0.0.3"
 
 group = projectGroup
 version = projectVersion
