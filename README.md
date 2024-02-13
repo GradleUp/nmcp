@@ -38,7 +38,7 @@ plugins {
 }
 
 nmcp {
-  publishAllSubprojectsProbablyBreakingProjectIsolation {
+  publishAllProjectsProbablyBreakingProjectIsolation {
     username = TODO()
     password = TODO()
     publicationType = "USER_MANAGED"
