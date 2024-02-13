@@ -49,7 +49,7 @@ nmcp {
 
 ### Multi-module (project isolation):
 
-`publishAllSubprojectsProbablyBreakingProjectIsolation` uses the `subproject {}` block and might be incompatible with [Project-isolation](https://gradle.github.io/configuration-cache/). To be compatible, you can add the plugin to each module you want to publish:
+`publishAllProjectsProbablyBreakingProjectIsolation` uses the `subproject {}` block and might be incompatible with [Project-isolation](https://gradle.github.io/configuration-cache/). To be compatible, you can add the plugin to each module you want to publish:
 
 ```kotlin
 //root/moduleN/build.gradle.kts
