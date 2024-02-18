@@ -27,7 +27,7 @@ nmcp {
 }
 ```
 
-Then call `publishAllPublicationsToCentralPortal`
+Then call `publishAllPublicationsToCentralPortal` to publish all your publications.
 
 ### Multi-module (project isolation compatible):
 
