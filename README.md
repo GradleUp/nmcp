@@ -27,7 +27,7 @@ nmcp {
 }
 ```
 
-Then 
+Then call `publishAllPublicationsToCentralPortal`
 
 ### Multi-module (project isolation compatible):
 
