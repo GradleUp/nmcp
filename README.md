@@ -4,15 +4,19 @@ A plugin that uses the new [Central Portal publisher API](https://central.sonaty
 
 New accounts created after Feb. 1st 2024 are configured to use the new publishing by default and can use this plugin. Other accounts can continue publishing to OSSRH the usual way.
 
-> [!NOTE]
+> [!WARNING]
 > Nmcp does not create publications or apply the `maven-publish` plugin. This must be done using other means. Nmcp uses existing publications, stages them locally and uploads a zip to the Central Portal publisher API.
 > To configure the publications, you can use [vanniktech/gradle-maven-publish-plugin](https://github.com/vanniktech/gradle-maven-publish-plugin/) and call nmcp `publishAllPublicationsToCentralPortal` instead of vanniktech `publishAndReleaseToMavenCentral`.
 >
 > See [StylianosGakis/molecule-aacvm](https://github.com/StylianosGakis/molecule-aacvm/blob/main/gradle.properties) for an example.
 
-### QuickStart:
+> [!NOTE]
+> This project was created as a short term solution and a good learning opportunity. I'm hoping more streamlined solutions will appear in the long run, either
+ in [gradle-maven-publish-plugin](https://github.com/vanniktech/gradle-maven-publish-plugin/issues/722) or as [first party](https://github.com/gradle/gradle/issues/28120).
 
-Configure `nmcp` in your root project
+# QuickStart:
+
+Configure `nmcp` in your root project using the quick way:
 
 ```kotlin
 // root/build.gradle[.kts]
@@ -31,9 +35,11 @@ nmcp {
 
 Then call `publishAllPublicationsToCentralPortal` to publish all your publications.
 
-### Multi-module (project isolation compatible):
+# Project isolation compatible version:
 
-`publishAllProjectsProbablyBreakingProjectIsolation` uses the `allprojects {}` block and might be incompatible with [Project-isolation](https://gradle.github.io/configuration-cache/). To be compatible, you can add the plugin to each module you want to publish:
+`publishAllProjectsProbablyBreakingProjectIsolation` uses the `allprojects {}` block and might be incompatible with [Project-isolation](https://gradle.github.io/configuration-cache/). 
+
+You can be 100% compatible by adding the plugin to each module you want to publish:
 
 ```kotlin
 //root/moduleN/build.gradle.kts
@@ -67,7 +73,7 @@ nmcp {
 }
 ```
 
-### Single-module:
+# Single-module:
 
 ```kotlin
 plugins {
