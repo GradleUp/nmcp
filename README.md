@@ -28,12 +28,21 @@ nmcp {
   publishAllProjectsProbablyBreakingProjectIsolation {
     username = TODO()
     password = TODO()
+    // publish manually from the portal
     publicationType = "USER_MANAGED"
+    // or if you want to publish automatically
+    publicationType = "AUTOMATIC"
   }
 }
 ```
 
-Then call `publishAllPublicationsToCentralPortal` to publish all your publications.
+Then call `publishAllPublicationsToCentralPortal` to publish all your publications:
+
+```
+./gradlew publishAllPublicationsToCentralPortal
+# yay everything is uploaded 🎉
+# go to https://central.sonatype.com/ to release if you used USER_MANAGED
+```
 
 # Project isolation compatible version:
 
