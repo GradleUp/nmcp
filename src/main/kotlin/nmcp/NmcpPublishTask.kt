@@ -29,6 +29,10 @@ abstract class NmcpPublishTask : DefaultTask() {
     @get:Optional
     abstract val publicationType: Property<String>
 
+    @get:Input
+    @get:Optional
+    abstract val publicationName: Property<String>
+
     @TaskAction
     fun taskAction() {
         val username = username.get()
@@ -48,7 +52,7 @@ abstract class NmcpPublishTask : DefaultTask() {
         val body = MultipartBody.Builder()
             .addFormDataPart(
                 "bundle",
-                "publication.zip",
+                "${publicationName.orElse("publication")}.zip",
                 inputFile.get().asFile.asRequestBody("application/zip".toMediaType())
             )
             .build()
