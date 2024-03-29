@@ -52,7 +52,7 @@ abstract class NmcpPublishTask : DefaultTask() {
         val body = MultipartBody.Builder()
             .addFormDataPart(
                 "bundle",
-                "${publicationName.orElse("publication")}.zip",
+                "${publicationName.orElse("${project.name}-${project.version}")}.zip",
                 inputFile.get().asFile.asRequestBody("application/zip".toMediaType())
             )
             .build()
