@@ -72,7 +72,7 @@ class NmcpExtension(private val project: Project) {
             it.username.set(spec.username)
             it.password.set(spec.password)
             it.publicationType.set(spec.publicationType)
-            it.publicationName.set(spec.publicationName)
+            it.publicationName.set(spec.publicationName.orElse("${project.name}-${project.version}"))
         }
 
         publishAllPublicationsToCentralPortal.configure {
