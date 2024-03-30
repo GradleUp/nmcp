@@ -72,6 +72,7 @@ class NmcpExtension(private val project: Project) {
             it.username.set(spec.username)
             it.password.set(spec.password)
             it.publicationType.set(spec.publicationType)
+            it.publicationName.set(spec.publicationName.orElse("${project.name}-${project.version}.zip"))
         }
 
         publishAllPublicationsToCentralPortal.configure {
@@ -83,6 +84,7 @@ class NmcpExtension(private val project: Project) {
 
     private fun publishInternal(publicationName: String?, action: Action<NmcpSpec>) {
         val spec = NmcpSpec(
+            project.objects.property(String::class.java),
             project.objects.property(String::class.java),
             project.objects.property(String::class.java),
             project.objects.property(String::class.java),
@@ -141,6 +143,7 @@ class NmcpExtension(private val project: Project) {
             project.objects.property(String::class.java),
             project.objects.property(String::class.java),
             project.objects.property(String::class.java),
+            project.objects.property(String::class.java),
         )
 
         action.execute(aggregation)
@@ -164,6 +167,7 @@ class NmcpExtension(private val project: Project) {
             it.username.set(aggregation.username)
             it.password.set(aggregation.password)
             it.publicationType.set(aggregation.publicationType)
+            it.publicationName.set(aggregation.publicationName)
         }
     }
 
@@ -177,6 +181,7 @@ class NmcpExtension(private val project: Project) {
         }
 
         val spec = NmcpSpec(
+            project.objects.property(String::class.java),
             project.objects.property(String::class.java),
             project.objects.property(String::class.java),
             project.objects.property(String::class.java),
@@ -199,6 +204,7 @@ class NmcpExtension(private val project: Project) {
             aggregation.username.set(spec.username)
             aggregation.password.set(spec.password)
             aggregation.publicationType.set(spec.publicationType)
+            aggregation.publicationName.set(spec.publicationName)
         }
     }
 }
