@@ -9,7 +9,7 @@ buildscript {
 }
 
 plugins {
-    id("com.gradleup.nmcp").version("0.0.4")
+    id("com.gradleup.nmcp").version("0.0.5")
 }
 
 
