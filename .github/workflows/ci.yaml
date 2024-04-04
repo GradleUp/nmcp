@@ -17,8 +17,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: |
-          ./gradlew ci
-          ./gradlew -p tests/kmp build
+          ./gradlew ci \
+          ./gradlew -p tests/kmp build \
           ./gradlew -p tests/jvm build
         env:
           OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
