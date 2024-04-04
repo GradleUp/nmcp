@@ -167,7 +167,7 @@ class NmcpExtension(private val project: Project) {
             it.username.set(aggregation.username)
             it.password.set(aggregation.password)
             it.publicationType.set(aggregation.publicationType)
-            it.publicationName.set(aggregation.publicationName)
+            it.publicationName.set(aggregation.publicationName.orElse("${project.name}-${project.version}.zip"))
         }
     }
 
