@@ -7,4 +7,5 @@ class NmcpSpec(
     val password: Property<String>,
     val publicationType: Property<String>,
     val publicationName: Property<String>,
+    val endpoint: Property<String>,
 )

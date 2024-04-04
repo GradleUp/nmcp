@@ -32,6 +32,9 @@ abstract class NmcpPublishTask : DefaultTask() {
     @get:Input
     abstract val publicationName: Property<String>
 
+    @get:Input
+    abstract val endpoint: Property<String>
+
     @TaskAction
     fun taskAction() {
         val username = username.get()
@@ -61,7 +64,7 @@ abstract class NmcpPublishTask : DefaultTask() {
         Request.Builder()
             .post(body)
             .addHeader("Authorization", "UserToken $token")
-            .url("https://central.sonatype.com/api/v1/publisher/upload?publishingType=$publicationType")
+            .url(endpoint.getOrElse("https://central.sonatype.com/api/v1/publisher/upload") + "?publishingType=$publicationType")
             .build()
             .let {
                 OkHttpClient.Builder()

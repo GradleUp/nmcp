@@ -73,6 +73,7 @@ class NmcpExtension(private val project: Project) {
             it.password.set(spec.password)
             it.publicationType.set(spec.publicationType)
             it.publicationName.set(spec.publicationName.orElse("${project.name}-${project.version}.zip"))
+            it.endpoint.set(spec.endpoint)
         }
 
         publishAllPublicationsToCentralPortal.configure {
@@ -84,6 +85,7 @@ class NmcpExtension(private val project: Project) {
 
     private fun publishInternal(publicationName: String?, action: Action<NmcpSpec>) {
         val spec = NmcpSpec(
+            project.objects.property(String::class.java),
             project.objects.property(String::class.java),
             project.objects.property(String::class.java),
             project.objects.property(String::class.java),
@@ -127,7 +129,7 @@ class NmcpExtension(private val project: Project) {
     /**
      * Adds a `publishAggregatedPublicationToCentralPortal` task to publish a bundle containing all projects.
      *
-     * This function requires [publishAllPublications] or [publish] to be called from at least one submodule.
+     * This function requires [publishAllPublications] or [publish] to be configured in at least one submodule.
      */
     fun publishAggregation(action: Action<NmcpAggregation>) {
         val configuration = project.configurations.create("nmcpConsumer") {
@@ -140,6 +142,7 @@ class NmcpExtension(private val project: Project) {
         val aggregation = NmcpAggregation(
             configuration,
             project,
+            project.objects.property(String::class.java),
             project.objects.property(String::class.java),
             project.objects.property(String::class.java),
             project.objects.property(String::class.java),
@@ -168,6 +171,7 @@ class NmcpExtension(private val project: Project) {
             it.password.set(aggregation.password)
             it.publicationType.set(aggregation.publicationType)
             it.publicationName.set(aggregation.publicationName.orElse("${project.name}-${project.version}.zip"))
+            it.endpoint.set(aggregation.endpoint)
         }
     }
 
@@ -181,6 +185,7 @@ class NmcpExtension(private val project: Project) {
         }
 
         val spec = NmcpSpec(
+            project.objects.property(String::class.java),
             project.objects.property(String::class.java),
             project.objects.property(String::class.java),
             project.objects.property(String::class.java),
