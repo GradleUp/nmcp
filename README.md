@@ -21,7 +21,7 @@ Configure `nmcp` in your root project using the quick way:
 ```kotlin
 // root/build.gradle[.kts]
 plugins {
-    id("com.gradleup.nmcp").version("0.0.6")
+    id("com.gradleup.nmcp").version("0.0.7")
 }
 
 nmcp {
@@ -53,7 +53,7 @@ You can be 100% compatible by adding the plugin to each module you want to publi
 ```kotlin
 //root/moduleN/build.gradle.kts
 plugins {
-    id("com.gradleup.nmcp").version("0.0.6")
+    id("com.gradleup.nmcp").version("0.0.7")
 }
 
 nmcp {
@@ -66,7 +66,7 @@ And then list all modules in your root project:
 ```kotlin
 //root/build.gradle.kts
 plugins {
-    id("com.gradleup.nmcp").version("0.0.6")
+    id("com.gradleup.nmcp").version("0.0.7")
 }
 
 nmcp {
@@ -86,7 +86,7 @@ nmcp {
 
 ```kotlin
 plugins {
-    id("com.gradleup.nmcp").version("0.0.6")
+    id("com.gradleup.nmcp").version("0.0.7")
 }
 
 // Create your publications
