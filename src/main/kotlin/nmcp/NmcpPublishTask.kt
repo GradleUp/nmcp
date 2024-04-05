@@ -33,6 +33,7 @@ abstract class NmcpPublishTask : DefaultTask() {
     abstract val publicationName: Property<String>
 
     @get:Input
+    @get:Optional
     abstract val endpoint: Property<String>
 
     @TaskAction
