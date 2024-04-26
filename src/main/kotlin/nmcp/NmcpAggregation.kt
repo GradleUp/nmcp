@@ -3,16 +3,19 @@ package nmcp
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.provider.Property
+import javax.inject.Inject
 
-class NmcpAggregation(
+
+abstract class NmcpAggregation @Inject constructor(
     private val configuration: Configuration,
     private val project: Project,
-    val username: Property<String>,
-    val password: Property<String>,
-    val publicationType: Property<String>,
-    val publicationName: Property<String>,
-    val endpoint: Property<String>,
     ) {
+    abstract val username: Property<String>
+    abstract val password: Property<String>
+    abstract val publicationType: Property<String>
+    abstract val publicationName: Property<String>
+    abstract val endpoint: Property<String>
+
     fun project(path: String) {
         project.dependencies.add(configuration.name, project.dependencies.project(mapOf("path" to  path)))
     }

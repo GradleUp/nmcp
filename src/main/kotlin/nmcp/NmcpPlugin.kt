@@ -28,6 +28,6 @@ class NmcpPlugin: Plugin<Project> {
 
             it.configureAttributes(target)
         }
-        target.extensions.add("nmcp", NmcpExtension(target))
+        target.extensions.create("nmcp", NmcpExtension::class.java, target)
     }
 }

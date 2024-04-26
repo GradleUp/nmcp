@@ -6,7 +6,7 @@ import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.tasks.bundling.Zip
 import org.gradle.configurationcache.extensions.capitalized
 
-class NmcpExtension(private val project: Project) {
+open class NmcpExtension(private val project: Project) {
     private var mavenPublishFound = false
     private val publishAllPublicationsToCentralPortal = project.tasks.register("publishAllPublicationsToCentralPortal")
 
@@ -84,13 +84,7 @@ class NmcpExtension(private val project: Project) {
     }
 
     private fun publishInternal(publicationName: String?, action: Action<NmcpSpec>) {
-        val spec = NmcpSpec(
-            project.objects.property(String::class.java),
-            project.objects.property(String::class.java),
-            project.objects.property(String::class.java),
-            project.objects.property(String::class.java),
-            project.objects.property(String::class.java),
-        )
+        val spec = project.objects.newInstance(NmcpSpec::class.java)
         action.execute(spec)
 
         project.plugins.withId("maven-publish") {
@@ -139,15 +133,7 @@ class NmcpExtension(private val project: Project) {
             it.configureAttributes(project)
         }
 
-        val aggregation = NmcpAggregation(
-            configuration,
-            project,
-            project.objects.property(String::class.java),
-            project.objects.property(String::class.java),
-            project.objects.property(String::class.java),
-            project.objects.property(String::class.java),
-            project.objects.property(String::class.java),
-        )
+        val aggregation = project.objects.newInstance(NmcpAggregation::class.java, configuration, project)
 
         action.execute(aggregation)
 
@@ -184,13 +170,7 @@ class NmcpExtension(private val project: Project) {
             "publishAllProjectsProbablyBreakingProjectIsolation() must be called from root project"
         }
 
-        val spec = NmcpSpec(
-            project.objects.property(String::class.java),
-            project.objects.property(String::class.java),
-            project.objects.property(String::class.java),
-            project.objects.property(String::class.java),
-            project.objects.property(String::class.java),
-        )
+        val spec = project.objects.newInstance(NmcpSpec::class.java)
         action.execute(spec)
 
         publishAggregation { aggregation ->
