@@ -1,0 +1,76 @@
+plugins {
+    id("org.jetbrains.kotlin.jvm").version("1.9.22").apply(false)
+    id("com.gradleup.nmcp").version("0.0.7")
+}
+
+group = "net.mbonnin.tnmcp"
+version = "0.0.4"
+
+subprojects {
+    pluginManager.apply("org.jetbrains.kotlin.jvm")
+    pluginManager.apply("maven-publish")
+    pluginManager.apply("signing")
+    version = rootProject.version
+
+    publishing.publications {
+        create("default", MavenPublication) {
+            from(project.components.findByName("java"))
+            artifact(tasks.register("emptySources", Jar) {
+                archiveClassifier = "sources"
+            })
+            artifact(tasks.register("emptyDocs", Jar) {
+                archiveClassifier = "javadoc"
+            })
+
+            groupId = project.rootProject.group.toString()
+            version = project.rootProject.version.toString()
+            artifactId = project.name
+
+            pom {
+                name.set(project.name)
+                packaging = "jar"
+                description.set(project.name)
+                url.set("https://github.com/martinbonnin/test-nmcp")
+
+                scm {
+                    url.set("https://github.com/martinbonnin/test-nmcp")
+                    connection.set("https://github.com/martinbonnin/test-nmcp")
+                    developerConnection.set("https://github.com/martinbonnin/test-nmcp")
+                }
+
+                licenses {
+                    license {
+                        name.set("MIT License")
+                        url.set("https://github.com/martinbonnin/test-nmcp/blob/master/LICENSE")
+                    }
+                }
+
+                developers {
+                    developer {
+                        id.set("mbonnin")
+                        name.set("mbonnin")
+                    }
+                }
+            }
+        }
+    }
+
+    signing {
+        sign(publishing.publications)
+        useInMemoryPgpKeys(
+            System.getenv("GPG_PRIVATE_KEY"),
+            System.getenv("GPG_PRIVATE_KEY_PASSWORD")
+        )
+    }
+    tasks.withType(Sign.class) {
+        enabled = System.getenv("GPG_PRIVATE_KEY") != null
+    }
+}
+
+nmcp {
+    publishAllProjectsProbablyBreakingProjectIsolation {
+        username = System.getenv("MAVEN_CENTRAL_USERNAME")
+        password = System.getenv("MAVEN_CENTRAL_PASSWORD")
+        publicationType = "USER_MANAGED"
+    }
+}

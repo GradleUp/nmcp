@@ -5,7 +5,6 @@ import org.gradle.api.artifacts.Configuration
 import org.gradle.api.provider.Property
 import javax.inject.Inject
 
-
 abstract class NmcpAggregation @Inject constructor(
     private val configuration: Configuration,
     private val project: Project,
