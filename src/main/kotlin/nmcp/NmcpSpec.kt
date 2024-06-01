@@ -2,10 +2,10 @@ package nmcp
 
 import org.gradle.api.provider.Property
 
-class NmcpSpec(
-    val username: Property<String>,
-    val password: Property<String>,
-    val publicationType: Property<String>,
-    val publicationName: Property<String>,
-    val endpoint: Property<String>,
-)
+abstract class NmcpSpec {
+    abstract val username: Property<String>
+    abstract val password: Property<String>
+    abstract val publicationType: Property<String>
+    abstract val publicationName: Property<String>
+    abstract val endpoint: Property<String>
+}
