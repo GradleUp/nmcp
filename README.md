@@ -6,9 +6,8 @@ New accounts created after Feb. 1st 2024 are configured to use the new publishin
 
 > [!WARNING]
 > Nmcp does **not** create publications or apply the `maven-publish` plugin. This must be done using other means. Nmcp uses existing publications, stages them locally and uploads a zip to the Central Portal publisher API.
-> To configure the publications, you can use [vanniktech/gradle-maven-publish-plugin](https://github.com/vanniktech/gradle-maven-publish-plugin/) and call nmcp `publishAllPublicationsToCentralPortal` instead of vanniktech `publishAndReleaseToMavenCentral`.
 >
-> See [StylianosGakis/molecule-aacvm](https://github.com/StylianosGakis/molecule-aacvm/blob/main/gradle.properties) for an example.
+> For a higher level API use [vanniktech/gradle-maven-publish-plugin](https://github.com/vanniktech/gradle-maven-publish-plugin/).
 
 > [!NOTE]
 > This project was created as a short term solution and a good learning opportunity. I'm hoping more streamlined solutions will appear in the long run, either
