@@ -21,7 +21,7 @@ gradlePlugin {
 }
 
 group = "com.gradleup.nmcp"
-version = "0.0.8"
+version = "0.0.9"
 
 publishing {
     repositories {

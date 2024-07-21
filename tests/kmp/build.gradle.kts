@@ -19,7 +19,7 @@ buildscript {
 }
 
 plugins {
-    id("com.gradleup.nmcp").version("0.0.8")
+    id("com.gradleup.nmcp").version("0.0.9")
 }
 
 val mockServer = MockWebServer()
