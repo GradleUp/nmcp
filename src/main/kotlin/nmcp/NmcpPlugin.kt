@@ -25,6 +25,8 @@ class NmcpPlugin: Plugin<Project> {
         target.configurations.create(configurationName) {
             it.isCanBeConsumed = true
             it.isCanBeResolved = false
+            // See https://github.com/GradleUp/nmcp/issues/2
+            it.isVisible = false
 
             it.configureAttributes(target)
         }
