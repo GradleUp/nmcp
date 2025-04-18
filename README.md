@@ -81,6 +81,14 @@ nmcp {
 }
 ```
 
+Then call `publishAggregatedPublicationToCentralPortal` to publish the aggregated publication:
+
+```
+./gradlew publishAggregatedPublicationToCentralPortal
+# yay everything is uploaded 🎉
+# go to https://central.sonatype.com/ to release if you used USER_MANAGED
+```
+
 # Single-module:
 
 ```kotlin
