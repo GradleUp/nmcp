@@ -69,11 +69,12 @@ open class NmcpExtension(private val project: Project) {
 
         val publishTaskProvider = project.tasks.register("publish${capitalized}PublicationToCentralPortal", NmcpPublishTask::class.java) {
             it.inputFile.set(zipTaskProvider.flatMap { it.archiveFile })
-            it.username.set(spec.username)
-            it.password.set(spec.password)
+            it.username.set(spec.username.orElse(project.provider { error("Nmcp: username must not be empty")}))
+            it.password.set(spec.password.orElse(project.provider { error("Nmcp: password must not be empty")}))
             it.publicationType.set(spec.publicationType)
             it.publicationName.set(spec.publicationName.orElse("${project.name}-${project.version}.zip"))
             it.endpoint.set(spec.endpoint)
+            it.verifyStatus.set(spec.verifyStatus)
         }
 
         publishAllPublicationsToCentralPortal.configure {
@@ -153,11 +154,12 @@ open class NmcpExtension(private val project: Project) {
 
         project.tasks.register("publishAggregatedPublicationToCentralPortal", NmcpPublishTask::class.java) {
             it.inputFile.set(zipTaskProvider.flatMap { it.archiveFile })
-            it.username.set(aggregation.username)
-            it.password.set(aggregation.password)
+            it.username.set(aggregation.username.orElse(project.provider { error("Nmcp: username must not be empty")}))
+            it.password.set(aggregation.password.orElse(project.provider { error("Nmcp: password must not be empty")}))
             it.publicationType.set(aggregation.publicationType)
             it.publicationName.set(aggregation.publicationName.orElse("${project.name}-${project.version}.zip"))
             it.endpoint.set(aggregation.endpoint)
+            it.verifyStatus.set(aggregation.verifyStatus.orElse(true))
         }
     }
 
