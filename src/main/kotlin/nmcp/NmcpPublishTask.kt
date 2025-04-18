@@ -97,7 +97,7 @@ abstract class NmcpPublishTask : DefaultTask() {
                     VALIDATING,
                     PUBLISHING -> {
                         // Come back later
-                        Thread.sleep(5000)
+                        Thread.sleep(2000)
                     }
 
                     VALIDATED -> {
@@ -111,8 +111,7 @@ abstract class NmcpPublishTask : DefaultTask() {
                     }
 
                     is FAILED -> {
-                        logger.lifecycle("Deployment has failed:\n${status.error}")
-                        break
+                        error("Deployment has failed:\n${status.error}")
                     }
                 }
             }
