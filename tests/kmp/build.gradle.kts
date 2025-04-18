@@ -23,6 +23,7 @@ plugins {
 
 val mockServer = MockWebServer()
 mockServer.enqueue(MockResponse())
+mockServer.enqueue(MockResponse().setBody("{\"deploymentState\": \"PUBLISHED\"}"))
 
 nmcp {
     publishAggregation {
