@@ -93,21 +93,6 @@ dependencies {
     implementation(libs.okhttp.logging.interceptor)
 }
 
-fun isTag(): Boolean {
-    val ref = System.getenv("GITHUB_REF")
-
-    return ref?.startsWith("refs/tags/") == true
-}
-
-tasks.register("ci")
-
-if (isTag()) {
-    rootProject.tasks.named("ci") {
-        dependsOn(tasks.named("publishAllPublicationsToOssStagingRepository"))
-    }
-}
-
-
 tasks.withType<AbstractPublishToMaven>().configureEach {
     val signingTasks = tasks.withType<Sign>()
     mustRunAfter(signingTasks)
