@@ -3,7 +3,6 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartReader
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
-import org.jetbrains.kotlin.scripting.compiler.plugin.configureScriptDefinitions
 import java.util.zip.ZipInputStream
 
 buildscript {

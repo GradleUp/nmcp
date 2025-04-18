@@ -1,0 +1,5 @@
+[versions]
+kgp = "2.1.20"
+
+[plugins]
+kgp = { id = "org.jetbrains.kotlin.jvm", version.ref = "kgp" }

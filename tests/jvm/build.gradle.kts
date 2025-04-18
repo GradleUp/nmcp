@@ -1,5 +1,5 @@
 plugins {
-    id("org.jetbrains.kotlin.jvm").version("1.9.22").apply(false)
+    alias(libs.plugins.kgp).apply(false)
     id("com.gradleup.nmcp").version("0.0.8")
 }
 
@@ -47,7 +47,6 @@ subprojects {
                 licenses {
                     license {
                         name.set("MIT License")
-                        url.set("https://github.com/martinbonnin/test-nmcp/blob/master/LICENSE")
                     }
                 }
 
