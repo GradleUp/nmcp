@@ -1,4 +1,5 @@
 plugins {
+    id("base")
     alias(libs.plugins.kgp).apply(false)
     id("com.gradleup.nmcp").version("0.0.8")
 }
@@ -80,7 +81,7 @@ nmcp {
     }
 }
 
-tasks.register("checkZip") {
+val checkZip = tasks.register("checkZip") {
     inputs.file(tasks.named("zipAggregationPublication").flatMap { (it as Zip).archiveFile })
 
     doLast {
@@ -152,4 +153,8 @@ tasks.register("checkZip") {
             )
         )
     }
+}
+
+tasks.named("build") {
+    dependsOn(checkZip)
 }

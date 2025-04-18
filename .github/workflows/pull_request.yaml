@@ -1,0 +1,20 @@
+name: pull_request
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    paths-ignore:
+      - 'docs/**'
+      - '*.md'
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - run: |
+          ./gradlew build
+          ./gradlew -p tests/kmp build 
+          ./gradlew -p tests/jvm build

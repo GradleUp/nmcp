@@ -12,8 +12,8 @@ buildscript {
 
     dependencies {
         classpath("build-logic:build-logic")
-        classpath("com.squareup.okhttp3:mockwebserver:4.12.0")
-        classpath("com.squareup.okhttp3:okhttp:4.12.0")
+        classpath(libs.mockwebserver)
+        classpath(libs.okhttp)
     }
 }
 
@@ -23,6 +23,7 @@ plugins {
 
 val mockServer = MockWebServer()
 mockServer.enqueue(MockResponse())
+mockServer.enqueue(MockResponse().setBody("{\"deploymentState\": \"PUBLISHED\"}"))
 
 nmcp {
     publishAggregation {
@@ -264,4 +265,3 @@ tasks.configureEach {
         dependsOn("publishAggregatedPublicationToCentralPortal")
     }
 }
-

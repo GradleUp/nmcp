@@ -87,25 +87,11 @@ signing {
 
 
 dependencies {
-    implementation("com.squareup.okio:okio:3.8.0")
-    implementation("com.squareup.okhttp3:okhttp:4.12.0")
-    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+    implementation(libs.json)
+    implementation(libs.okio)
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging.interceptor)
 }
-
-fun isTag(): Boolean {
-    val ref = System.getenv("GITHUB_REF")
-
-    return ref?.startsWith("refs/tags/") == true
-}
-
-tasks.register("ci")
-
-if (isTag()) {
-    rootProject.tasks.named("ci") {
-        dependsOn(tasks.named("publishAllPublicationsToOssStagingRepository"))
-    }
-}
-
 
 tasks.withType<AbstractPublishToMaven>().configureEach {
     val signingTasks = tasks.withType<Sign>()

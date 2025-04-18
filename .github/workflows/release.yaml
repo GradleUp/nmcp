@@ -1,14 +1,9 @@
-name: CI
+name: release
 
 on:
   push:
-    branches: [ main ]
     tags:
       - '*'
-  pull_request:
-    paths-ignore:
-      - 'docs/**'
-      - '*.md'
 
 jobs:
   ci:
@@ -16,10 +11,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - run: |
-          ./gradlew ci 
-          ./gradlew -p tests/kmp build 
-          ./gradlew -p tests/jvm build
+      - run: |      
+          ./gradlew publishAllPublicationsToOssStagingRepository
         env:
           OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
           OSSRH_USER: ${{ secrets.OSSRH_USER }}
