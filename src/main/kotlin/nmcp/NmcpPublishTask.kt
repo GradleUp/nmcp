@@ -16,6 +16,8 @@ import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.*
 import org.gradle.work.DisableCachingByDefault
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.TimeSource.Monotonic.markNow
 
 
 @DisableCachingByDefault
@@ -31,7 +33,12 @@ abstract class NmcpPublishTask : DefaultTask() {
     abstract val password: Property<String>
 
     @get:Input
+    @get:Optional
     abstract val verifyStatus: Property<Boolean>
+
+    @get:Input
+    @get:Optional
+    abstract val verificationTimeout: Property<Int>
 
     @get:Input
     @get:Optional
@@ -89,10 +96,19 @@ abstract class NmcpPublishTask : DefaultTask() {
 
         logger.lifecycle("Nmcp: deployment bundle '$deploymentId' uploaded.")
 
-        if (verifyStatus.get()) {
+        if (verifyStatus.orElse(true).get()) {
             logger.lifecycle("Nmcp: verifying deployment status...")
+            val timeout = verificationTimeout.orElse(600).get().seconds
+            val mark = markNow()
             while (true) {
-                when (val status = verifyStatus(deploymentId = deploymentId, endpoint = endpoint, token = token)) {
+                check (mark.elapsedNow() < timeout) {
+                    "Nmcp: timeout while verifying deployment status."
+                }
+                when (val status = verifyStatus(
+                    deploymentId = deploymentId,
+                    endpoint = endpoint,
+                    token = token,
+                )) {
                     PENDING,
                     VALIDATING,
                     PUBLISHING -> {
@@ -141,7 +157,11 @@ private class FAILED(val error: String) : Status
 
 private val client = OkHttpClient.Builder().build()
 
-private fun verifyStatus(deploymentId: String, endpoint: String, token: String): Status {
+private fun verifyStatus(
+    deploymentId: String,
+    endpoint: String,
+    token: String,
+): Status {
     Request.Builder()
         .post(ByteString.EMPTY.toRequestBody())
         .addHeader("Authorization", "UserToken $token")

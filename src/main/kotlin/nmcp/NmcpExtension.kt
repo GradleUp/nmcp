@@ -75,6 +75,7 @@ open class NmcpExtension(private val project: Project) {
             it.publicationName.set(spec.publicationName.orElse("${project.name}-${project.version}.zip"))
             it.endpoint.set(spec.endpoint)
             it.verifyStatus.set(spec.verifyStatus)
+            it.verificationTimeout.set(spec.verificationTimeout)
         }
 
         publishAllPublicationsToCentralPortal.configure {
@@ -159,7 +160,8 @@ open class NmcpExtension(private val project: Project) {
             it.publicationType.set(aggregation.publicationType)
             it.publicationName.set(aggregation.publicationName.orElse("${project.name}-${project.version}.zip"))
             it.endpoint.set(aggregation.endpoint)
-            it.verifyStatus.set(aggregation.verifyStatus.orElse(true))
+            it.verifyStatus.set(aggregation.verifyStatus)
+            it.verificationTimeout.set(aggregation.verificationTimeout)
         }
     }
 
@@ -176,6 +178,14 @@ open class NmcpExtension(private val project: Project) {
         action.execute(spec)
 
         publishAggregation { aggregation ->
+            aggregation.username.set(spec.username)
+            aggregation.password.set(spec.password)
+            aggregation.publicationType.set(spec.publicationType)
+            aggregation.publicationName.set(spec.publicationName)
+            aggregation.endpoint.set(spec.endpoint)
+            aggregation.verifyStatus.set(spec.verifyStatus)
+            aggregation.verificationTimeout.set(spec.verificationTimeout)
+
             project.allprojects { aproject ->
                 aproject.pluginManager.withPlugin("maven-publish") {
                     aggregation.project(aproject.path)
@@ -187,11 +197,6 @@ open class NmcpExtension(private val project: Project) {
                     }
                 }
             }
-
-            aggregation.username.set(spec.username)
-            aggregation.password.set(spec.password)
-            aggregation.publicationType.set(spec.publicationType)
-            aggregation.publicationName.set(spec.publicationName)
         }
     }
 }

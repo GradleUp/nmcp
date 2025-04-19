@@ -15,7 +15,7 @@ abstract class NmcpAggregation @Inject constructor(
     abstract val username: Property<String>
 
     /**
-     * The central portal username
+     * The central portal password
      */
     abstract val password: Property<String>
 
@@ -47,6 +47,13 @@ abstract class NmcpAggregation @Inject constructor(
      * Default: true.
      */
     abstract val verifyStatus: Property<Boolean>
+
+    /**
+     * Timeout for verification (in seconds).
+     *
+     * Default: 600 (10 minutes).
+     */
+    abstract val verificationTimeout: Property<Int>
 
     fun project(path: String) {
         project.dependencies.add(configuration.name, project.dependencies.project(mapOf("path" to  path)))
