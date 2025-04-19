@@ -41,4 +41,11 @@ abstract class NmcpSpec {
      * Default: true.
      */
     abstract val verifyStatus: Property<Boolean>
+
+    /**
+     * Timeout for verification (in seconds).
+     *
+     * Default: 600 (10 minutes).
+     */
+    abstract val verificationTimeout: Property<Int>
 }
