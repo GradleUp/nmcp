@@ -1,15 +1,31 @@
 package nmcp
 
+import nmcp.internal.task.NmcpPublishTask
 import org.gradle.api.Action
+import org.gradle.api.Named
 import org.gradle.api.Project
+import org.gradle.api.attributes.Attribute
+import org.gradle.api.attributes.HasConfigurableAttributes
+import org.gradle.api.attributes.Usage
+import org.gradle.api.attributes.Usage.USAGE_ATTRIBUTE
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.tasks.bundling.Zip
-import org.gradle.configurationcache.extensions.capitalized
+import java.util.*
 
 open class NmcpExtension(private val project: Project) {
     private var mavenPublishFound = false
     private val publishAllPublicationsToCentralPortal = project.tasks.register("publishAllPublicationsToCentralPortal")
 
+    init {
+        project.configurations.create(configurationName) {
+            it.isCanBeConsumed = true
+            it.isCanBeResolved = false
+            // See https://github.com/GradleUp/nmcp/issues/2
+            it.isVisible = false
+
+            it.configureAttributes(project)
+        }
+    }
     private fun register(publicationName: String?, spec: NmcpSpec) {
         if (publicationName != null) {
             registerInternal(publicationName, spec)
@@ -22,7 +38,7 @@ open class NmcpExtension(private val project: Project) {
     }
 
     private fun registerInternal(publicationName: String, spec: NmcpSpec) {
-        val capitalized = publicationName.capitalized()
+        val capitalized = publicationName.capitalizeFirstChar()
 
         val publishing = project.extensions.findByType(PublishingExtension::class.java)!!
         val m2Dir = project.layout.buildDirectory.dir("nmcp/m2$capitalized")
@@ -42,7 +58,7 @@ open class NmcpExtension(private val project: Project) {
             error("Nmcp: cannot find publication '$publicationName'. Candidates are: '${candidates.joinToString()}'")
         }
 
-        val publishToNmcpTaskProvider = project.tasks.named("publish${capitalized}PublicationTo${repoName.capitalized()}Repository")
+        val publishToNmcpTaskProvider = project.tasks.named("publish${capitalized}PublicationTo${repoName.capitalizeFirstChar()}Repository")
 
         publishToNmcpTaskProvider.configure {
             it.doFirst {
@@ -148,7 +164,12 @@ open class NmcpExtension(private val project: Project) {
                     project.zipTree(it)
                 }
             })
-
+            if (project.version.toString().endsWith("-SNAPSHOT")) {
+                val snapshotRe = Regex("20[0-9]{6}.[0-9]{6}-[0-9]+")
+                it.rename {
+                    it.replace(snapshotRe, "SNAPSHOT")
+                }
+            }
             it.destinationDirectory.set(project.layout.buildDirectory.dir("nmcp/zip"))
             it.archiveFileName.set("publicationAggregated.zip")
         }
@@ -198,5 +219,19 @@ open class NmcpExtension(private val project: Project) {
                 }
             }
         }
+    }
+}
+
+private fun String.capitalizeFirstChar() = replaceFirstChar { it.uppercase(Locale.ROOT) }
+
+internal val configurationName = "nmcpProducer"
+internal val attribute = "com.gradleup.nmcp"
+internal val attributeValue = "bundle"
+internal val usageValue = "nmcp"
+
+internal fun HasConfigurableAttributes<*>.configureAttributes(project: Project) {
+    attributes {
+        it.attribute(Attribute.of(attribute, Named::class.java), project.objects.named(Named::class.java, attributeValue))
+        it.attribute(USAGE_ATTRIBUTE, project.objects.named(Usage::class.java, usageValue))
     }
 }

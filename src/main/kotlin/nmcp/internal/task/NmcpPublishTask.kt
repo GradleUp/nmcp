@@ -1,4 +1,4 @@
-package nmcp
+package nmcp.internal.task
 
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
@@ -25,7 +25,7 @@ import kotlin.time.toKotlinDuration
 
 
 @DisableCachingByDefault
-abstract class NmcpPublishTask : DefaultTask() {
+internal abstract class NmcpPublishTask : DefaultTask() {
     @get:InputFile
     @get:PathSensitive(PathSensitivity.RELATIVE)
     abstract val inputFile: RegularFileProperty

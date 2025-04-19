@@ -2,22 +2,10 @@ import java.net.URI
 
 plugins {
     alias(libs.plugins.kgp)
-    id("java-gradle-plugin")
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.ggp)
     id("maven-publish")
     id("signing")
-}
-
-val pluginDescription = "Plugin that helps you publish to the Central Portal (https://central.sonatype.org/)"
-
-gradlePlugin {
-    plugins {
-        create("nmcp") {
-            id = "com.gradleup.nmcp"
-            implementationClass = "nmcp.NmcpPlugin"
-            this.description = pluginDescription
-            this.displayName = "nmcp"
-        }
-    }
 }
 
 group = "com.gradleup.nmcp"
@@ -53,7 +41,7 @@ publishing {
 
         pom {
             name.set(project.name)
-            description.set(pluginDescription)
+            description.set("NMCP")
             url.set("https://github.com/gradleup/nmcp")
 
             scm {
@@ -85,12 +73,16 @@ signing {
     useInMemoryPgpKeys(System.getenv("GPG_KEY"), System.getenv("GPG_KEY_PASSWORD"))
 }
 
+gratatouille {
+    codeGeneration()
+}
 
 dependencies {
     implementation(libs.json)
     implementation(libs.okio)
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging.interceptor)
+    compileOnly(libs.gradle.min)
 }
 
 tasks.withType<AbstractPublishToMaven>().configureEach {

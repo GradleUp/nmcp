@@ -5,7 +5,7 @@ plugins {
 }
 
 val projectGroup = "net.mbonnin.tnmcp"
-val projectVersion = "0.0.3"
+val projectVersion = "0.0.3-SNAPSHOT"
 
 group = projectGroup
 version = projectVersion
