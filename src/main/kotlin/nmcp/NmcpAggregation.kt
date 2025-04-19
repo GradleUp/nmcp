@@ -15,7 +15,7 @@ abstract class NmcpAggregation @Inject constructor(
     abstract val username: Property<String>
 
     /**
-     * The central portal username
+     * The central portal password
      */
     abstract val password: Property<String>
 
