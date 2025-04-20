@@ -16,8 +16,12 @@ import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.*
 import org.gradle.work.DisableCachingByDefault
+import java.time.Duration
+import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeSource.Monotonic.markNow
+import kotlin.time.toJavaDuration
+import kotlin.time.toKotlinDuration
 
 
 @DisableCachingByDefault
@@ -38,7 +42,7 @@ abstract class NmcpPublishTask : DefaultTask() {
 
     @get:Input
     @get:Optional
-    abstract val verificationTimeout: Property<Int>
+    abstract val verificationTimeout: Property<Duration>
 
     @get:Input
     @get:Optional
@@ -98,10 +102,10 @@ abstract class NmcpPublishTask : DefaultTask() {
 
         if (verifyStatus.orElse(true).get()) {
             logger.lifecycle("Nmcp: verifying deployment status...")
-            val timeout = verificationTimeout.orElse(600).get().seconds
+            val timeout = verificationTimeout.orElse(10.minutes.toJavaDuration()).get()
             val mark = markNow()
             while (true) {
-                check (mark.elapsedNow() < timeout) {
+                check (mark.elapsedNow() < timeout.toKotlinDuration()) {
                     "Nmcp: timeout while verifying deployment status."
                 }
                 when (val status = verifyStatus(
