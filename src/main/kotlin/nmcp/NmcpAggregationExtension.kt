@@ -22,7 +22,7 @@ open class NmcpAggregationExtension(private val project: Project) {
     val zipTaskProvider = project.tasks.register("zipAggregationPublication", Zip::class.java) {
         it.from(consumerConfiguration.elements.map {
             check (it.isNotEmpty()) {
-                "nmcp: no aggregate dependencies found, please apply the 'com.gradleup.nmcp' in your submodules"
+                "nmcp: aggregation is empty. Specify projects to publish by adding them to the 'nmcpAggregation' configuration."
             }
             it.map {
                 project.zipTree(it)
