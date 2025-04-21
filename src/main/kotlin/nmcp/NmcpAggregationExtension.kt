@@ -24,7 +24,7 @@ open class NmcpAggregationExtension(private val project: Project) {
         it.destinationDirectory.set(project.layout.buildDirectory.dir("nmcp/zip"))
         it.from(consumerConfiguration.elements.map {
             check (it.isNotEmpty()) {
-                "nmcp: aggregation is empty. Specify projects to publish by adding them to the 'nmcpAggregation' configuration."
+                "nmcp: aggregation is empty. Make sure to create publications in sub-projects and specify projects to publish by adding them to the 'nmcpAggregation' configuration."
             }
             it.map {
                 project.zipTree(it)
