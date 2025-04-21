@@ -3,7 +3,7 @@
 - `com.gradleup.nmcp` creates a `zip${publicationName.capitalized()}Publication` and `publish${publicationName.capitalized()}PublicationToCentralPortal` task for each publication
   - `publish${publicationName.capitalized()}PublicationToCentralPortal` can be used to publish an individual publication to the central portal. If using this, you need to configure the `centralPortal {}` block.
   - The output of `zip${publicationName.capitalized()}Publication` is registered as an outgoing artifact so that the aggregation plugin can collect the files from all projects.
-- `com.gradleup.nmcp.aggregation` can aggregate all zips from all projects and upload them in a single deployment to the central portal.
+- `com.gradleup.nmcp.aggregation` can aggregate all zips from several projects and upload them in a single deployment to the central portal.
 
 ## Other changes:
 

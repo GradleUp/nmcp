@@ -36,7 +36,6 @@ fun publish(
     verificationTimeoutSeconds: Long?,
     inputFile: GInputFile,
 ) {
-
     check(!username.isNullOrBlank()) {
         "Ncmp: username is missing"
     }
