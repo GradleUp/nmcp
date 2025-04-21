@@ -26,12 +26,6 @@ open class NmcpAggregationExtension(private val project: Project) {
                 project.zipTree(it)
             }
         })
-        if (project.version.toString().endsWith("-SNAPSHOT")) {
-            val snapshotRe = Regex("20[0-9]{6}.[0-9]{6}-[0-9]+")
-            it.rename {
-                it.replace(snapshotRe, "SNAPSHOT")
-            }
-        }
         it.destinationDirectory.set(project.layout.buildDirectory.dir("nmcp/zip"))
         it.archiveFileName.set("publicationAggregated.zip")
     }
