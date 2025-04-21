@@ -3,6 +3,7 @@ package nmcp
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.provider.Property
+import java.time.Duration
 import javax.inject.Inject
 
 abstract class NmcpAggregation @Inject constructor(
@@ -53,7 +54,7 @@ abstract class NmcpAggregation @Inject constructor(
      *
      * Default: 600 (10 minutes).
      */
-    abstract val verificationTimeout: Property<Int>
+    abstract val verificationTimeout: Property<Duration>
 
     fun project(path: String) {
         project.dependencies.add(configuration.name, project.dependencies.project(mapOf("path" to  path)))

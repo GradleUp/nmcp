@@ -1,6 +1,7 @@
 package nmcp
 
 import org.gradle.api.provider.Property
+import java.time.Duration
 
 abstract class NmcpSpec {
     /**
@@ -47,5 +48,5 @@ abstract class NmcpSpec {
      *
      * Default: 600 (10 minutes).
      */
-    abstract val verificationTimeout: Property<Int>
+    abstract val verificationTimeout: Property<Duration>
 }
