@@ -1,5 +1,6 @@
 package nmcp
 
+import gratatouille.GExtension
 import nmcp.internal.configureAttributes
 import nmcp.internal.nmcpConsumerConfigurationName
 import nmcp.internal.task.registerPublishTask
@@ -7,6 +8,7 @@ import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.tasks.bundling.Zip
 
+@GExtension(pluginId = "com.gradleup.nmcp.aggregation")
 open class NmcpAggregationExtension(private val project: Project) {
     internal val spec = project.objects.newInstance(NmcpSpec::class.java)
 

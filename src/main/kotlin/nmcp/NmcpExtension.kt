@@ -1,5 +1,6 @@
 package nmcp
 
+import gratatouille.GExtension
 import gratatouille.capitalizeFirstLetter
 import nmcp.internal.configureAttributes
 import nmcp.internal.nmcpProducerConfigurationName
@@ -10,6 +11,7 @@ import org.gradle.api.Project
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.tasks.bundling.Zip
 
+@GExtension(pluginId = "com.gradleup.nmcp")
 open class NmcpExtension(private val project: Project) {
     internal val spec = project.objects.newInstance(NmcpSpec::class.java)
     // Lifecycle task to publish all the publications in the given project
