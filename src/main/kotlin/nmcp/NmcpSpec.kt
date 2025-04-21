@@ -15,12 +15,14 @@ abstract class NmcpSpec {
     abstract val password: Property<String>
 
     /**
-     * The publication type.
+     * The publication type (optional).
      * One of:
      * - "AUTOMATIC": the deployment is automatically published.
      * - "USER_MANAGED": the deployment is validated but not published. It must be published manually from the Central Portal UI.
+     *
+     * Default: AUTOMATIC
      */
-    abstract val publicationType: Property<String>
+    abstract val publishingType: Property<String>
 
     /**
      * A name for the publication (optional).
@@ -30,23 +32,23 @@ abstract class NmcpSpec {
     abstract val publicationName: Property<String>
 
     /**
-     * The API endpoint to use (optional).
-     *
-     * Default: "https://central.sonatype.com/api/v1/".
-     */
-    abstract val endpoint: Property<String>
-
-    /**
-     * Whether to verify the status of the deployment before returning from the task.
+     * Whether to verify the status of the deployment before returning from the task (optional).
      *
      * Default: true.
      */
     abstract val verifyStatus: Property<Boolean>
 
     /**
-     * Timeout for verification (in seconds).
+     * Timeout for verification (optional).
      *
-     * Default: 600 (10 minutes).
+     * Default: 10 minutes.
      */
     abstract val verificationTimeout: Property<Duration>
+
+    /**
+     * The API endpoint to use (optional).
+     *
+     * Default: "https://central.sonatype.com/".
+     */
+    abstract val baseUrl: Property<String>
 }

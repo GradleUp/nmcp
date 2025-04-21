@@ -1,0 +1,3 @@
+- The default `publicationType` is now `"AUTOMATIC"`, make sure to set it to `"USER_MANAGED"` if you want to manually confirm releases.
+- `NmcpSpec.endpoint` is replaced by `NmcpSpec.baseUrl`.
+- `NmcpSpec.publishingType` is renamed `NmcpSpec.publishingType`.

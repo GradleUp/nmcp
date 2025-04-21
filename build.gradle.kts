@@ -24,20 +24,22 @@ publishing {
             }
         }
     }
+    publications.create("default", MavenPublication::class.java) {
+        from(components.getByName("java"))
+        artifact(tasks.register("emptySources", Jar::class.java) {
+            archiveClassifier = "sources"
+        })
+        artifact(tasks.register("emptyDocs", Jar::class.java) {
+            archiveClassifier = "javadoc"
+        })
+
+        groupId = project.rootProject.group.toString()
+        version = project.rootProject.version.toString()
+        artifactId = project.name
+    }
+
     publications.configureEach {
         this as MavenPublication
-        if (name == "pluginMaven") {
-            artifact(tasks.register("emptySources", Jar::class.java) {
-                archiveClassifier = "sources"
-            })
-            artifact(tasks.register("emptyDocs", Jar::class.java) {
-                archiveClassifier = "javadoc"
-            })
-
-            groupId = project.rootProject.group.toString()
-            version = project.rootProject.version.toString()
-            artifactId = project.name
-        }
 
         pom {
             name.set(project.name)
@@ -75,6 +77,7 @@ signing {
 
 gratatouille {
     codeGeneration()
+    pluginMarker("com.gradleup.nmcp")
 }
 
 dependencies {

@@ -4,10 +4,6 @@ plugins {
     id("com.gradleup.nmcp")
 }
 
-nmcp {
-    publishAllPublications {}
-}
-
 group = "sample.kmp"
 version = "0.0.1"
 
