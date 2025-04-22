@@ -32,10 +32,6 @@ publishing {
         artifact(tasks.register("emptyDocs", Jar::class.java) {
             archiveClassifier = "javadoc"
         })
-
-        groupId = project.rootProject.group.toString()
-        version = project.rootProject.version.toString()
-        artifactId = project.name
     }
 
     publications.configureEach {
