@@ -39,16 +39,14 @@ publishing {
     publications.configureEach {
         this as MavenPublication
         if (name == "pluginMaven") {
-            artifact(
-                tasks.register("emptySources", Jar::class.java) {
-                    archiveClassifier = "sources"
-                },
-            )
-            artifact(
-                tasks.register("emptyDocs", Jar::class.java) {
-                    archiveClassifier = "javadoc"
-                },
-            )
+            val emptySources by tasks.registering(Jar::class) {
+                archiveClassifier = "sources"
+            }
+            val emptyDocs by tasks.registering(Jar::class) {
+                archiveClassifier = "javadoc"
+            }
+            artifact(emptySources)
+            artifact(emptyDocs)
 
             groupId = project.rootProject.group.toString()
             version = project.rootProject.version.toString()

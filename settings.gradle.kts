@@ -1,8 +1,10 @@
 pluginManagement {
-    listOf(repositories, dependencyResolutionManagement.repositories).forEach {
+    listOf(
+        repositories,
+        dependencyResolutionManagement.repositories,
+    ).forEach {
         it.apply {
             mavenCentral()
-            gradlePluginPortal()
         }
     }
 }
