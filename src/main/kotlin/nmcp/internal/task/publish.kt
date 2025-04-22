@@ -182,12 +182,13 @@ internal fun Project.registerPublishTask(
     inputFile: Provider<RegularFile>,
     spec: CentralPortalOptions
 ): TaskProvider<PublishTask> {
+    val defaultPublicationName = "${project.name}-${project.version}.zip"
     return registerPublishTask(
         taskName = taskName,
         inputFile = inputFile,
         username = spec.username,
         password = spec.password,
-        publicationName = spec.publicationName.orElse(provider { "${project.name}-${project.version}.zip"}),
+        publicationName = spec.publicationName.orElse(defaultPublicationName),
         publicationType = spec.publishingType,
         baseUrl = spec.baseUrl,
         verificationTimeoutSeconds = spec.verificationTimeout.map { it.seconds }

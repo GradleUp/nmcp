@@ -1,9 +1,8 @@
-import okhttp3.MediaType
+import java.util.zip.ZipInputStream
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartReader
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
-import java.util.zip.ZipInputStream
 
 plugins {
     id("base")
@@ -46,7 +45,9 @@ extensions.getByType(nmcp.NmcpAggregationExtension::class.java).apply {
     }
 }
 
-tasks.named("publishAggregationToCentralPortal") {
+
+tasks.register("checkZip") {
+    dependsOn("publishAggregationToCentralPortal")
     doLast {
         val request = mockServer.takeRequest()
 
@@ -266,6 +267,6 @@ tasks.named("publishAggregationToCentralPortal") {
 // The build task is added later from the JS KMP plugin in module1
 tasks.configureEach {
     if (name == "build") {
-        dependsOn("publishAggregationToCentralPortal")
+        dependsOn("checkZip")
     }
 }

@@ -1,16 +1,21 @@
 package nmcp
 
 import gratatouille.GExtension
+import javax.inject.Inject
 import nmcp.internal.configureAttributes
 import nmcp.internal.nmcpConsumerConfigurationName
 import nmcp.internal.task.registerPublishTask
 import org.gradle.api.Action
 import org.gradle.api.Project
+import org.gradle.api.file.ArchiveOperations
 import org.gradle.api.tasks.bundling.Zip
 
 @GExtension(pluginId = "com.gradleup.nmcp.aggregation")
-open class NmcpAggregationExtension(private val project: Project) {
+abstract class NmcpAggregationExtension(private val project: Project) {
     internal val spec = project.objects.newInstance(CentralPortalOptions::class.java)
+
+    @get:Inject
+    abstract val archiveOperations: ArchiveOperations
 
     internal val consumerConfiguration = project.configurations.create(nmcpConsumerConfigurationName) {
         it.isCanBeResolved = true
@@ -19,20 +24,24 @@ open class NmcpAggregationExtension(private val project: Project) {
         it.configureAttributes(project)
     }
 
-    val zipTaskProvider = project.tasks.register("zipAggregation", Zip::class.java) {
-        it.archiveFileName.set("aggregation.zip")
-        it.destinationDirectory.set(project.layout.buildDirectory.dir("nmcp/zip"))
-        it.from(consumerConfiguration.elements.map {
-            check (it.isNotEmpty()) {
-                "nmcp: aggregation is empty. Make sure to create publications in sub-projects and specify projects to publish by adding them to the 'nmcpAggregation' configuration."
-            }
-            it.map {
-                project.zipTree(it)
-            }
-        })
-    }
-
     init {
+        val operations = archiveOperations
+        val layout = project.layout
+        val files= project.files(consumerConfiguration)
+
+         val zipTaskProvider = project.tasks.register("zipAggregation", Zip::class.java) {
+            it.archiveFileName.set("aggregation.zip")
+            it.destinationDirectory.set(layout.buildDirectory.dir("nmcp/zip"))
+            it.from(files.elements.map {
+                check (it.isNotEmpty()) {
+                    "nmcp: aggregation is empty. Make sure to create publications in sub-projects and specify projects to publish by adding them to the 'nmcpAggregation' configuration."
+                }
+                it.map {
+                    operations.zipTree(it)
+                }
+            })
+        }
+
         project.registerPublishTask(
             taskName = "publishAggregationToCentralPortal",
             inputFile = zipTaskProvider.flatMap { it.archiveFile },
