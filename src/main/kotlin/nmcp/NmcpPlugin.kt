@@ -20,7 +20,7 @@ internal fun HasConfigurableAttributes<*>.configureAttributes(project: Project) 
     }
 }
 
-class NmcpPlugin: Plugin<Project> {
+class NmcpPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         target.configurations.create(configurationName) {
             it.isCanBeConsumed = true

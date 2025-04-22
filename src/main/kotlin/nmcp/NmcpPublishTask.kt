@@ -1,5 +1,10 @@
 package nmcp
 
+import java.time.Duration
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.TimeSource.Monotonic.markNow
+import kotlin.time.toJavaDuration
+import kotlin.time.toKotlinDuration
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
@@ -14,15 +19,13 @@ import okio.ByteString
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
-import org.gradle.api.tasks.*
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.Optional
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
+import org.gradle.api.tasks.TaskAction
 import org.gradle.work.DisableCachingByDefault
-import java.time.Duration
-import kotlin.time.Duration.Companion.minutes
-import kotlin.time.Duration.Companion.seconds
-import kotlin.time.TimeSource.Monotonic.markNow
-import kotlin.time.toJavaDuration
-import kotlin.time.toKotlinDuration
-
 
 @DisableCachingByDefault
 abstract class NmcpPublishTask : DefaultTask() {
@@ -75,7 +78,7 @@ abstract class NmcpPublishTask : DefaultTask() {
             .addFormDataPart(
                 "bundle",
                 publicationName.get(),
-                inputFile.get().asFile.asRequestBody("application/zip".toMediaType())
+                inputFile.get().asFile.asRequestBody("application/zip".toMediaType()),
             )
             .build()
 
@@ -105,17 +108,20 @@ abstract class NmcpPublishTask : DefaultTask() {
             val timeout = verificationTimeout.orElse(10.minutes.toJavaDuration()).get()
             val mark = markNow()
             while (true) {
-                check (mark.elapsedNow() < timeout.toKotlinDuration()) {
+                check(mark.elapsedNow() < timeout.toKotlinDuration()) {
                     "Nmcp: timeout while verifying deployment status."
                 }
-                when (val status = verifyStatus(
-                    deploymentId = deploymentId,
-                    endpoint = endpoint,
-                    token = token,
-                )) {
+                when (
+                    val status = verifyStatus(
+                        deploymentId = deploymentId,
+                        endpoint = endpoint,
+                        token = token,
+                    )
+                ) {
                     PENDING,
                     VALIDATING,
-                    PUBLISHING -> {
+                    PUBLISHING,
+                    -> {
                         // Come back later
                         Thread.sleep(2000)
                     }
