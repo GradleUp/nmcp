@@ -27,7 +27,7 @@ open class NmcpExtension(private val project: Project) {
             it.configureAttributes(project)
         }
 
-        project.withRequiredPlugin("maven-publish", {
+        project.withRequiredPlugin("maven-publish") {
             val publishing = project.extensions.findByType(PublishingExtension::class.java)!!
             publishing.publications.configureEach {
                 registerInternal(it.name)
