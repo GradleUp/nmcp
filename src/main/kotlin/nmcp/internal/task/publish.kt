@@ -73,7 +73,7 @@ fun publish(
             it.body!!.string()
         }
 
-    logger.lifecycle("Nmcp: deployment bundle '$deploymentId' uploaded.")
+    logger.lifecycle("Nmcp: deployment bundle '$deploymentId' uploaded to '$baseUrl'.")
 
     val timeout = verificationTimeoutSeconds?.seconds ?: 10.minutes
     if (timeout.isPositive()) {
