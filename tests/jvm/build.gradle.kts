@@ -92,7 +92,7 @@ extensions.getByType<NmcpAggregationExtension>().apply {
 }
 
 val checkZip = tasks.register("checkZip") {
-    inputs.file(tasks.named("zipAggregationPublication").flatMap { (it as Zip).archiveFile })
+    inputs.file(tasks.named("zipAggregation").flatMap { (it as Zip).archiveFile })
 
     doLast {
         val paths = mutableListOf<String>()
