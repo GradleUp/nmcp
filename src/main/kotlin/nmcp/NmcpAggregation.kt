@@ -1,15 +1,15 @@
 package nmcp
 
+import java.time.Duration
+import javax.inject.Inject
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.provider.Property
-import java.time.Duration
-import javax.inject.Inject
 
 abstract class NmcpAggregation @Inject constructor(
     private val configuration: Configuration,
     private val project: Project,
-    ) {
+) {
     /**
      * The central portal username
      */
@@ -57,6 +57,6 @@ abstract class NmcpAggregation @Inject constructor(
     abstract val verificationTimeout: Property<Duration>
 
     fun project(path: String) {
-        project.dependencies.add(configuration.name, project.dependencies.project(mapOf("path" to  path)))
+        project.dependencies.add(configuration.name, project.dependencies.project(mapOf("path" to path)))
     }
 }

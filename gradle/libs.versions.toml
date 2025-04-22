@@ -7,5 +7,8 @@ okio = "com.squareup.okio:okio:3.8.0"
 okhttp = "com.squareup.okhttp3:okhttp:4.12.0"
 okhttp-logging-interceptor = "com.squareup.okhttp3:logging-interceptor:4.12.0"
 mockwebserver = "com.squareup.okhttp3:mockwebserver:4.12.0"
+# Dummy to get renovate updates, the version is used in rootProject build.gradle with spotless.
+ktlint = "com.pinterest.ktlint:ktlint-cli:1.5.0"
 [plugins]
 kgp = { id = "org.jetbrains.kotlin.jvm", version.ref = "kgp" }
+spotless = "com.diffplug.spotless:7.0.3"

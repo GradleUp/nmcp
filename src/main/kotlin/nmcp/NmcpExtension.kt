@@ -66,11 +66,10 @@ open class NmcpExtension(private val project: Project) {
             it.archiveFileName.set("publication$capitalized.zip")
         }
 
-
         val publishTaskProvider = project.tasks.register("publish${capitalized}PublicationToCentralPortal", NmcpPublishTask::class.java) {
             it.inputFile.set(zipTaskProvider.flatMap { it.archiveFile })
-            it.username.set(spec.username.orElse(project.provider { error("Nmcp: username must not be empty")}))
-            it.password.set(spec.password.orElse(project.provider { error("Nmcp: password must not be empty")}))
+            it.username.set(spec.username.orElse(project.provider { error("Nmcp: username must not be empty") }))
+            it.password.set(spec.password.orElse(project.provider { error("Nmcp: password must not be empty") }))
             it.publicationType.set(spec.publicationType)
             it.publicationName.set(spec.publicationName.orElse("${project.name}-${project.version}.zip"))
             it.endpoint.set(spec.endpoint)
@@ -140,14 +139,16 @@ open class NmcpExtension(private val project: Project) {
         action.execute(aggregation)
 
         val zipTaskProvider = project.tasks.register("zipAggregationPublication", Zip::class.java) {
-            it.from(configuration.elements.map {
-                check (it.isNotEmpty()) {
-                    "nmcp: no aggregate dependencies found, please apply the 'com.gradleup.nmcp' in your submodules"
-                }
-                it.map {
-                    project.zipTree(it)
-                }
-            })
+            it.from(
+                configuration.elements.map {
+                    check(it.isNotEmpty()) {
+                        "nmcp: no aggregate dependencies found, please apply the 'com.gradleup.nmcp' in your submodules"
+                    }
+                    it.map {
+                        project.zipTree(it)
+                    }
+                },
+            )
 
             it.destinationDirectory.set(project.layout.buildDirectory.dir("nmcp/zip"))
             it.archiveFileName.set("publicationAggregated.zip")
@@ -155,8 +156,8 @@ open class NmcpExtension(private val project: Project) {
 
         project.tasks.register("publishAggregatedPublicationToCentralPortal", NmcpPublishTask::class.java) {
             it.inputFile.set(zipTaskProvider.flatMap { it.archiveFile })
-            it.username.set(aggregation.username.orElse(project.provider { error("Nmcp: username must not be empty")}))
-            it.password.set(aggregation.password.orElse(project.provider { error("Nmcp: password must not be empty")}))
+            it.username.set(aggregation.username.orElse(project.provider { error("Nmcp: username must not be empty") }))
+            it.password.set(aggregation.password.orElse(project.provider { error("Nmcp: password must not be empty") }))
             it.publicationType.set(aggregation.publicationType)
             it.publicationName.set(aggregation.publicationName.orElse("${project.name}-${project.version}.zip"))
             it.endpoint.set(aggregation.endpoint)

@@ -2,6 +2,7 @@ import java.net.URI
 
 plugins {
     alias(libs.plugins.kgp)
+    alias(libs.plugins.spotless)
     id("java-gradle-plugin")
     id("maven-publish")
     id("signing")
@@ -39,12 +40,16 @@ publishing {
     publications.configureEach {
         this as MavenPublication
         if (name == "pluginMaven") {
-            artifact(tasks.register("emptySources", Jar::class.java) {
-                archiveClassifier = "sources"
-            })
-            artifact(tasks.register("emptyDocs", Jar::class.java) {
-                archiveClassifier = "javadoc"
-            })
+            artifact(
+                tasks.register("emptySources", Jar::class.java) {
+                    archiveClassifier = "sources"
+                },
+            )
+            artifact(
+                tasks.register("emptyDocs", Jar::class.java) {
+                    archiveClassifier = "javadoc"
+                },
+            )
 
             groupId = project.rootProject.group.toString()
             version = project.rootProject.version.toString()
@@ -85,6 +90,14 @@ signing {
     useInMemoryPgpKeys(System.getenv("GPG_KEY"), System.getenv("GPG_KEY_PASSWORD"))
 }
 
+spotless {
+    kotlin {
+        ktlint(libs.ktlint.get().version)
+    }
+    kotlinGradle {
+        ktlint(libs.ktlint.get().version)
+    }
+}
 
 dependencies {
     implementation(libs.json)
