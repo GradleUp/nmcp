@@ -1,7 +1,7 @@
 package nmcp
 
-import org.gradle.api.provider.Property
 import java.time.Duration
+import org.gradle.api.provider.Property
 
 abstract class NmcpSpec {
     /**

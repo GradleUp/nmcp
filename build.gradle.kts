@@ -36,7 +36,6 @@ publishing {
 
     publications.configureEach {
         this as MavenPublication
-
         pom {
             name.set(project.name)
             description.set("NMCP")
