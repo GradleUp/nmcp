@@ -160,7 +160,7 @@ private fun verifyStatus(
 
             val state = element["deploymentState"]
             check(state is JsonPrimitive && state.isString) {
-                "Nmcp: unexpected status: $state"
+                "Nmcp: unexpected deploymentState: $state"
             }
 
             return when (state.content) {
