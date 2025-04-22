@@ -32,14 +32,16 @@ abstract class NmcpSpec {
     abstract val publicationName: Property<String>
 
     /**
-     * Whether to verify the status of the deployment before returning from the task (optional).
+     * After a deployment has been uploaded, the central portal verifies that it matches the
+     * maven central requirements, which may take some time.
      *
-     * Default: true.
-     */
-    abstract val verifyStatus: Property<Boolean>
-
-    /**
-     * Timeout for verification (optional).
+     * After waiting, the deployment is either:
+     * - VALIDATED: it needs to be manually published in the Central Portal UI.
+     * - PUBLISHED: it is published and available on Maven Central.
+     * - FAILED: the deployment has failed. You
+     *
+     * [verificationTimeout] specifies what duration to wait for the verification to complete.
+     * You may pass the special value '0' to disable waiting for verification altogether.
      *
      * Default: 10 minutes.
      */

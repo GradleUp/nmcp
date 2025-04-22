@@ -32,7 +32,6 @@ fun publish(
     publicationName: String,
     publicationType: String?,
     baseUrl: String?,
-    verifyStatus: Boolean?,
     verificationTimeoutSeconds: Long?,
     inputFile: GInputFile,
 ) {
@@ -76,9 +75,9 @@ fun publish(
 
     logger.lifecycle("Nmcp: deployment bundle '$deploymentId' uploaded.")
 
-    if (verifyStatus ?: true) {
+    val timeout = verificationTimeoutSeconds?.seconds ?: 10.minutes
+    if (timeout.isPositive()) {
         logger.lifecycle("Nmcp: verifying deployment status...")
-        val timeout = verificationTimeoutSeconds?.seconds ?: 10.minutes
         val mark = markNow()
         while (true) {
             check (mark.elapsedNow() < timeout) {
@@ -191,7 +190,6 @@ internal fun Project.registerPublishTask(
         publicationName = spec.publicationName.orElse(provider { "${project.name}-${project.version}.zip"}),
         publicationType = spec.publishingType,
         baseUrl = spec.baseUrl,
-        verifyStatus = spec.verifyStatus,
         verificationTimeoutSeconds = spec.verificationTimeout.map { it.seconds }
     )
 }
