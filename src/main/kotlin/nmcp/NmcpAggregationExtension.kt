@@ -10,7 +10,7 @@ import org.gradle.api.tasks.bundling.Zip
 
 @GExtension(pluginId = "com.gradleup.nmcp.aggregation")
 open class NmcpAggregationExtension(private val project: Project) {
-    internal val spec = project.objects.newInstance(NmcpSpec::class.java)
+    internal val spec = project.objects.newInstance(CentralPortalOptions::class.java)
 
     internal val consumerConfiguration = project.configurations.create(nmcpConsumerConfigurationName) {
         it.isCanBeResolved = true
@@ -43,7 +43,7 @@ open class NmcpAggregationExtension(private val project: Project) {
     /**
      * Configures the central portal parameters
      */
-    fun centralPortal(action: Action<NmcpSpec>) {
+    fun centralPortal(action: Action<CentralPortalOptions>) {
         action.execute(spec)
     }
 

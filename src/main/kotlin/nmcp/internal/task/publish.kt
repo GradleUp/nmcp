@@ -6,7 +6,7 @@ import gratatouille.GTask
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
-import nmcp.NmcpSpec
+import nmcp.CentralPortalOptions
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
@@ -180,7 +180,7 @@ private fun verifyStatus(
 internal fun Project.registerPublishTask(
     taskName: String,
     inputFile: Provider<RegularFile>,
-    spec: NmcpSpec
+    spec: CentralPortalOptions
 ): TaskProvider<PublishTask> {
     return registerPublishTask(
         taskName = taskName,

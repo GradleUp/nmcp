@@ -13,7 +13,7 @@ import org.gradle.api.tasks.bundling.Zip
 
 @GExtension(pluginId = "com.gradleup.nmcp")
 open class NmcpExtension(private val project: Project) {
-    internal val spec = project.objects.newInstance(NmcpSpec::class.java)
+    internal val spec = project.objects.newInstance(CentralPortalOptions::class.java)
     // Lifecycle task to publish all the publications in the given project
     private val publishAllPublicationsToCentralPortal = project.tasks.register("publishAllPublicationsToCentralPortal")
 
@@ -96,7 +96,7 @@ open class NmcpExtension(private val project: Project) {
     /**
      * Configures the central portal parameters
      */
-    fun centralPortal(action: Action<NmcpSpec>) {
+    fun centralPortal(action: Action<CentralPortalOptions>) {
         action.execute(spec)
     }
 }

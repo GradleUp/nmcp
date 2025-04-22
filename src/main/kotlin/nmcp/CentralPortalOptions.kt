@@ -3,7 +3,7 @@ package nmcp
 import java.time.Duration
 import org.gradle.api.provider.Property
 
-abstract class NmcpSpec {
+abstract class CentralPortalOptions {
     /**
      * The central portal username
      */
