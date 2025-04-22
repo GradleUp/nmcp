@@ -2,7 +2,6 @@ import java.net.URI
 
 plugins {
     alias(libs.plugins.kgp)
-    alias(libs.plugins.spotless)
     id("java-gradle-plugin")
     id("maven-publish")
     id("signing")
@@ -90,14 +89,6 @@ signing {
     useInMemoryPgpKeys(System.getenv("GPG_KEY"), System.getenv("GPG_KEY_PASSWORD"))
 }
 
-spotless {
-    kotlin {
-        ktlint(libs.ktlint.get().version)
-    }
-    kotlinGradle {
-        ktlint(libs.ktlint.get().version)
-    }
-}
 
 dependencies {
     implementation(libs.json)
