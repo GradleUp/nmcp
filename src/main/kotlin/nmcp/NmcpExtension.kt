@@ -32,7 +32,7 @@ open class NmcpExtension(private val project: Project) {
             publishing.publications.configureEach {
                 registerInternal(it.name)
             }
-        })
+        }
     }
 
     private fun registerInternal(publicationName: String) {
