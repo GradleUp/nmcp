@@ -46,7 +46,7 @@ extensions.getByType(nmcp.NmcpAggregationExtension::class.java).apply {
     }
 }
 
-tasks.named("publishAggregatedPublicationToCentralPortal") {
+tasks.named("publishAggregationToCentralPortal") {
     doLast {
         val request = mockServer.takeRequest()
 
@@ -266,6 +266,6 @@ tasks.named("publishAggregatedPublicationToCentralPortal") {
 // The build task is added later from the JS KMP plugin in module1
 tasks.configureEach {
     if (name == "build") {
-        dependsOn("publishAggregatedPublicationToCentralPortal")
+        dependsOn("publishAggregationToCentralPortal")
     }
 }

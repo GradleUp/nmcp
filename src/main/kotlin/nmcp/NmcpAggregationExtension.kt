@@ -19,8 +19,8 @@ open class NmcpAggregationExtension(private val project: Project) {
         it.configureAttributes(project)
     }
 
-    val zipTaskProvider = project.tasks.register("zipAggregationPublication", Zip::class.java) {
-        it.archiveFileName.set("publicationAggregated.zip")
+    val zipTaskProvider = project.tasks.register("zipAggregation", Zip::class.java) {
+        it.archiveFileName.set("aggregation.zip")
         it.destinationDirectory.set(project.layout.buildDirectory.dir("nmcp/zip"))
         it.from(consumerConfiguration.elements.map {
             check (it.isNotEmpty()) {
@@ -34,7 +34,7 @@ open class NmcpAggregationExtension(private val project: Project) {
 
     init {
         project.registerPublishTask(
-            taskName = "publishAggregatedPublicationToCentralPortal",
+            taskName = "publishAggregationToCentralPortal",
             inputFile = zipTaskProvider.flatMap { it.archiveFile },
             spec = spec
         )
@@ -48,10 +48,10 @@ open class NmcpAggregationExtension(private val project: Project) {
     }
 
     /**
-     * Applies the `com.gradleup.nmcp` plugin to every project that also applies `maven-publish` and adds the
-     * `publishAggregatedPublicationToCentralPortal` task to publish a bundle containing all projects.
+     * Applies the `com.gradleup.nmcp` plugin to every project that also applies `maven-publish`.
      *
-     * This is breaking project isolation
+     * This function is not compatible with breaking project isolation. To be compatible with project isolation,
+     * add each subproject to the `nmcpAggregation` configuration dependencies.
      */
     fun publishAllProjectsProbablyBreakingProjectIsolation() {
         check(project === project.rootProject) {

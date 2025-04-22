@@ -38,10 +38,10 @@ nmcp {
 }
 ```
 
-Call `publishAggregatedPublicationToCentralPortal` to publish the aggregated publication:
+Call `publishAggregationCentralPortal` to publish the aggregation:
 
 ```
-./gradlew publishAggregatedPublicationToCentralPortal
+./gradlew publishAggregationCentralPortal
 # yay everything is uploaded 🎉
 # go to https://central.sonatype.com/ to release if you used USER_MANAGED
 ```
@@ -80,10 +80,10 @@ nmcp {
 }
 ```
 
-Then call `publishAggregatedPublicationToCentralPortal` to publish the aggregated publication:
+Then call `publishAggregationToCentralPortal` to publish the aggregation:
 
 ```
-./gradlew publishAggregatedPublicationToCentralPortal
+./gradlew publishAggregationToCentralPortal
 # yay everything is uploaded 🎉
 # go to https://central.sonatype.com/ to release if you used USER_MANAGED
 ```
