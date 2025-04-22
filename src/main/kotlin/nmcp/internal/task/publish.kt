@@ -172,7 +172,7 @@ private fun verifyStatus(
                 "FAILED" -> {
                     FAILED(element["errors"].toString())
                 }
-                else -> error("Nmcp: unexpected status: $state")
+                else -> error("Nmcp: unexpected deploymentState: $state")
             }
         }
 }
