@@ -69,14 +69,16 @@ plugins {
 
 nmcp {
     centralPortal {
-        project(":module1")
-        project(":module2")
-        project(":module3")
-
         username = TODO()
         password = TODO()
         publicationType = "USER_MANAGED"
     }
+}
+
+dependencies {
+    nmcpAggregation(project(":module1"))
+    nmcpAggregation(project(":module2"))
+    nmcpAggregation(project(":module3"))
 }
 ```
 
