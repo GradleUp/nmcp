@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "com.gradleup.nmcp"
-version = "0.0.8"
+version = "0.1.0"
 
 publishing {
     repositories {
