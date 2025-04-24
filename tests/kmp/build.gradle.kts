@@ -1,10 +1,12 @@
-import okhttp3.MediaType
+import java.util.zip.ZipInputStream
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartReader
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
-import java.util.zip.ZipInputStream
 
+plugins {
+    id("base")
+}
 buildscript {
     repositories {
         mavenCentral()
@@ -12,37 +14,40 @@ buildscript {
 
     dependencies {
         classpath("build-logic:build-logic")
+        classpath("com.gradleup.nmcp:nmcp")
         classpath(libs.mockwebserver)
         classpath(libs.okhttp)
     }
 }
 
-plugins {
-    id("com.gradleup.nmcp").version("0.0.8")
-}
+apply(plugin = "com.gradleup.nmcp.aggregation")
 
 val mockServer = MockWebServer()
 mockServer.enqueue(MockResponse())
 mockServer.enqueue(MockResponse().setBody("{\"deploymentState\": \"PUBLISHED\"}"))
 
-nmcp {
-    publishAggregation {
-        project(":module1")
-        project(":module2")
+dependencies {
+    add("nmcpAggregation", project(":module1"))
+    add("nmcpAggregation", project(":module2"))
+}
 
+extensions.getByType(nmcp.NmcpAggregationExtension::class.java).apply {
+    centralPortal {
         if (System.getenv("MAVEN_CENTRAL_USERNAME") == null) {
             username = "placeholder"
             password = "placeholedr"
-            endpoint.set(mockServer.url("/").toString())
+            baseUrl.set(mockServer.url("/").toString())
         } else {
             username = System.getenv("MAVEN_CENTRAL_USERNAME")
             password = System.getenv("MAVEN_CENTRAL_PASSWORD")
         }
-        publicationType = "USER_MANAGED"
+        publishingType = "USER_MANAGED"
     }
 }
 
-tasks.named("publishAggregatedPublicationToCentralPortal") {
+
+tasks.register("checkZip") {
+    dependsOn("publishAggregationToCentralPortal")
     doLast {
         val request = mockServer.takeRequest()
 
@@ -262,6 +267,6 @@ tasks.named("publishAggregatedPublicationToCentralPortal") {
 // The build task is added later from the JS KMP plugin in module1
 tasks.configureEach {
     if (name == "build") {
-        dependsOn("publishAggregatedPublicationToCentralPortal")
+        dependsOn("checkZip")
     }
 }

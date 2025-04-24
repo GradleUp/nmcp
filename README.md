@@ -20,11 +20,11 @@ Configure `nmcp` in your root project using the quick way:
 ```kotlin
 // root/build.gradle[.kts]
 plugins {
-    id("com.gradleup.nmcp").version("0.0.8")
+    id("com.gradleup.nmcp.aggregation").version("0.0.8")
 }
 
 nmcp {
-  publishAllProjectsProbablyBreakingProjectIsolation {
+  centralPortal {
     username = TODO()
     password = TODO()
     // publish manually from the portal
@@ -32,20 +32,23 @@ nmcp {
     // or if you want to publish automatically
     publicationType = "AUTOMATIC"
   }
+ 
+  // Publish all projects that apply the 'maven-publish' plugin
+  publishAllProjectsProbablyBreakingProjectIsolation()
 }
 ```
 
-Then call `publishAllPublicationsToCentralPortal` to publish all your publications:
+Call `publishAggregationCentralPortal` to publish the aggregation:
 
 ```
-./gradlew publishAllPublicationsToCentralPortal
+./gradlew publishAggregationCentralPortal
 # yay everything is uploaded 🎉
 # go to https://central.sonatype.com/ to release if you used USER_MANAGED
 ```
 
 # Project isolation compatible version:
 
-`publishAllProjectsProbablyBreakingProjectIsolation` uses the `allprojects {}` block and might be incompatible with [Project-isolation](https://gradle.github.io/configuration-cache/). 
+`publishAllProjectsProbablyBreakingProjectIsolation` uses the `allprojects {}` block and is incompatible with [Project-isolation](https://gradle.github.io/configuration-cache/). 
 
 You can be 100% compatible by adding the plugin to each module you want to publish:
 
@@ -54,10 +57,6 @@ You can be 100% compatible by adding the plugin to each module you want to publi
 plugins {
     id("com.gradleup.nmcp").version("0.0.8")
 }
-
-nmcp {
-  publishAllPublications {}
-}
 ```
 
 And then list all modules in your root project:
@@ -65,11 +64,11 @@ And then list all modules in your root project:
 ```kotlin
 //root/build.gradle.kts
 plugins {
-    id("com.gradleup.nmcp").version("0.0.8")
+    id("com.gradleup.nmcp.aggregation").version("0.0.8")
 }
 
 nmcp {
-    publishAggregation {
+    centralPortal {
         project(":module1")
         project(":module2")
         project(":module3")
@@ -81,10 +80,10 @@ nmcp {
 }
 ```
 
-Then call `publishAggregatedPublicationToCentralPortal` to publish the aggregated publication:
+Then call `publishAggregationToCentralPortal` to publish the aggregation:
 
 ```
-./gradlew publishAggregatedPublicationToCentralPortal
+./gradlew publishAggregationToCentralPortal
 # yay everything is uploaded 🎉
 # go to https://central.sonatype.com/ to release if you used USER_MANAGED
 ```
@@ -93,14 +92,14 @@ Then call `publishAggregatedPublicationToCentralPortal` to publish the aggregate
 
 ```kotlin
 plugins {
+    id("maven-publish")
     id("com.gradleup.nmcp").version("0.0.8")
 }
 
 // Create your publications
 
 nmcp {
-    // nameOfYourPublication must point to an existing publication
-    publish(nameOfYourPublication) {
+    centralPortal {
         username = TODO("Create a token at https://central.sonatype.com/account") 
         password = TODO("Create a token at https://central.sonatype.com/account")
         // publish manually from the portal
@@ -109,4 +108,14 @@ nmcp {
         publicationType = "AUTOMATIC"
     }
 }
+```
+
+`nmcp` creates a `"publish${publicationName.capitalize()}PublicationToCentralPortal"` task for each Maven publication.
+
+There is also a lifecycle task to deploy all the publication to the central portal:
+
+```
+./gradlew publishAllPublicationsToCentralPortal
+# yay everything is uploaded 🎉
+# go to https://central.sonatype.com/ to release if you used USER_MANAGED
 ```

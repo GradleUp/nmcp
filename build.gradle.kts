@@ -2,22 +2,10 @@ import java.net.URI
 
 plugins {
     alias(libs.plugins.kgp)
-    id("java-gradle-plugin")
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.ggp)
     id("maven-publish")
     id("signing")
-}
-
-val pluginDescription = "Plugin that helps you publish to the Central Portal (https://central.sonatype.org/)"
-
-gradlePlugin {
-    plugins {
-        create("nmcp") {
-            id = "com.gradleup.nmcp"
-            implementationClass = "nmcp.NmcpPlugin"
-            this.description = pluginDescription
-            this.displayName = "nmcp"
-        }
-    }
 }
 
 group = "com.gradleup.nmcp"
@@ -36,26 +24,21 @@ publishing {
             }
         }
     }
+    publications.create("default", MavenPublication::class.java) {
+        from(components.getByName("java"))
+        artifact(tasks.register("emptySources", Jar::class.java) {
+            archiveClassifier = "sources"
+        })
+        artifact(tasks.register("emptyDocs", Jar::class.java) {
+            archiveClassifier = "javadoc"
+        })
+    }
+
     publications.configureEach {
         this as MavenPublication
-        if (name == "pluginMaven") {
-            val emptySources by tasks.registering(Jar::class) {
-                archiveClassifier = "sources"
-            }
-            val emptyDocs by tasks.registering(Jar::class) {
-                archiveClassifier = "javadoc"
-            }
-            artifact(emptySources)
-            artifact(emptyDocs)
-
-            groupId = project.rootProject.group.toString()
-            version = project.rootProject.version.toString()
-            artifactId = project.name
-        }
-
         pom {
             name.set(project.name)
-            description.set(pluginDescription)
+            description.set("NMCP")
             url.set("https://github.com/gradleup/nmcp")
 
             scm {
@@ -87,12 +70,17 @@ signing {
     useInMemoryPgpKeys(System.getenv("GPG_KEY"), System.getenv("GPG_KEY_PASSWORD"))
 }
 
+gratatouille {
+    codeGeneration()
+    pluginMarker("com.gradleup.nmcp")
+}
 
 dependencies {
     implementation(libs.json)
     implementation(libs.okio)
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging.interceptor)
+    compileOnly(libs.gradle.min)
 }
 
 tasks.withType<AbstractPublishToMaven>().configureEach {

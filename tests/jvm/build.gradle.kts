@@ -1,8 +1,17 @@
+import nmcp.NmcpAggregationExtension
+
 plugins {
     id("base")
     alias(libs.plugins.kgp).apply(false)
-    id("com.gradleup.nmcp").version("0.0.8")
 }
+
+buildscript {
+    dependencies {
+        classpath("com.gradleup.nmcp:nmcp")
+    }
+}
+
+apply(plugin = "com.gradleup.nmcp.aggregation")
 
 val projectGroup = "net.mbonnin.tnmcp"
 val projectVersion = "0.0.3"
@@ -73,16 +82,17 @@ subprojects {
     }
 }
 
-nmcp {
-    publishAllProjectsProbablyBreakingProjectIsolation {
+extensions.getByType<NmcpAggregationExtension>().apply {
+    publishAllProjectsProbablyBreakingProjectIsolation()
+    centralPortal {
         username = System.getenv("MAVEN_CENTRAL_USERNAME")
         password = System.getenv("MAVEN_CENTRAL_PASSWORD")
-        publicationType = "USER_MANAGED"
+        publishingType = "USER_MANAGED"
     }
 }
 
 val checkZip = tasks.register("checkZip") {
-    inputs.file(tasks.named("zipAggregationPublication").flatMap { (it as Zip).archiveFile })
+    inputs.file(tasks.named("zipAggregation").flatMap { (it as Zip).archiveFile })
 
     doLast {
         val paths = mutableListOf<String>()

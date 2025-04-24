@@ -1,5 +1,6 @@
 [versions]
 kgp = "2.1.20"
+ksp = "2.1.20-2.0.0"
 
 [libraries]
 json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1"
@@ -7,5 +8,9 @@ okio = "com.squareup.okio:okio:3.8.0"
 okhttp = "com.squareup.okhttp3:okhttp:4.12.0"
 okhttp-logging-interceptor = "com.squareup.okhttp3:logging-interceptor:4.12.0"
 mockwebserver = "com.squareup.okhttp3:mockwebserver:4.12.0"
+gradle-min = "dev.gradleplugins:gradle-api:8.0"
+
 [plugins]
 kgp = { id = "org.jetbrains.kotlin.jvm", version.ref = "kgp" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+ggp = { id = "com.gradleup.gratatouille", version = "0.0.6-SNAPSHOT-b6a9df610d12e3bbd5066d4bb8f6d640efcc0ca5" }
