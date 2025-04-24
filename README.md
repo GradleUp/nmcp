@@ -40,7 +40,7 @@ nmcp {
 
 Call `publishAggregationCentralPortal` to publish the aggregation:
 
-```
+```bash
 ./gradlew publishAggregationCentralPortal
 # yay everything is uploaded 🎉
 # go to https://central.sonatype.com/ to release if you used USER_MANAGED
@@ -84,7 +84,7 @@ dependencies {
 
 Then call `publishAggregationToCentralPortal` to publish the aggregation:
 
-```
+```bash
 ./gradlew publishAggregationToCentralPortal
 # yay everything is uploaded 🎉
 # go to https://central.sonatype.com/ to release if you used USER_MANAGED
@@ -116,7 +116,7 @@ nmcp {
 
 There is also a lifecycle task to deploy all the publication to the central portal:
 
-```
+```bash
 ./gradlew publishAllPublicationsToCentralPortal
 # yay everything is uploaded 🎉
 # go to https://central.sonatype.com/ to release if you used USER_MANAGED
