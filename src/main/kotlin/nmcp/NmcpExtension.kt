@@ -14,7 +14,7 @@ open class NmcpExtension(private val project: Project) {
         if (publicationName != null) {
             registerInternal(publicationName, spec)
         } else {
-            val publishing = project.extensions.findByType(PublishingExtension::class.java)!!
+            val publishing = project.extensions.getByType(PublishingExtension::class.java)
             publishing.publications.configureEach {
                 registerInternal(it.name, spec)
             }
@@ -24,7 +24,7 @@ open class NmcpExtension(private val project: Project) {
     private fun registerInternal(publicationName: String, spec: NmcpSpec) {
         val capitalized = publicationName.capitalized()
 
-        val publishing = project.extensions.findByType(PublishingExtension::class.java)!!
+        val publishing = project.extensions.getByType(PublishingExtension::class.java)
         val m2Dir = project.layout.buildDirectory.dir("nmcp/m2$capitalized")
         val repoName = "nmcp$capitalized"
         publishing.apply {
