@@ -28,7 +28,7 @@ open class NmcpExtension(private val project: Project) {
         }
 
         project.withRequiredPlugin("maven-publish") {
-            val publishing = project.extensions.findByType(PublishingExtension::class.java)!!
+            val publishing = project.extensions.getByType(PublishingExtension::class.java)
             publishing.publications.configureEach {
                 registerInternal(it.name)
             }
@@ -38,7 +38,7 @@ open class NmcpExtension(private val project: Project) {
     private fun registerInternal(publicationName: String) {
         val capitalized = publicationName.capitalizeFirstLetter()
 
-        val publishing = project.extensions.findByType(PublishingExtension::class.java)!!
+        val publishing = project.extensions.getByType(PublishingExtension::class.java)
         val m2Dir = project.layout.buildDirectory.dir("nmcp/m2$capitalized")
         val repoName = "nmcp$capitalized"
         publishing.apply {
