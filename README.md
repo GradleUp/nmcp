@@ -11,7 +11,7 @@ A plugin that uses the new [Central Portal publisher API](https://central.sonaty
 >
 > For a higher level API use [vanniktech/gradle-maven-publish-plugin](https://github.com/vanniktech/gradle-maven-publish-plugin/).
 
-# QuickStart:
+# QuickStart
 
 Configure `nmcp` in your root project using the quick way:
 
@@ -44,7 +44,7 @@ Call `publishAggregationToCentralPortal` to publish the aggregation:
 # go to https://central.sonatype.com/ to release if you used USER_MANAGED
 ```
 
-# Project isolation compatible version:
+# Project isolation compatible version
 
 `publishAllProjectsProbablyBreakingProjectIsolation()` uses the `allprojects {}` block and is incompatible with [Project-isolation](https://gradle.github.io/configuration-cache/). 
 
@@ -88,7 +88,7 @@ Then call `publishAggregationToCentralPortal` to publish the aggregation:
 # go to https://central.sonatype.com/ to release if you used USER_MANAGED
 ```
 
-# Single-module:
+# Single-module
 
 ```kotlin
 plugins {
