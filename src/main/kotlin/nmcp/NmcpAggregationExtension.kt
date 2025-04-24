@@ -27,7 +27,7 @@ abstract class NmcpAggregationExtension(private val project: Project) {
     init {
         val operations = archiveOperations
         val layout = project.layout
-        val files= project.files(consumerConfiguration)
+        val files = project.files(consumerConfiguration)
 
          val zipTaskProvider = project.tasks.register("zipAggregation", Zip::class.java) {
             it.archiveFileName.set("aggregation.zip")
