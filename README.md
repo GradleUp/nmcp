@@ -1,8 +1,10 @@
+_New accounts created after Feb. 1st 2024 are configured to use the new publishing by default and can use this plugin. Other accounts can continue publishing to OSSRH the usual way until [June 30th 2025](https://central.sonatype.org/news/20250326_ossrh_sunset/)._
+
+---
+
 # Nmcp: New Maven Central Publishing
 
-A plugin that uses the new [Central Portal publisher API](https://central.sonatype.org/publish/publish-portal-api/) to publish to Maven Central.
-
-New accounts created after Feb. 1st 2024 are configured to use the new publishing by default and can use this plugin. Other accounts can continue publishing to OSSRH the usual way until [June 30th 2025](https://central.sonatype.org/news/20250326_ossrh_sunset/).
+A plugin that uses the new [Central Portal publisher API](https://central.sonatype.org/publish/publish-portal-api/) to publish existing publications to Maven Central.
 
 > [!WARNING]
 > Nmcp does **not** create publications or apply the `maven-publish` plugin. This must be done using other means. Nmcp uses existing publications, stages them locally and uploads a zip to the Central Portal publisher API.
