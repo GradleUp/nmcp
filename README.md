@@ -53,7 +53,7 @@ You can be 100% compatible by adding the plugin to each module you want to publi
 ```kotlin
 //root/module/build.gradle.kts
 plugins {
-    id("com.gradleup.nmcp").version("0.1.0")
+    id("com.gradleup.nmcp").version("0.1.1")
 }
 ```
 
@@ -62,7 +62,7 @@ And then list all modules in your root project:
 ```kotlin
 //root/build.gradle.kts
 plugins {
-    id("com.gradleup.nmcp.aggregation").version("0.1.0")
+    id("com.gradleup.nmcp.aggregation").version("0.1.1")
 }
 
 nmcp {

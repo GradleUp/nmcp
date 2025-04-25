@@ -14,4 +14,4 @@ gradle-min = "dev.gradleplugins:gradle-api:8.0"
 kgp = { id = "org.jetbrains.kotlin.jvm", version.ref = "kgp" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 ggp = { id = "com.gradleup.gratatouille", version = "0.0.7" }
-nmcp = { id = "com.gradleup.nmcp", version = "0.1.0" }
+nmcp = { id = "com.gradleup.nmcp", version = "0.1.1" }
