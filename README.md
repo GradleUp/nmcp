@@ -22,17 +22,17 @@ plugins {
 }
 
 nmcp {
-  centralPortal {
-    username = TODO("Add your Central Portal username") 
-    password = TODO("Create a token at https://central.sonatype.com/account")
-    // publish manually from the portal
-    publishingType = "USER_MANAGED"
-    // or if you want to publish automatically
-    publishingType = "AUTOMATIC"
-  }
+    centralPortal {
+        username = TODO("Add your Central Portal username") 
+        password = TODO("Create a token at https://central.sonatype.com/account")
+        // publish manually from the portal
+        publishingType = "USER_MANAGED"
+        // or if you want to publish automatically
+        publishingType = "AUTOMATIC"
+    }
  
-  // Publish all projects that apply the 'maven-publish' plugin
-  publishAllProjectsProbablyBreakingProjectIsolation()
+    // Publish all projects that apply the 'maven-publish' plugin
+    publishAllProjectsProbablyBreakingProjectIsolation()
 }
 ```
 
