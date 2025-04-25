@@ -51,7 +51,7 @@ Call `publishAggregationToCentralPortal` to publish the aggregation:
 You can be 100% compatible by adding the plugin to each module you want to publish:
 
 ```kotlin
-//root/moduleN/build.gradle.kts
+//root/module/build.gradle.kts
 plugins {
     id("com.gradleup.nmcp").version("0.1.0")
 }
