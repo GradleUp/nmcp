@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kgp)
     alias(libs.plugins.ksp)
     alias(libs.plugins.ggp)
+    alias(libs.plugins.nmcp)
     id("maven-publish")
     id("signing")
 }
@@ -12,18 +13,6 @@ group = "com.gradleup.nmcp"
 version = "0.1.1"
 
 publishing {
-    repositories {
-        repositories {
-            maven {
-                name = "OssStaging"
-                url = URI("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
-                credentials {
-                    username = System.getenv("OSSRH_USER")
-                    password = System.getenv("OSSRH_PASSWORD")
-                }
-            }
-        }
-    }
     publications.create("default", MavenPublication::class.java) {
         from(components.getByName("java"))
         artifact(tasks.register("emptySources", Jar::class.java) {
@@ -73,6 +62,14 @@ signing {
 gratatouille {
     codeGeneration()
     pluginMarker("com.gradleup.nmcp")
+}
+
+nmcp {
+    centralPortal {
+        username = System.getenv("OSSRH_USER")
+        password = System.getenv("OSSRH_PASSWORD")
+        publishingType.set("USER_MANAGED")
+    }
 }
 
 dependencies {

@@ -11,8 +11,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - run: |      
-          ./gradlew publishAllPublicationsToOssStagingRepository
+      - run: |
+          ./gradlew publishAllPublicationsToCentralPortal
         env:
           OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
           OSSRH_USER: ${{ secrets.OSSRH_USER }}
