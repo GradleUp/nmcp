@@ -14,7 +14,7 @@ jobs:
       - run: |
           ./gradlew publishAllPublicationsToCentralPortal
         env:
-          OSSRH_USER: ${{ secrets.CENTRAL_PORTAL_USERNAME }}
-          OSSRH_PASSWORD: ${{ secrets.CENTRAL_PORTAL_PASSWORD }}
+          CENTRAL_PORTAL_USERNAME: ${{ secrets.CENTRAL_PORTAL_USERNAME }}
+          CENTRAL_PORTAL_PASSWORD: ${{ secrets.CENTRAL_PORTAL_PASSWORD }}
           GPG_KEY: ${{ secrets.GPG_KEY }}
           GPG_KEY_PASSWORD: ${{ secrets.GPG_KEY_PASSWORD }}
