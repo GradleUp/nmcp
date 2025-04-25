@@ -26,9 +26,9 @@ nmcp {
     username = TODO()
     password = TODO()
     // publish manually from the portal
-    publicationType = "USER_MANAGED"
+    publishingType = "USER_MANAGED"
     // or if you want to publish automatically
-    publicationType = "AUTOMATIC"
+    publishingType = "AUTOMATIC"
   }
  
   // Publish all projects that apply the 'maven-publish' plugin
@@ -69,7 +69,7 @@ nmcp {
     centralPortal {
         username = TODO()
         password = TODO()
-        publicationType = "USER_MANAGED"
+        publishingType = "USER_MANAGED"
     }
 }
 
@@ -103,9 +103,9 @@ nmcp {
         username = TODO("Create a token at https://central.sonatype.com/account") 
         password = TODO("Create a token at https://central.sonatype.com/account")
         // publish manually from the portal
-        publicationType = "USER_MANAGED"
+        publishingType = "USER_MANAGED"
         // or if you want to publish automatically
-        publicationType = "AUTOMATIC"
+        publishingType = "AUTOMATIC"
     }
 }
 ```
