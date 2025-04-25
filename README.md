@@ -23,8 +23,8 @@ plugins {
 
 nmcp {
   centralPortal {
-    username = TODO()
-    password = TODO()
+    username = TODO("Add your Central Portal username") 
+    password = TODO("Create a token at https://central.sonatype.com/account")
     // publish manually from the portal
     publishingType = "USER_MANAGED"
     // or if you want to publish automatically
@@ -67,8 +67,8 @@ plugins {
 
 nmcp {
     centralPortal {
-        username = TODO()
-        password = TODO()
+        username = TODO("Add your Central Portal username") 
+        password = TODO("Create a token at https://central.sonatype.com/account")
         publishingType = "USER_MANAGED"
     }
 }
@@ -100,7 +100,7 @@ plugins {
 
 nmcp {
     centralPortal {
-        username = TODO("Create a token at https://central.sonatype.com/account") 
+        username = TODO("Add your Central Portal username") 
         password = TODO("Create a token at https://central.sonatype.com/account")
         // publish manually from the portal
         publishingType = "USER_MANAGED"
