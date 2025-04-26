@@ -61,7 +61,8 @@ signing {
 
 gratatouille {
     codeGeneration()
-    pluginMarker("com.gradleup.nmcp")
+    pluginMarker("com.gradleup.nmcp", "default")
+    pluginMarker("com.gradleup.nmcp.aggregation", "default")
 }
 
 nmcp {
