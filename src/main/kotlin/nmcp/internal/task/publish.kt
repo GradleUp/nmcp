@@ -30,7 +30,7 @@ fun publish(
     username: String?,
     password: String?,
     publicationName: String,
-    publicationType: String?,
+    publishingType: String?,
     baseUrl: String?,
     verificationTimeoutSeconds: Long?,
     inputFile: GInputFile,
@@ -54,14 +54,14 @@ fun publish(
         )
         .build()
 
-    val publicationType = publicationType ?: "USER_MANAGED"
+    val publishingType = publishingType ?: "USER_MANAGED"
 
     val baseUrl = baseUrl ?: "https://central.sonatype.com/"
 
     val deploymentId = Request.Builder()
         .post(body)
         .addHeader("Authorization", "UserToken $token")
-        .url(baseUrl + "api/v1/publisher/upload?publishingType=$publicationType")
+        .url(baseUrl + "api/v1/publisher/upload?publishingType=$publishingType")
         .build()
         .let {
             client.newCall(it).execute()
@@ -189,7 +189,7 @@ internal fun Project.registerPublishTask(
         username = spec.username,
         password = spec.password,
         publicationName = spec.publicationName.orElse(defaultPublicationName),
-        publicationType = spec.publishingType,
+        publishingType = spec.publishingType,
         baseUrl = spec.baseUrl,
         verificationTimeoutSeconds = spec.verificationTimeout.map { it.seconds }
     )
