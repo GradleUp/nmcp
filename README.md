@@ -21,7 +21,7 @@ plugins {
     id("com.gradleup.nmcp.aggregation").version("0.1.0")
 }
 
-nmcp {
+nmcpAggregation {
     centralPortal {
         username = TODO("Add your Central Portal username") 
         password = TODO("Create a token at https://central.sonatype.com/account")
@@ -65,7 +65,7 @@ plugins {
     id("com.gradleup.nmcp.aggregation").version("0.1.1")
 }
 
-nmcp {
+nmcpAggregation {
     centralPortal {
         username = TODO("Add your Central Portal username") 
         password = TODO("Create a token at https://central.sonatype.com/account")
