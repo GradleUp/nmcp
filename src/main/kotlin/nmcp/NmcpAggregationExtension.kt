@@ -8,11 +8,13 @@ import nmcp.internal.task.registerPublishTask
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.file.ArchiveOperations
+import org.gradle.api.plugins.ExtensionAware
+import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.tasks.bundling.Zip
 
 @GExtension(pluginId = "com.gradleup.nmcp.aggregation")
 abstract class NmcpAggregationExtension(private val project: Project) {
-    internal val spec = project.objects.newInstance(CentralPortalOptions::class.java)
+    private val spec: CentralPortalOptions
 
     @get:Inject
     abstract val archiveOperations: ArchiveOperations
@@ -25,6 +27,10 @@ abstract class NmcpAggregationExtension(private val project: Project) {
     }
 
     init {
+        project.pluginManager.apply("com.gradleup.nmcp.central-portal-options")
+        spec = (project.extensions.getByType(PublishingExtension::class.java) as ExtensionAware)
+            .extensions.getByType(CentralPortalOptions::class.java)
+
         val operations = archiveOperations
         val layout = project.layout
         val files = project.files(consumerConfiguration)

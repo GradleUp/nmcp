@@ -31,8 +31,8 @@ dependencies {
     add("nmcpAggregation", project(":module2"))
 }
 
-extensions.getByType(nmcp.NmcpAggregationExtension::class.java).apply {
-    centralPortal {
+extensions.getByType(PublishingExtension::class.java).apply {
+    (this as ExtensionAware).extensions.getByType(nmcp.CentralPortalOptions::class.java).apply {
         if (System.getenv("MAVEN_CENTRAL_USERNAME") == null) {
             username = "placeholder"
             password = "placeholedr"

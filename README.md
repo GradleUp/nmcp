@@ -22,17 +22,19 @@ plugins {
 }
 
 nmcpAggregation {
-    centralPortal {
-        username = TODO("Create a token username at https://central.sonatype.com/account") 
-        password = TODO("Create a token password at https://central.sonatype.com/account")
-        // publish manually from the portal
-        publishingType = "USER_MANAGED"
-        // or if you want to publish automatically
-        publishingType = "AUTOMATIC"
-    }
- 
     // Publish all projects that apply the 'maven-publish' plugin
     publishAllProjectsProbablyBreakingProjectIsolation()
+}
+
+publishing {
+  centralPortal {
+    username = TODO("Create a token username at https://central.sonatype.com/account")
+    password = TODO("Create a token password at https://central.sonatype.com/account")
+    // publish manually from the portal
+    publishingType = "USER_MANAGED"
+    // or if you want to publish automatically
+    publishingType = "AUTOMATIC"
+  }
 }
 ```
 
@@ -65,7 +67,7 @@ plugins {
     id("com.gradleup.nmcp.aggregation").version("0.1.1")
 }
 
-nmcpAggregation {
+publishing {
     centralPortal {
         username = TODO("Create a token username at https://central.sonatype.com/account") 
         password = TODO("Create a token password at https://central.sonatype.com/account")
@@ -98,7 +100,7 @@ plugins {
 
 // Create your publications
 
-nmcp {
+publishing {
     centralPortal {
         username = TODO("Create a token username at https://central.sonatype.com/account") 
         password = TODO("Create a token password at https://central.sonatype.com/account")

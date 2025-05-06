@@ -8,16 +8,21 @@ import nmcp.internal.task.registerPublishTask
 import nmcp.internal.withRequiredPlugin
 import org.gradle.api.Action
 import org.gradle.api.Project
+import org.gradle.api.plugins.ExtensionAware
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.tasks.bundling.Zip
 
 @GExtension(pluginId = "com.gradleup.nmcp")
 open class NmcpExtension(private val project: Project) {
-    internal val spec = project.objects.newInstance(CentralPortalOptions::class.java)
+    private val spec: CentralPortalOptions
     // Lifecycle task to publish all the publications in the given project
     private val publishAllPublicationsToCentralPortal = project.tasks.register("publishAllPublicationsToCentralPortal")
 
     init {
+        project.pluginManager.apply("com.gradleup.nmcp.central-portal-options")
+        spec = (project.extensions.getByType(PublishingExtension::class.java) as ExtensionAware)
+            .extensions.getByType(CentralPortalOptions::class.java)
+
         project.configurations.create(nmcpProducerConfigurationName) {
             it.isCanBeConsumed = true
             it.isCanBeResolved = false
