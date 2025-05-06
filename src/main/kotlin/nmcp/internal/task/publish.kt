@@ -95,7 +95,7 @@ fun publish(
                 PENDING,
                 VALIDATING,
                 PUBLISHING -> {
-                    logger.lifecycle("Deployment status is '$status', will try again in ${delay.inWholeSeconds}s.")
+                    logger.lifecycle("Deployment status is '$status', will try again in ${delay.inWholeSeconds}s (${timeout - mark.elapsedNow()} left)...")
                     // Wait for the next attempt to reduce the load on the Central Portal API
                     Thread.sleep(delay.inWholeMilliseconds)
                     // Increase the delay exponentially, so we don't send too frequent requests if the deployment takes time
@@ -124,22 +124,22 @@ fun publish(
 private sealed interface Status
 
 // A deployment has successfully been uploaded to Maven Central
-private object UNKNOWN_QUERY_LATER : Status
+private data object UNKNOWN_QUERY_LATER : Status
 
 // A deployment is uploaded and waiting for processing by the validation service
-private object PENDING : Status
+private data object PENDING : Status
 
 // A deployment is being processed by the validation service
-private object VALIDATING : Status
+private data object VALIDATING : Status
 
 // A deployment has passed validation and is waiting on a user to manually publish via the Central Portal UI
-private object VALIDATED : Status
+private data object VALIDATED : Status
 
 // A deployment has been either automatically or manually published and is being uploaded to Maven Central
-private object PUBLISHING : Status
+private data object PUBLISHING : Status
 
 // A deployment has successfully been uploaded to Maven Central
-private object PUBLISHED : Status
+private data object PUBLISHED : Status
 
 // A deployment has encountered an error
 private class FAILED(val error: String) : Status
