@@ -84,7 +84,7 @@ fun publish(
         val mark = markNow()
         while (true) {
             check (mark.elapsedNow() < timeout) {
-                "Nmcp: timeout while verifying deployment status."
+                "Nmcp: timeout while waiting for the deployment $deploymentId to publish. You might need to check the deployment on the Central Portal UI (see $baseUrl$), or you could increase the wait timeout (the current timeout is $timeout)."
             }
             when (val status = verifyStatus(
                 deploymentId = deploymentId,
@@ -168,18 +168,18 @@ private fun verifyStatus(
             }
         }.use {
             if (!it.isSuccessful) {
-                error("Cannot verify deployment status (HTTP status='${it.code}'): ${it.body?.string()}")
+                error("Cannot verify deployment $deploymentId status (HTTP status='${it.code}'): ${it.body?.string()}")
             }
 
             val str = it.body!!.string()
             val element = Json.parseToJsonElement(str)
             check(element is JsonObject) {
-                "Nmcp: unexpected status response: $str"
+                "Nmcp: unexpected status response for deployment $deploymentId: $str"
             }
 
             val state = element["deploymentState"]
             check(state is JsonPrimitive && state.isString) {
-                "Nmcp: unexpected deploymentState: $state"
+                "Nmcp: unexpected deploymentState for deployment $deploymentId: $state"
             }
 
             return when (state.content) {
@@ -191,7 +191,7 @@ private fun verifyStatus(
                 "FAILED" -> {
                     FAILED(element["errors"].toString())
                 }
-                else -> error("Nmcp: unexpected deploymentState: $state")
+                else -> error("Nmcp: unexpected deploymentState for deployment $deploymentId: $state")
             }
         }
 }
