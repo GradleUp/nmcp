@@ -3,6 +3,8 @@ package nmcp.internal.task
 import gratatouille.GInputFile
 import gratatouille.GLogger
 import gratatouille.GTask
+import java.net.SocketTimeoutException
+import java.time.Duration
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
@@ -88,6 +90,7 @@ fun publish(
                 baseUrl = baseUrl,
                 token = token,
             )) {
+                UNKNOWN_QUERY_LATER,
                 PENDING,
                 VALIDATING,
                 PUBLISHING -> {
@@ -115,6 +118,9 @@ fun publish(
 
 private sealed interface Status
 
+// A deployment has successfully been uploaded to Maven Central
+private object UNKNOWN_QUERY_LATER : Status
+
 // A deployment is uploaded and waiting for processing by the validation service
 private object PENDING : Status
 
@@ -133,7 +139,11 @@ private object PUBLISHED : Status
 // A deployment has encountered an error
 private class FAILED(val error: String) : Status
 
-private val client = OkHttpClient.Builder().build()
+private val client = OkHttpClient.Builder()
+    .connectTimeout(Duration.ofSeconds(30))
+    .writeTimeout(Duration.ofSeconds(30))
+    .readTimeout(Duration.ofSeconds(60))
+    .build()
 
 private fun verifyStatus(
     deploymentId: String,
@@ -146,7 +156,11 @@ private fun verifyStatus(
         .url(baseUrl + "api/v1/publisher/status?id=$deploymentId")
         .build()
         .let {
-            client.newCall(it).execute()
+            try {
+                client.newCall(it).execute()
+            } catch (e: SocketTimeoutException) {
+                return UNKNOWN_QUERY_LATER
+            }
         }.use {
             if (!it.isSuccessful) {
                 error("Cannot verify deployment status (HTTP status='${it.code}'): ${it.body?.string()}")
