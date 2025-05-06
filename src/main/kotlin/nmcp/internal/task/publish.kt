@@ -78,6 +78,7 @@ fun publish(
     logger.lifecycle("Nmcp: deployment bundle '$deploymentId' uploaded to '$baseUrl'.")
 
     val timeout = verificationTimeoutSeconds?.seconds ?: 10.minutes
+    var delay = 2.seconds
     if (timeout.isPositive()) {
         logger.lifecycle("Nmcp: verifying deployment status...")
         val mark = markNow()
@@ -94,8 +95,12 @@ fun publish(
                 PENDING,
                 VALIDATING,
                 PUBLISHING -> {
-                    // Come back later
-                    Thread.sleep(2000)
+                    logger.lifecycle("Deployment status is '$status', will try again in ${delay.inWholeSeconds}s.")
+                    // Wait for the next attempt to reduce the load on the Central Portal API
+                    Thread.sleep(delay.inWholeMilliseconds)
+                    // Increase the delay exponentially, so we don't send too frequent requests if the deployment takes time
+                    delay = (delay * 2).coerceAtMost(64.seconds)
+                    continue
                 }
 
                 VALIDATED -> {
