@@ -10,7 +10,7 @@ plugins {
 }
 
 group = "com.gradleup.nmcp"
-version = "0.1.2"
+version = "0.1.3"
 
 publishing {
     publications.create("default", MavenPublication::class.java) {
