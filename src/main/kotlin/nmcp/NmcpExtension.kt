@@ -9,6 +9,7 @@ import nmcp.internal.withRequiredPlugin
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.publish.PublishingExtension
+import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.bundling.Zip
 
 @GExtension(pluginId = "com.gradleup.nmcp")
@@ -80,9 +81,15 @@ open class NmcpExtension(private val project: Project) {
             it.archiveFileName.set("publication$capitalized.zip")
         }
 
+        val artifactId = if (publication is MavenPublication) {
+            project.provider { publication.artifactId }
+        } else {
+            project.provider { "${project.name}"}
+        }
         val publishTaskProvider = project.registerPublishTask(
             taskName = "publish${capitalized}PublicationToCentralPortal",
             inputFile = zipTaskProvider.flatMap { it.archiveFile },
+            artifactId = artifactId,
             spec = spec
         )
 
