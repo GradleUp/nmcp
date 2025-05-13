@@ -45,6 +45,7 @@ abstract class NmcpAggregationExtension(private val project: Project) {
         project.registerPublishTask(
             taskName = "publishAggregationToCentralPortal",
             inputFile = zipTaskProvider.flatMap { it.archiveFile },
+            artifactId = project.provider { "${project.name}" },
             spec = spec
         )
     }

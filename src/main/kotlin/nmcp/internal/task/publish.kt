@@ -199,9 +199,10 @@ private fun verifyStatus(
 internal fun Project.registerPublishTask(
     taskName: String,
     inputFile: Provider<RegularFile>,
+    artifactId: Provider<String>,
     spec: CentralPortalOptions
 ): TaskProvider<PublishTask> {
-    val defaultPublicationName = "${project.name}-${project.version}.zip"
+    val defaultPublicationName = artifactId.map { "${project.group}:${it}:${project.version}.zip" }
     return registerPublishTask(
         taskName = taskName,
         inputFile = inputFile,
