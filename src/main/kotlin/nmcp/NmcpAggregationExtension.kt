@@ -4,7 +4,8 @@ import gratatouille.GExtension
 import javax.inject.Inject
 import nmcp.internal.configureAttributes
 import nmcp.internal.nmcpConsumerConfigurationName
-import nmcp.internal.task.registerPublishTask
+import nmcp.internal.task.registerPublishReleaseTask
+import nmcp.internal.task.registerPublishSnapshotTask
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.file.ArchiveOperations
@@ -42,11 +43,18 @@ abstract class NmcpAggregationExtension(private val project: Project) {
             })
         }
 
-        project.registerPublishTask(
+        project.registerPublishReleaseTask(
             taskName = "publishAggregationToCentralPortal",
             inputFile = zipTaskProvider.flatMap { it.archiveFile },
             artifactId = project.provider { "${project.name}" },
             spec = spec
+        )
+        project.registerPublishSnapshotTask(
+            taskName = "publishAggregationToCentralSnapshots",
+            inputFile = zipTaskProvider.flatMap { it.archiveFile },
+            username = spec.username,
+            password = spec.password,
+            version = project.provider { "${project.version}" },
         )
     }
 

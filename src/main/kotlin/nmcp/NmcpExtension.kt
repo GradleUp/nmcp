@@ -4,7 +4,8 @@ import gratatouille.GExtension
 import gratatouille.capitalizeFirstLetter
 import nmcp.internal.configureAttributes
 import nmcp.internal.nmcpProducerConfigurationName
-import nmcp.internal.task.registerPublishTask
+import nmcp.internal.task.registerPublishReleaseTask
+import nmcp.internal.task.registerPublishSnapshotTask
 import nmcp.internal.withRequiredPlugin
 import org.gradle.api.Action
 import org.gradle.api.Project
@@ -15,8 +16,9 @@ import org.gradle.api.tasks.bundling.Zip
 @GExtension(pluginId = "com.gradleup.nmcp")
 open class NmcpExtension(private val project: Project) {
     internal val spec = project.objects.newInstance(CentralPortalOptions::class.java)
-    // Lifecycle task to publish all the publications in the given project
+    // Lifecycle tasks to publish all the publications in the given project
     private val publishAllPublicationsToCentralPortal = project.tasks.register("publishAllPublicationsToCentralPortal")
+    private val publishAllPublicationsToCentralSnapshots = project.tasks.register("publishAllPublicationsToCentralSnapshots")
 
     init {
         project.configurations.create(nmcpProducerConfigurationName) {
@@ -86,15 +88,25 @@ open class NmcpExtension(private val project: Project) {
         } else {
             project.provider { "${project.name}"}
         }
-        val publishTaskProvider = project.registerPublishTask(
+        val publishRelease = project.registerPublishReleaseTask(
             taskName = "publish${capitalized}PublicationToCentralPortal",
             inputFile = zipTaskProvider.flatMap { it.archiveFile },
             artifactId = artifactId,
             spec = spec
         )
+        val publishSnapshots = project.registerPublishSnapshotTask(
+            taskName = "publish${capitalized}PublicationToCentralSnapshots",
+            inputFile = zipTaskProvider.flatMap { it.archiveFile },
+            username = spec.username,
+            password = spec.password,
+            version = project.provider { "${project.version}" },
+        )
 
+        publishAllPublicationsToCentralSnapshots.configure {
+            it.dependsOn(publishSnapshots)
+        }
         publishAllPublicationsToCentralPortal.configure {
-            it.dependsOn((publishTaskProvider))
+            it.dependsOn((publishRelease))
         }
 
         project.artifacts.add(nmcpProducerConfigurationName, zipTaskProvider)

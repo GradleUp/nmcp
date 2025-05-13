@@ -4,14 +4,12 @@ import gratatouille.GInputFile
 import gratatouille.GLogger
 import gratatouille.GTask
 import java.net.SocketTimeoutException
-import java.time.Duration
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import nmcp.CentralPortalOptions
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
-import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -27,7 +25,7 @@ import kotlin.time.TimeSource.Monotonic.markNow
 
 
 @GTask(pure = false)
-fun publish(
+fun publishRelease(
     logger: GLogger,
     username: String?,
     password: String?,
@@ -144,12 +142,6 @@ private data object PUBLISHED : Status
 // A deployment has encountered an error
 private class FAILED(val error: String) : Status
 
-private val client = OkHttpClient.Builder()
-    .connectTimeout(Duration.ofSeconds(30))
-    .writeTimeout(Duration.ofSeconds(30))
-    .readTimeout(Duration.ofSeconds(60))
-    .build()
-
 private fun verifyStatus(
     deploymentId: String,
     baseUrl: String,
@@ -196,14 +188,14 @@ private fun verifyStatus(
         }
 }
 
-internal fun Project.registerPublishTask(
+internal fun Project.registerPublishReleaseTask(
     taskName: String,
     inputFile: Provider<RegularFile>,
     artifactId: Provider<String>,
     spec: CentralPortalOptions
-): TaskProvider<PublishTask> {
+): TaskProvider<PublishReleaseTask> {
     val defaultPublicationName = artifactId.map { "${project.group}:${it}:${project.version}.zip" }
-    return registerPublishTask(
+    return registerPublishReleaseTask(
         taskName = taskName,
         inputFile = inputFile,
         username = spec.username,
