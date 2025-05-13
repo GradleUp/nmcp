@@ -14,7 +14,7 @@ buildscript {
 apply(plugin = "com.gradleup.nmcp.aggregation")
 
 val projectGroup = "net.mbonnin.tnmcp"
-val projectVersion = "0.0.4-SNAPSHOT"
+val projectVersion = "0.0.3"
 
 group = projectGroup
 version = projectVersion
