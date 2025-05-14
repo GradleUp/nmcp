@@ -38,7 +38,7 @@ publishing {
 
             licenses {
                 license {
-                    name.set("MIT License")
+                    name.set("MIT")
                     url.set("https://github.com/gradleup/nmcp/blob/master/LICENSE")
                 }
             }
