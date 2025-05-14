@@ -5,7 +5,6 @@ import javax.inject.Inject
 import nmcp.internal.configureAttributes
 import nmcp.internal.nmcpConsumerConfigurationName
 import nmcp.internal.task.registerPublishReleaseTask
-import nmcp.internal.task.registerPublishSnapshotTask
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.file.ArchiveOperations
@@ -46,13 +45,6 @@ abstract class NmcpAggregationExtension(private val project: Project) {
             artifactId = project.provider { "${project.name}" },
             spec = spec
         )
-        project.registerPublishSnapshotTask(
-            taskName = "publishAggregationToCentralSnapshots",
-            inputFile = zipTaskProvider.flatMap { it.archiveFile },
-            username = spec.username,
-            password = spec.password,
-            version = project.provider { "${project.version}" },
-        )
     }
 
     /**
@@ -68,7 +60,7 @@ abstract class NmcpAggregationExtension(private val project: Project) {
      * This function is not compatible with breaking project isolation. To be compatible with project isolation,
      * add each subproject to the `nmcpAggregation` configuration dependencies.
      */
-    fun publishAllProjectsProbablyBreakingProjectIsolation() {
+    fun publishAllProjectsProbablyBreakingProjectIsolation(action: Action<CentralPortalOptions>) {
         check(project === project.rootProject) {
             "publishAllProjectsProbablyBreakingProjectIsolation() must be called from root project"
         }
@@ -77,9 +69,22 @@ abstract class NmcpAggregationExtension(private val project: Project) {
             aproject.pluginManager.withPlugin("maven-publish") {
                 aproject.pluginManager.apply("com.gradleup.nmcp")
 
+                aproject.extensions.configure(NmcpExtension::class.java) {
+                    action.execute(it.centralPortalOptions)
+                }
                 consumerConfiguration.dependencies.add(aproject.dependencies.create(aproject))
             }
         }
+    }
+
+    /**
+     * Applies the `com.gradleup.nmcp` plugin to every project that also applies `maven-publish`.
+     *
+     * This function is not compatible with breaking project isolation. To be compatible with project isolation,
+     * add each subproject to the `nmcpAggregation` configuration dependencies.
+     */
+    fun publishAllProjectsProbablyBreakingProjectIsolation() {
+        publishAllProjectsProbablyBreakingProjectIsolation { }
     }
 }
 
