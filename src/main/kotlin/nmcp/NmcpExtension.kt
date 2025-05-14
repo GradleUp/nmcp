@@ -38,6 +38,12 @@ open class NmcpExtension(private val project: Project) {
         }
     }
 
+    /**
+     * This creates a new repository for each publication so that the publications do not overlap each other
+     * and can use an isolated directory.
+     *
+     * See https://github.com/GradleUp/nmcp/issues/34#issuecomment-2827704768
+     */
     private fun registerInternal(publicationName: String) {
         val capitalized = publicationName.capitalizeFirstLetter()
 
