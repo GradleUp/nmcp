@@ -2,6 +2,7 @@ package nmcp
 
 import gratatouille.GExtension
 import gratatouille.capitalizeFirstLetter
+import java.net.URI
 import nmcp.internal.configureAttributes
 import nmcp.internal.nmcpProducerConfigurationName
 import nmcp.internal.task.registerPublishReleaseTask
@@ -9,13 +10,14 @@ import nmcp.internal.task.registerPublishSnapshotTask
 import nmcp.internal.withRequiredPlugin
 import org.gradle.api.Action
 import org.gradle.api.Project
+import org.gradle.api.credentials.PasswordCredentials
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.bundling.Zip
 
 @GExtension(pluginId = "com.gradleup.nmcp")
 open class NmcpExtension(private val project: Project) {
-    internal val spec = project.objects.newInstance(CentralPortalOptions::class.java)
+    internal val centralPortalOptions = project.objects.newInstance(CentralPortalOptions::class.java)
     // Lifecycle tasks to publish all the publications in the given project
     private val publishAllPublicationsToCentralPortal = project.tasks.register("publishAllPublicationsToCentralPortal")
     private val publishAllPublicationsToCentralSnapshots = project.tasks.register("publishAllPublicationsToCentralSnapshots")
@@ -34,6 +36,14 @@ open class NmcpExtension(private val project: Project) {
             val publishing = project.extensions.getByType(PublishingExtension::class.java)
             publishing.publications.configureEach {
                 registerInternal(it.name)
+            }
+            /**
+             * Not sure how to configure username/password lazily, do it once the build script is evaluated
+             */
+            project.afterEvaluate {
+                if(centralPortalOptions.username.isPresent) {
+                    publishing.addSnapshotsRepo(centralPortalOptions)
+                }
             }
         }
     }
@@ -75,6 +85,7 @@ open class NmcpExtension(private val project: Project) {
                 }
             }
         }
+
         val zipTaskProvider = project.tasks.register("zip${capitalized}Publication", Zip::class.java) {
             it.dependsOn(publishToNmcpTaskProvider)
             it.from(m2Dir)
@@ -98,15 +109,17 @@ open class NmcpExtension(private val project: Project) {
             taskName = "publish${capitalized}PublicationToCentralPortal",
             inputFile = zipTaskProvider.flatMap { it.archiveFile },
             artifactId = artifactId,
-            spec = spec
+            spec = centralPortalOptions
         )
-        val publishSnapshots = project.registerPublishSnapshotTask(
-            taskName = "publish${capitalized}PublicationToCentralSnapshots",
-            inputFile = zipTaskProvider.flatMap { it.archiveFile },
-            username = spec.username,
-            password = spec.password,
-            version = project.provider { "${project.version}" },
-        )
+        val publishSnapshots = project.tasks.register("publish${capitalized}PublicationToCentralSnapshots") {
+            if (!centralPortalOptions.username.isPresent) {
+                it.doFirst {
+                    error("centralPortalOptions.username must be set in each subproject to publish to central snapshots. See https://github.com/GradleUp/nmcp/issues/73 for more information.")
+                }
+            } else {
+                it.dependsOn("publish${capitalized}PublicationTo${nmcpCentralSnapshotsRepoName.capitalizeFirstLetter()}Repository")
+            }
+        }
 
         publishAllPublicationsToCentralSnapshots.configure {
             it.dependsOn(publishSnapshots)
@@ -122,6 +135,20 @@ open class NmcpExtension(private val project: Project) {
      * Configures the central portal parameters
      */
     fun centralPortal(action: Action<CentralPortalOptions>) {
-        action.execute(spec)
+        action.execute(centralPortalOptions)
+    }
+}
+
+private val nmcpCentralSnapshotsRepoName = "nmcpCentralSnapshots"
+internal fun PublishingExtension.addSnapshotsRepo(centralPortalOptions: CentralPortalOptions) {
+    repositories {
+        it.maven {
+            it.name = nmcpCentralSnapshotsRepoName
+            it.url = URI("https://central.sonatype.com/repository/maven-snapshots")
+            it.credentials {
+                it.username = centralPortalOptions.username.get()
+                it.password = centralPortalOptions.password.get()
+            }
+        }
     }
 }

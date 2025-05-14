@@ -28,6 +28,7 @@ subprojects {
     pluginManager.apply("signing")
 
     val publishing = project.extensions.getByType(PublishingExtension::class.java)
+
     publishing.publications {
         create("default", MavenPublication::class.java) {
             from(project.components.findByName("java"))
@@ -77,13 +78,17 @@ subprojects {
             System.getenv("GPG_PRIVATE_KEY_PASSWORD")
         )
     }
+
     tasks.withType(Sign::class.java) {
         isEnabled = System.getenv("GPG_PRIVATE_KEY").isNullOrBlank().not()
     }
 }
 
 extensions.getByType<NmcpAggregationExtension>().apply {
-    publishAllProjectsProbablyBreakingProjectIsolation()
+    publishAllProjectsProbablyBreakingProjectIsolation {
+        username = System.getenv("MAVEN_CENTRAL_USERNAME")
+        password = System.getenv("MAVEN_CENTRAL_PASSWORD")
+    }
     centralPortal {
         username = System.getenv("MAVEN_CENTRAL_USERNAME")
         password = System.getenv("MAVEN_CENTRAL_PASSWORD")
