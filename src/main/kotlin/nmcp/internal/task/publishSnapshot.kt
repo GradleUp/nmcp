@@ -44,7 +44,7 @@ fun publishSnapshot(
             val entry = it.nextEntry ?: break
             if (entry.isDirectory) continue
             val relativePath = entry.name
-            logger.lifecycle("Nmcp: uploading $relativePath...")
+            logger.debug("Nmcp: uploading $relativePath...")
 
             val url = "https://central.sonatype.com/repository/maven-snapshots/$relativePath"
             val request = Request.Builder()

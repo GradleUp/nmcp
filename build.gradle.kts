@@ -77,6 +77,7 @@ dependencies {
     implementation(libs.json)
     implementation(libs.okio)
     implementation(libs.okhttp)
+    implementation(libs.gratatouille.runtime)
     implementation(libs.okhttp.logging.interceptor)
     compileOnly(libs.gradle.min)
 }
