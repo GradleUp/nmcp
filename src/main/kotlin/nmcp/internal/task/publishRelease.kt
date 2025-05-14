@@ -93,7 +93,7 @@ fun publishRelease(
                 PENDING,
                 VALIDATING,
                 PUBLISHING -> {
-                    logger.lifecycle("Deployment status is '$status', will try again in ${pollingInterval.inWholeSeconds}s (${timeout - mark.elapsedNow()} left)...")
+                    logger.debug("Deployment status is '$status', will try again in ${pollingInterval.inWholeSeconds}s (${timeout - mark.elapsedNow()} left)...")
                     // Wait for the next attempt to reduce the load on the Central Portal API
                     Thread.sleep(pollingInterval.inWholeMilliseconds)
                     continue
