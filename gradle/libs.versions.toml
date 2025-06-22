@@ -11,9 +11,16 @@ okhttp-logging-interceptor = "com.squareup.okhttp3:logging-interceptor:4.12.0"
 mockwebserver = "com.squareup.okhttp3:mockwebserver:4.12.0"
 gradle-min = "dev.gradleplugins:gradle-api:8.0"
 gratatouille-runtime = { module = "com.gradleup.gratatouille:gratatouille-runtime", version.ref = "gratatouille" }
+bcpg = "org.bouncycastle:bcpg-jdk18on:1.81"
+bcprov = "org.bouncycastle:bcprov-jdk18on:1.81"
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test" }
+xmlutil = "io.github.pdvrieze.xmlutil:serialization:0.91.1"
+datetime = "org.jetbrains.kotlinx:kotlinx-datetime:0.6.2"
+
 
 [plugins]
 kgp = { id = "org.jetbrains.kotlin.jvm", version.ref = "kgp" }
+serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kgp" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 ggp = { id = "com.gradleup.gratatouille", version.ref = "gratatouille" }
 nmcp = { id = "com.gradleup.nmcp", version = "0.1.5" }

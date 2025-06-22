@@ -3,6 +3,7 @@ package nmcp.internal.task
 import gratatouille.GInputFile
 import gratatouille.GLogger
 import gratatouille.GTask
+import gratatouille.capitalizeFirstLetter
 import java.net.SocketTimeoutException
 import kotlin.time.Duration
 import kotlinx.serialization.json.Json
@@ -17,15 +18,16 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okio.Buffer
 import okio.ByteString
 import org.gradle.api.Project
-import org.gradle.api.file.RegularFile
 import org.gradle.api.provider.Provider
-import org.gradle.api.tasks.TaskProvider
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeSource.Monotonic.markNow
+import nmcp.internal.client
+import org.gradle.api.file.FileCollection
+import org.gradle.api.tasks.bundling.Zip
 
 @GTask(pure = false)
-fun publishRelease(
+fun nmcpPublishWithPublisherApi(
     logger: GLogger,
     username: String?,
     password: String?,
@@ -203,24 +205,61 @@ private fun verifyStatus(
         }
 }
 
-internal fun Project.registerPublishReleaseTask(
-    taskName: String,
-    inputFile: Provider<RegularFile>,
-    artifactId: Provider<String>,
+internal sealed interface DeploymentKind
+internal object KindAggregation: DeploymentKind
+internal object KindAll: DeploymentKind
+internal class KindSingle(val name: String): DeploymentKind
+
+internal fun Project.registerPublishToCentralPortalTasks(
+    deploymentKind: DeploymentKind,
+    inputFiles: FileCollection,
+    defaultDeploymentName: Provider<String>,
     spec: CentralPortalOptions,
-): TaskProvider<PublishReleaseTask> {
-    val defaultPublicationName = artifactId.map { "${project.group}:${it}:${project.version}.zip" }
-    return registerPublishReleaseTask(
-        taskName = taskName,
-        inputFile = inputFile,
+) {
+    val zipTaskName: String = when(deploymentKind) {
+        KindAggregation -> "nmcpZipAggregation"
+        KindAll -> "nmcpZipAllPublications"
+        is KindSingle ->  "nmcpZip${deploymentKind.name.capitalizeFirstLetter()}Publication"
+    }
+    val releaseTaskName: String = when(deploymentKind) {
+        KindAggregation -> "nmcpPublishAggregationToCentralPortal"
+        KindAll -> "nmcpPublishAllPublicationsToCentralPortal"
+        is KindSingle ->  "nmcpPublish${deploymentKind.name.capitalizeFirstLetter()}PublicationToCentralPortal"
+    }
+    val snapshotTaskName: String = when(deploymentKind) {
+        KindAggregation -> "nmcpPublishAggregationToCentralPortalSnapshots"
+        KindAll -> "nmcpPublishAllPublicationsToCentralPortalSnapshots"
+        is KindSingle ->  "nmcpPublish${deploymentKind.name.capitalizeFirstLetter()}PublicationToCentralPortalSnapshots"
+    }
+    val zipName: String = when(deploymentKind) {
+        KindAggregation -> "aggregation.zip"
+        KindAll -> "allPublications.zip"
+        is KindSingle ->  "${deploymentKind.name.capitalizeFirstLetter()}Publication.zip"
+    }
+
+    val zipTaskProvider = tasks.register(zipTaskName, Zip::class.java) {
+        it.from(inputFiles)
+        it.destinationDirectory.set(project.layout.buildDirectory.dir("nmcp/zip"))
+        it.archiveFileName.set(zipName)
+    }
+    registerNmcpPublishWithPublisherApiTask(
+        taskName = releaseTaskName,
+        inputFile = zipTaskProvider.flatMap { it.archiveFile },
         username = spec.username,
         password = spec.password,
-        publicationName = spec.publicationName.orElse(defaultPublicationName),
+        publicationName = spec.publicationName.orElse(defaultDeploymentName),
         publishingType = spec.publishingType,
         baseUrl = spec.baseUrl,
         validationTimeoutSeconds = spec.validationTimeout.map { it.seconds },
         publishingTimeoutSeconds = spec.publishingTimeout.map { it.seconds },
+    )
 
+    registerNmcpPublishFileByFileTask(
+        taskName = snapshotTaskName,
+        username = spec.username,
+        password = spec.password,
+        url = project.provider { "https://central.sonatype.com/repository/maven-snapshots/" },
+        inputFiles = inputFiles,
     )
 }
 

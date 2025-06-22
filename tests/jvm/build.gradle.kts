@@ -13,11 +13,8 @@ buildscript {
 
 apply(plugin = "com.gradleup.nmcp.aggregation")
 
-val projectGroup = "net.mbonnin.tnmcp"
-val projectVersion = "0.0.3"
-
-group = projectGroup
-version = projectVersion
+group = "net.mbonnin.tnmcp"
+version = "0.0.4"
 
 subprojects {
     val project = this
@@ -32,12 +29,16 @@ subprojects {
     publishing.publications {
         create("default", MavenPublication::class.java) {
             from(project.components.findByName("java"))
-            artifact(tasks.register("emptySources", Jar::class.java) {
-                archiveClassifier = "sources"
-            })
-            artifact(tasks.register("emptyDocs", Jar::class.java) {
-                archiveClassifier = "javadoc"
-            })
+            artifact(
+                tasks.register("emptySources", Jar::class.java) {
+                    archiveClassifier = "sources"
+                },
+            )
+            artifact(
+                tasks.register("emptyDocs", Jar::class.java) {
+                    archiveClassifier = "javadoc"
+                },
+            )
 
             groupId = project.rootProject.group.toString()
             version = project.rootProject.version.toString()
@@ -70,29 +71,18 @@ subprojects {
             }
         }
     }
-
-    project.extensions.getByType(SigningExtension::class.java).apply {
-        sign(publishing.publications)
-        useInMemoryPgpKeys(
-            System.getenv("GPG_PRIVATE_KEY"),
-            System.getenv("GPG_PRIVATE_KEY_PASSWORD")
-        )
-    }
-
-    tasks.withType(Sign::class.java) {
-        isEnabled = System.getenv("GPG_PRIVATE_KEY").isNullOrBlank().not()
-    }
 }
 
 extensions.getByType<NmcpAggregationExtension>().apply {
-    publishAllProjectsProbablyBreakingProjectIsolation {
-        username = System.getenv("MAVEN_CENTRAL_USERNAME")
-        password = System.getenv("MAVEN_CENTRAL_PASSWORD")
-    }
+    publishAllProjectsProbablyBreakingProjectIsolation()
+
     centralPortal {
         username = System.getenv("MAVEN_CENTRAL_USERNAME")
         password = System.getenv("MAVEN_CENTRAL_PASSWORD")
-        publishingType = "USER_MANAGED"
+    }
+    sign {
+        privateKey = System.getenv("GPG_PRIVATE_KEY")
+        privateKeyPassword = System.getenv("GPG_PRIVATE_KEY_PASSWORD")
     }
 }
 
@@ -168,9 +158,9 @@ val checkZip = tasks.register("checkZip") {
                     "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}.pom.md5",
                     "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}.pom.sha1",
                     "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}.pom.sha256",
-                    "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}.pom.sha512"
-                )
-            )
+                    "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}.pom.sha512",
+                ),
+            ),
         )
     }
 }

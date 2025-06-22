@@ -26,8 +26,6 @@ abstract class CentralPortalOptions {
 
     /**
      * A name for the publication (optional).
-     *
-     * Default: "${project.name}-${project.version}.zip"
      */
     abstract val publicationName: Property<String>
 
