@@ -27,7 +27,8 @@ abstract class CentralPortalOptions {
     /**
      * A name for the publication (optional).
      *
-     * Default: "${project.name}-${project.version}.zip"
+     * By default, it generates a name from the deployment contents. If the deployment contains several publications, it will
+     * show the common parts (typically groupId and version).
      */
     abstract val publicationName: Property<String>
 

@@ -1,5 +1,7 @@
 package nmcp.internal
 
+import gratatouille.FileWithPath
+import gratatouille.GInputFiles
 import org.gradle.api.Named
 import org.gradle.api.Project
 import org.gradle.api.attributes.Attribute
@@ -30,7 +32,14 @@ internal val usageValue = "nmcp"
 
 internal fun HasConfigurableAttributes<*>.configureAttributes(project: Project) {
     attributes {
-        it.attribute(Attribute.of(attribute, Named::class.java), project.objects.named(Named::class.java, attributeValue))
+        it.attribute(
+            Attribute.of(attribute, Named::class.java),
+            project.objects.named(Named::class.java, attributeValue),
+        )
         it.attribute(USAGE_ATTRIBUTE, project.objects.named(Usage::class.java, usageValue))
     }
+}
+
+internal fun GInputFiles.filterFiles(): List<FileWithPath> {
+    return filter { it.file.isFile }
 }
