@@ -78,6 +78,8 @@ open class NmcpExtension(private val project: Project) {
         val publishToNmcpTaskProvider = project.tasks.named("publish${capitalized}PublicationTo${repoName.capitalizeFirstLetter()}Repository")
 
         publishToNmcpTaskProvider.configure {
+            // This is mostly an internal task, hide it from `./gradlew --tasks`
+            it.group = null
             it.doFirst {
                 m2Dir.get().asFile.apply {
                     deleteRecursively()
