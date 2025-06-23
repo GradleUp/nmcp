@@ -3,7 +3,6 @@ package nmcp.internal
 import nmcp.CentralPortalOptions
 import nmcp.NmcpAggregationExtension
 import nmcp.internal.task.KindAggregation
-import nmcp.internal.task.registerNmcpGuessComponentsTask
 import org.gradle.api.Action
 import org.gradle.api.Project
 
@@ -20,13 +19,9 @@ abstract class DefaultNmcpAggregationExtension(private val project: Project) : N
         val centralPortalOptions = project.objects.newInstance(CentralPortalOptions::class.java)
         action.execute(centralPortalOptions)
 
-        val guessVersion = project.registerNmcpGuessComponentsTask(
-            inputFiles = consumerConfiguration
-        )
         project.registerPublishToCentralPortalTasks(
             deploymentKind = KindAggregation,
             inputFiles = consumerConfiguration,
-            defaultDeploymentName = guessVersion.flatMap { it.outfileFile }.map { it.asFile.readText() },
             spec = centralPortalOptions
         )
     }

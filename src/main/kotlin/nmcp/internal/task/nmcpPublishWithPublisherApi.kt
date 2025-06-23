@@ -3,7 +3,6 @@ package nmcp.internal.task
 import gratatouille.GInputFiles
 import gratatouille.GLogger
 import gratatouille.GTask
-import gratatouille.capitalizeFirstLetter
 import java.net.SocketTimeoutException
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
@@ -14,7 +13,6 @@ import kotlin.time.TimeSource.Monotonic.markNow
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
-import nmcp.CentralPortalOptions
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -25,17 +23,13 @@ import okio.Buffer
 import okio.BufferedSink
 import okio.ByteString
 import okio.use
-import org.gradle.api.Project
-import org.gradle.api.file.FileCollection
-import org.gradle.api.provider.Provider
-import org.gradle.api.tasks.bundling.Zip
 
 @GTask(pure = false)
 fun nmcpPublishWithPublisherApi(
     logger: GLogger,
     username: String?,
     password: String?,
-    publicationName: String,
+    publicationName: String?,
     publishingType: String?,
     baseUrl: String?,
     validationTimeoutSeconds: Long?,
@@ -43,10 +37,10 @@ fun nmcpPublishWithPublisherApi(
     inputFiles: GInputFiles,
 ) {
     check(!username.isNullOrBlank()) {
-        "Ncmp: username is missing"
+        "Nmcp: username is missing"
     }
     check(!password.isNullOrBlank()) {
-        "Ncmp: password is missing"
+        "Nmcp: password is missing"
     }
 
     val token = "$username:$password".let {
@@ -56,7 +50,7 @@ fun nmcpPublishWithPublisherApi(
     val body = MultipartBody.Builder()
         .addFormDataPart(
             "bundle",
-            publicationName,
+            publicationName ?: inputFiles.findDeploymentName(),
             ZipBody(inputFiles),
         )
         .build()
