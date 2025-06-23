@@ -1,16 +1,20 @@
-import java.net.URI
-
 plugins {
     alias(libs.plugins.kgp)
     alias(libs.plugins.ksp)
     alias(libs.plugins.ggp)
     alias(libs.plugins.nmcp)
+    alias(libs.plugins.compat)
     id("maven-publish")
     id("signing")
 }
 
 group = "com.gradleup.nmcp"
 version = "0.1.5"
+
+compatPatrouille {
+    java(17)
+    kotlin("2.0.0")
+}
 
 publishing {
     publications.create("default", MavenPublication::class.java) {
