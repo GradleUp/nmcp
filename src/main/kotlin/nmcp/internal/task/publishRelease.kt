@@ -79,13 +79,13 @@ fun publishRelease(
     val timeout1 = validationTimeoutSeconds?.seconds ?: 10.minutes
     if (timeout1.isPositive()) {
         logger.lifecycle("Nmcp: waiting for validation...")
-        waitFor(VALIDATED, timeout1, logger, deploymentId, baseUrl, token)
+        waitFor(setOf(VALIDATED, PUBLISHED), timeout1, logger, deploymentId, baseUrl, token)
 
         val timeout2 = publishingTimeoutSeconds?.seconds ?: 0.seconds
         if (publishingType == "AUTOMATIC") {
             if (timeout2.isPositive()) {
                 logger.lifecycle("Nmcp: deployment is validated, waiting for publication...")
-                waitFor(PUBLISHED, timeout1, logger, deploymentId, baseUrl, token)
+                waitFor(setOf(PUBLISHED), timeout1, logger, deploymentId, baseUrl, token)
                 logger.lifecycle("Nmcp: deployment is published.")
             } else {
                 logger.lifecycle("Nmcp: deployment is publishing... Check the central portal UI to verify its status.")
@@ -102,7 +102,7 @@ fun publishRelease(
 }
 
 private fun waitFor(
-    target: Status,
+    target: Set<Status>,
     timeout: Duration,
     logger: GLogger,
     deploymentId: String,
@@ -123,7 +123,7 @@ private fun waitFor(
         )
         if (status is FAILED) {
             error("Nmcp: deployment has failed:\n${status.error}")
-        } else if (status == target) {
+        } else if (status in target) {
             return
         } else {
             logger.lifecycle("Nmcp: deployment status is '$status', will try again in ${pollingInterval.inWholeSeconds}s (${timeout - mark.elapsedNow()} left)...")
