@@ -4,6 +4,7 @@ import gratatouille.GInputFile
 import gratatouille.GLogger
 import gratatouille.GTask
 import java.net.SocketTimeoutException
+import kotlin.time.Duration
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
@@ -23,7 +24,6 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.TimeSource.Monotonic.markNow
 
-
 @GTask(pure = false)
 fun publishRelease(
     logger: GLogger,
@@ -32,7 +32,8 @@ fun publishRelease(
     publicationName: String,
     publishingType: String?,
     baseUrl: String?,
-    verificationTimeoutSeconds: Long?,
+    validationTimeoutSeconds: Long?,
+    publishingTimeoutSeconds: Long?,
     inputFile: GInputFile,
 ) {
     check(!username.isNullOrBlank()) {
@@ -50,7 +51,7 @@ fun publishRelease(
         .addFormDataPart(
             "bundle",
             publicationName,
-            inputFile.asRequestBody("application/zip".toMediaType())
+            inputFile.asRequestBody("application/zip".toMediaType()),
         )
         .build()
 
@@ -75,44 +76,60 @@ fun publishRelease(
 
     logger.lifecycle("Nmcp: deployment bundle '$deploymentId' uploaded to '$baseUrl'.")
 
-    val timeout = verificationTimeoutSeconds?.seconds ?: 10.minutes
+    val timeout1 = validationTimeoutSeconds?.seconds ?: 10.minutes
+    if (timeout1.isPositive()) {
+        logger.lifecycle("Nmcp: waiting for validation...")
+        waitFor(VALIDATED, timeout1, logger, deploymentId, baseUrl, token)
+
+        val timeout2 = publishingTimeoutSeconds?.seconds ?: 0.seconds
+        if (publishingType == "AUTOMATIC") {
+            if (timeout2.isPositive()) {
+                logger.lifecycle("Nmcp: deployment is validated, waiting for publication...")
+                waitFor(PUBLISHED, timeout1, logger, deploymentId, baseUrl, token)
+                logger.lifecycle("Nmcp: deployment is published.")
+            } else {
+                logger.lifecycle("Nmcp: deployment is publishing... Check the central portal UI to verify its status.")
+            }
+        } else {
+            check(publishingTimeoutSeconds == null) {
+                "Nmcp: 'publishingTimeout' has no effect if 'publishingType' is USER_MANAGED. Either set 'publishingType = AUTOMATIC' or remove 'publishingTimeout'"
+            }
+            logger.lifecycle("Nmcp: deployment has passed validation, publish it manually from the Central Portal UI.")
+        }
+    } else {
+        logger.lifecycle("Nmcp: deployment is validating... Check the central portal UI to verify its status.")
+    }
+}
+
+private fun waitFor(
+    target: Status,
+    timeout: Duration,
+    logger: GLogger,
+    deploymentId: String,
+    baseUrl: String,
+    token: String,
+) {
     val pollingInterval = 5.seconds
-    if (timeout.isPositive()) {
-        logger.lifecycle("Nmcp: verifying deployment status...")
-        val mark = markNow()
-        while (true) {
-            check (mark.elapsedNow() < timeout) {
-                "Nmcp: timeout while waiting for the deployment $deploymentId to publish. You might need to check the deployment on the Central Portal UI (see $baseUrl$), or you could increase the wait timeout (the current timeout is $timeout)."
-            }
-            when (val status = verifyStatus(
-                deploymentId = deploymentId,
-                baseUrl = baseUrl,
-                token = token,
-            )) {
-                UNKNOWN_QUERY_LATER,
-                PENDING,
-                VALIDATING,
-                PUBLISHING -> {
-                    logger.debug("Deployment status is '$status', will try again in ${pollingInterval.inWholeSeconds}s (${timeout - mark.elapsedNow()} left)...")
-                    // Wait for the next attempt to reduce the load on the Central Portal API
-                    Thread.sleep(pollingInterval.inWholeMilliseconds)
-                    continue
-                }
+    val mark = markNow()
+    while (true) {
+        check(mark.elapsedNow() < timeout) {
+            "Nmcp: timeout while checking deployment '$deploymentId'. You might need to check the deployment status on the Central Portal UI (see $baseUrl$), or you could increase the timeout."
+        }
 
-                VALIDATED -> {
-                    logger.lifecycle("Deployment has passed validation, publish it manually from the Central Portal UI.")
-                    break
-                }
-
-                PUBLISHED -> {
-                    logger.lifecycle("Deployment is published.")
-                    break
-                }
-
-                is FAILED -> {
-                    error("Deployment has failed:\n${status.error}")
-                }
-            }
+        val status = verifyStatus(
+            deploymentId = deploymentId,
+            baseUrl = baseUrl,
+            token = token,
+        )
+        if (status is FAILED) {
+            error("Nmcp: deployment has failed:\n${status.error}")
+        } else if (status == target) {
+            return
+        } else {
+            logger.lifecycle("Nmcp: deployment status is '$status', will try again in ${pollingInterval.inWholeSeconds}s (${timeout - mark.elapsedNow()} left)...")
+            // Wait for the next attempt to reduce the load on the Central Portal API
+            Thread.sleep(pollingInterval.inWholeMilliseconds)
+            continue
         }
     }
 }
@@ -190,7 +207,7 @@ internal fun Project.registerPublishReleaseTask(
     taskName: String,
     inputFile: Provider<RegularFile>,
     artifactId: Provider<String>,
-    spec: CentralPortalOptions
+    spec: CentralPortalOptions,
 ): TaskProvider<PublishReleaseTask> {
     val defaultPublicationName = artifactId.map { "${project.group}:${it}:${project.version}.zip" }
     return registerPublishReleaseTask(
@@ -201,7 +218,9 @@ internal fun Project.registerPublishReleaseTask(
         publicationName = spec.publicationName.orElse(defaultPublicationName),
         publishingType = spec.publishingType,
         baseUrl = spec.baseUrl,
-        verificationTimeoutSeconds = spec.verificationTimeout.map { it.seconds }
+        validationTimeoutSeconds = spec.validationTimeout.map { it.seconds },
+        publishingTimeoutSeconds = spec.publishingTimeout.map { it.seconds },
+
     )
 }
 

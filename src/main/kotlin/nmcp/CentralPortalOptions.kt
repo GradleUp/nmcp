@@ -32,20 +32,37 @@ abstract class CentralPortalOptions {
     abstract val publicationName: Property<String>
 
     /**
-     * After a deployment has been uploaded, the central portal verifies that it matches the
+     * The timeout until the deployment reaches the `VALIDATED` or `FAILED` status.
+     *
+     * After a deployment has been uploaded, the central portal validates that it matches the
      * maven central requirements, which may take some time.
      *
-     * After waiting, the deployment is either:
-     * - VALIDATED: it needs to be manually published in the Central Portal UI.
-     * - PUBLISHED: it is published and available on Maven Central.
-     * - FAILED: the deployment has failed. You
+     * - If [publishingType] is `AUTOMATIC`, the status transitions to `PUBLISHING` automatically after validation.
+     * - If [publishingType] is `USER_MANAGED`, the status stays `VALIDATED`. Visit the portal UI
+     * to manually trigger the publishing.
      *
-     * [verificationTimeout] specifies what duration to wait for the verification to complete.
-     * You may pass the special value '0' to disable waiting for verification altogether.
+     * [validationTimeout] specifies what duration to wait for the verification to complete.
+     * You may pass the special value '0' to disable waiting for validation altogether.
      *
      * Default: 10 minutes.
      */
-    abstract val verificationTimeout: Property<Duration>
+    abstract val validationTimeout: Property<Duration>
+
+    /**
+     * The timeout until the deployment reaches the `PUBLISHED` or `FAILED` status.
+     *
+     * After publishing, the deployment is published and available in Maven Central.
+     *
+     * Note: it should be very rare that publishing ends in the `FAILED` status. There are
+     * no documented instances of this happening. If you see one, please [open an issue](https://github.com/GradleUp/nmcp/issues/new)
+     * so we can document this behavior.
+     *
+     * [publishingTimeout] specifies what duration to wait for the publishing to complete.
+     * You may pass the special value '0' to disable waiting for publishing altogether.
+     *
+     * Default: 10 minutes.
+     */
+    abstract val publishingTimeout: Property<Duration>
 
     /**
      * The API endpoint to use (optional).
