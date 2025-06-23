@@ -13,7 +13,7 @@ version = "0.1.5"
 
 compatPatrouille {
     java(17)
-    kotlin("2.0.0")
+    kotlin("1.9.0")
 }
 
 publishing {
