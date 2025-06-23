@@ -54,7 +54,7 @@ fun publishRelease(
         )
         .build()
 
-    val publishingType = publishingType ?: "USER_MANAGED"
+    val publishingType = publishingType ?: "AUTOMATIC"
 
     val baseUrl = baseUrl ?: "https://central.sonatype.com/"
 

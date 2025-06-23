@@ -20,7 +20,7 @@ abstract class CentralPortalOptions {
      * - "AUTOMATIC": the deployment is automatically published.
      * - "USER_MANAGED": the deployment is validated but not published. It must be published manually from the Central Portal UI.
      *
-     * Default: USER_MANAGED
+     * Default: AUTOMATIC
      */
     abstract val publishingType: Property<String>
 
