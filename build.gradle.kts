@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.ggp)
     alias(libs.plugins.nmcp)
     alias(libs.plugins.compat)
+    alias(libs.plugins.serialization)
     id("maven-publish")
     id("signing")
 }
@@ -81,8 +82,11 @@ dependencies {
     implementation(libs.json)
     implementation(libs.okio)
     implementation(libs.okhttp)
+    implementation(libs.xmlutil)
     implementation(libs.gratatouille.runtime)
     implementation(libs.okhttp.logging.interceptor)
+
+    testImplementation(libs.kotlin.test)
     compileOnly(libs.gradle.min)
 }
 

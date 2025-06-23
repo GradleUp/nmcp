@@ -1,3 +1,5 @@
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
 import nmcp.NmcpAggregationExtension
 
 plugins {
@@ -8,16 +10,14 @@ plugins {
 buildscript {
     dependencies {
         classpath("com.gradleup.nmcp:nmcp")
+        classpath("org.jetbrains.kotlin:kotlin-test:2.0.0")
     }
 }
 
 apply(plugin = "com.gradleup.nmcp.aggregation")
 
-val projectGroup = "net.mbonnin.tnmcp"
-val projectVersion = "0.0.3"
-
-group = projectGroup
-version = projectVersion
+group = "net.mbonnin.tnmcp"
+version = "0.0.3"
 
 subprojects {
     val project = this
@@ -32,12 +32,16 @@ subprojects {
     publishing.publications {
         create("default", MavenPublication::class.java) {
             from(project.components.findByName("java"))
-            artifact(tasks.register("emptySources", Jar::class.java) {
-                archiveClassifier = "sources"
-            })
-            artifact(tasks.register("emptyDocs", Jar::class.java) {
-                archiveClassifier = "javadoc"
-            })
+            artifact(
+                tasks.register("emptySources", Jar::class.java) {
+                    archiveClassifier = "sources"
+                },
+            )
+            artifact(
+                tasks.register("emptyDocs", Jar::class.java) {
+                    archiveClassifier = "javadoc"
+                },
+            )
 
             groupId = project.rootProject.group.toString()
             version = project.rootProject.version.toString()
@@ -85,10 +89,8 @@ subprojects {
 }
 
 extensions.getByType<NmcpAggregationExtension>().apply {
-    publishAllProjectsProbablyBreakingProjectIsolation {
-        username = System.getenv("MAVEN_CENTRAL_USERNAME")
-        password = System.getenv("MAVEN_CENTRAL_PASSWORD")
-    }
+    publishAllProjectsProbablyBreakingProjectIsolation()
+
     centralPortal {
         username = System.getenv("MAVEN_CENTRAL_USERNAME")
         password = System.getenv("MAVEN_CENTRAL_PASSWORD")
@@ -102,75 +104,78 @@ extensions.getByType<NmcpAggregationExtension>().apply {
  * This task assumes that no signing key is present (GPG_PRIVATE_KEY must be empty). If it fails, double check your environment variables.
  */
 val checkZip = tasks.register("checkZip") {
-    inputs.file(tasks.named("zipAggregation").flatMap { (it as Zip).archiveFile })
+    inputs.file(tasks.named("nmcpZipAggregation").flatMap { (it as Zip).archiveFile })
 
     doLast {
         val paths = mutableListOf<String>()
         zipTree(inputs.files.singleFile).visit {
             paths.add(this.path)
         }
-        check(
-            paths.sorted().equals(
-                listOf(
-                    "net",
-                    "net/mbonnin",
-                    "net/mbonnin/tnmcp",
-                    "net/mbonnin/tnmcp/module1",
-                    "net/mbonnin/tnmcp/module1/${project.version}",
-                    "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}-javadoc.jar",
-                    "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}-javadoc.jar.md5",
-                    "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}-javadoc.jar.sha1",
-                    "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}-javadoc.jar.sha256",
-                    "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}-javadoc.jar.sha512",
-                    "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}-sources.jar",
-                    "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}-sources.jar.md5",
-                    "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}-sources.jar.sha1",
-                    "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}-sources.jar.sha256",
-                    "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}-sources.jar.sha512",
-                    "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}.jar",
-                    "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}.jar.md5",
-                    "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}.jar.sha1",
-                    "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}.jar.sha256",
-                    "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}.jar.sha512",
-                    "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}.module",
-                    "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}.module.md5",
-                    "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}.module.sha1",
-                    "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}.module.sha256",
-                    "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}.module.sha512",
-                    "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}.pom",
-                    "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}.pom.md5",
-                    "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}.pom.sha1",
-                    "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}.pom.sha256",
-                    "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}.pom.sha512",
-                    "net/mbonnin/tnmcp/module2",
-                    "net/mbonnin/tnmcp/module2/${project.version}",
-                    "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}-javadoc.jar",
-                    "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}-javadoc.jar.md5",
-                    "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}-javadoc.jar.sha1",
-                    "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}-javadoc.jar.sha256",
-                    "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}-javadoc.jar.sha512",
-                    "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}-sources.jar",
-                    "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}-sources.jar.md5",
-                    "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}-sources.jar.sha1",
-                    "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}-sources.jar.sha256",
-                    "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}-sources.jar.sha512",
-                    "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}.jar",
-                    "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}.jar.md5",
-                    "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}.jar.sha1",
-                    "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}.jar.sha256",
-                    "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}.jar.sha512",
-                    "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}.module",
-                    "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}.module.md5",
-                    "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}.module.sha1",
-                    "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}.module.sha256",
-                    "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}.module.sha512",
-                    "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}.pom",
-                    "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}.pom.md5",
-                    "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}.pom.sha1",
-                    "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}.pom.sha256",
-                    "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}.pom.sha512"
-                )
-            )
+        check(System.getenv("GPG_PRIVATE_KEY") == null) {
+            "checkZip doesn't working if signing is enabled"
+        }
+//        println(paths.sorted().joinToString(",\n"))
+        assertEquals(
+            listOf(
+                "net",
+                "net/mbonnin",
+                "net/mbonnin/tnmcp",
+                "net/mbonnin/tnmcp/module1",
+                "net/mbonnin/tnmcp/module1/${project.version}",
+                "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}-javadoc.jar",
+                "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}-javadoc.jar.md5",
+                "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}-javadoc.jar.sha1",
+                "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}-javadoc.jar.sha256",
+                "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}-javadoc.jar.sha512",
+                "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}-sources.jar",
+                "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}-sources.jar.md5",
+                "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}-sources.jar.sha1",
+                "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}-sources.jar.sha256",
+                "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}-sources.jar.sha512",
+                "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}.jar",
+                "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}.jar.md5",
+                "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}.jar.sha1",
+                "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}.jar.sha256",
+                "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}.jar.sha512",
+                "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}.module",
+                "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}.module.md5",
+                "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}.module.sha1",
+                "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}.module.sha256",
+                "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}.module.sha512",
+                "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}.pom",
+                "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}.pom.md5",
+                "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}.pom.sha1",
+                "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}.pom.sha256",
+                "net/mbonnin/tnmcp/module1/${project.version}/module1-${project.version}.pom.sha512",
+                "net/mbonnin/tnmcp/module2",
+                "net/mbonnin/tnmcp/module2/${project.version}",
+                "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}-javadoc.jar",
+                "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}-javadoc.jar.md5",
+                "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}-javadoc.jar.sha1",
+                "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}-javadoc.jar.sha256",
+                "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}-javadoc.jar.sha512",
+                "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}-sources.jar",
+                "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}-sources.jar.md5",
+                "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}-sources.jar.sha1",
+                "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}-sources.jar.sha256",
+                "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}-sources.jar.sha512",
+                "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}.jar",
+                "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}.jar.md5",
+                "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}.jar.sha1",
+                "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}.jar.sha256",
+                "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}.jar.sha512",
+                "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}.module",
+                "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}.module.md5",
+                "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}.module.sha1",
+                "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}.module.sha256",
+                "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}.module.sha512",
+                "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}.pom",
+                "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}.pom.md5",
+                "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}.pom.sha1",
+                "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}.pom.sha256",
+                "net/mbonnin/tnmcp/module2/${project.version}/module2-${project.version}.pom.sha512",
+            ),
+            paths.sorted()
         )
     }
 }
