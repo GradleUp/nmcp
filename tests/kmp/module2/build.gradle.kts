@@ -1,7 +1,6 @@
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
     id("maven-publish")
-    id("com.gradleup.nmcp")
 }
 
 group = "sample.kmp"
