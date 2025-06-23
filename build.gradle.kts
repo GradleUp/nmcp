@@ -2,6 +2,7 @@ import org.gradle.api.internal.artifacts.ivyservice.projectmodule.ProjectPublica
 import org.gradle.api.internal.project.ProjectInternal
 import org.gradle.internal.Describables
 import org.gradle.internal.DisplayName
+import org.gradle.kotlin.dsl.support.serviceOf
 import org.gradle.plugin.use.internal.DefaultPluginId
 import org.gradle.plugin.use.resolve.internal.local.PluginPublication
 
@@ -114,8 +115,7 @@ tasks.withType(Sign::class.java).configureEach {
 /**
  * This is so that we can use the plugin if we are an included build
  */
-val projectInternal = (project as ProjectInternal)
-val registry = projectInternal.services.get(ProjectPublicationRegistry::class.java)
+val registry = project.serviceOf<ProjectPublicationRegistry>()
 
 class LocalPluginPublication(private val name: String, private val id: String) : PluginPublication {
     override fun getDisplayName(): DisplayName {
@@ -126,4 +126,4 @@ class LocalPluginPublication(private val name: String, private val id: String) :
         return DefaultPluginId.of(id)
     }
 }
-registry.registerPublication(projectInternal.projectIdentity, LocalPluginPublication("nmcp settings plugin", "com.gradleup.nmcp.settings"))
+registry.registerPublication((project as ProjectInternal).projectIdentity, LocalPluginPublication("nmcp settings plugin", "com.gradleup.nmcp.settings"))
