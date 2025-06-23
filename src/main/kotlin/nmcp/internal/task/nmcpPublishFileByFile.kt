@@ -19,7 +19,7 @@ fun nmcpPublishFileByFile(
 ) {
     val credentials = if (username != null) {
         check(!password.isNullOrBlank()) {
-            "Ncmp: password is missing"
+            "Nmcp: password is missing"
         }
         NmcpCredentials(username, password)
     } else {

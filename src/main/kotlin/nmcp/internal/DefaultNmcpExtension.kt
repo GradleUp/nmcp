@@ -5,7 +5,6 @@ import nmcp.CentralPortalOptions
 import nmcp.NmcpExtension
 import nmcp.internal.task.KindAll
 import nmcp.internal.task.KindSingle
-import nmcp.internal.task.registerNmcpGuessComponentsTask
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.file.ConfigurableFileCollection
@@ -101,13 +100,9 @@ open class DefaultNmcpExtension(private val project: Project): NmcpExtension {
         val centralPortalOptions = project.objects.newInstance(CentralPortalOptions::class.java)
         action.execute(centralPortalOptions)
 
-        val guessVersion = project.registerNmcpGuessComponentsTask(
-            inputFiles = filesFor(null)
-        )
         project.registerPublishToCentralPortalTasks(
             deploymentKind = KindAll,
             inputFiles = filesFor(null),
-            defaultDeploymentName = guessVersion.flatMap { it.outfileFile }.map { it.asFile.readText() },
             spec = centralPortalOptions
         )
     }
@@ -124,7 +119,6 @@ open class DefaultNmcpExtension(private val project: Project): NmcpExtension {
         project.registerPublishToCentralPortalTasks(
             deploymentKind = KindSingle(publicationName),
             inputFiles = filesFor(publicationName),
-            defaultDeploymentName = project.provider { "${publication.groupId}:${publication.artifactId}:${publication.version}" },
             spec = centralPortalOptions
         )
     }

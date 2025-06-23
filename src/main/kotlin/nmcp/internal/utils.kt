@@ -52,7 +52,6 @@ internal fun HasConfigurableAttributes<*>.configureAttributes(project: Project) 
 internal fun Project.registerPublishToCentralPortalTasks(
     deploymentKind: DeploymentKind,
     inputFiles: FileCollection,
-    defaultDeploymentName: Provider<String>,
     spec: CentralPortalOptions,
 ) {
     val releaseTaskName: String = when(deploymentKind) {
@@ -77,7 +76,7 @@ internal fun Project.registerPublishToCentralPortalTasks(
         inputFiles = inputFiles,
         username = spec.username,
         password = spec.password,
-        publicationName = spec.publicationName.orElse(defaultDeploymentName),
+        publicationName = spec.publicationName,
         publishingType = spec.publishingType,
         baseUrl = spec.baseUrl,
         validationTimeoutSeconds = spec.validationTimeout.map { it.seconds },
