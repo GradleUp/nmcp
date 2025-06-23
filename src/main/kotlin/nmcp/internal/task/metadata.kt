@@ -1,4 +1,4 @@
-package nmcp.internal
+package nmcp.internal.task
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.StringFormat

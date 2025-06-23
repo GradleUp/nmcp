@@ -3,7 +3,6 @@ package nmcp.internal.task
 import gratatouille.GInputFiles
 import gratatouille.GOutputFile
 import gratatouille.GTask
-import nmcp.internal.Gav
 
 @GTask
 fun nmcpGuessComponents(

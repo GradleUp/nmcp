@@ -1,8 +1,8 @@
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
-import nmcp.internal.Gav
-import nmcp.internal.replaceBuildNumber
+import nmcp.internal.task.Gav
+import nmcp.internal.task.replaceBuildNumber
 
 class LayoutTest {
     @Test
