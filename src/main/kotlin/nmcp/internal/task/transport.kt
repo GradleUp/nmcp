@@ -1,4 +1,4 @@
-package nmcp.internal
+package nmcp.internal.task
 
 import gratatouille.GLogger
 import java.io.File
@@ -9,7 +9,6 @@ import okhttp3.Request
 import okhttp3.RequestBody
 import okio.BufferedSink
 import okio.BufferedSource
-import okio.ByteString
 import okio.buffer
 import okio.sink
 import okio.source
@@ -49,14 +48,14 @@ interface Content {
     fun writeTo(sink: BufferedSink)
 }
 
-internal class Credentials(val username: String, val password: String)
+internal class NmcpCredentials(val username: String, val password: String)
 
 internal class HttpTransport(
     baseUrl: String,
-    private val credentials: Credentials?,
+    private val credentials: NmcpCredentials?,
     private val logger: GLogger,
 ) : Transport {
-    private val client = nmcp.internal.client.newBuilder()
+    private val client = nmcp.internal.task.client.newBuilder()
         .addInterceptor { chain ->
             val builder = chain.request().newBuilder()
             if (credentials != null) {

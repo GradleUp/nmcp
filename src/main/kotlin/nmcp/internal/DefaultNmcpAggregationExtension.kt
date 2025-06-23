@@ -4,7 +4,6 @@ import nmcp.CentralPortalOptions
 import nmcp.NmcpAggregationExtension
 import nmcp.internal.task.KindAggregation
 import nmcp.internal.task.registerNmcpGuessComponentsTask
-import nmcp.internal.task.registerPublishToCentralPortalTasks
 import org.gradle.api.Action
 import org.gradle.api.Project
 

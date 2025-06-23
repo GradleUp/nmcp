@@ -6,7 +6,6 @@ import nmcp.NmcpExtension
 import nmcp.internal.task.KindAll
 import nmcp.internal.task.KindSingle
 import nmcp.internal.task.registerNmcpGuessComponentsTask
-import nmcp.internal.task.registerPublishToCentralPortalTasks
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.file.ConfigurableFileCollection

@@ -7,17 +7,6 @@ import gratatouille.GTask
 import java.security.MessageDigest
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
-import nmcp.internal.ArtifactMetadata
-import nmcp.internal.FilesystemTransport
-import nmcp.internal.Gav
-import nmcp.internal.HttpTransport
-import nmcp.internal.Transport
-import nmcp.internal.VersionMetadata
-import nmcp.internal.filterFiles
-import nmcp.internal.put
-import nmcp.internal.replaceBuildNumber
-import nmcp.internal.toPath
-import nmcp.internal.xml
 import okio.ByteString.Companion.toByteString
 
 @GTask(pure = false)
@@ -32,7 +21,7 @@ fun nmcpPublishFileByFile(
         check(!password.isNullOrBlank()) {
             "Ncmp: password is missing"
         }
-        nmcp.internal.Credentials(username, password)
+        NmcpCredentials(username, password)
     } else {
         null
     }
@@ -49,7 +38,7 @@ fun nmcpPublishFileByFile(
     }
 
     inputFiles
-        .filterFiles()
+        .filter { it.file.isFile }
         .groupBy {
             it.normalizedPath.substringBeforeLast('/')
         }.forEach { (gavPath, files) ->
@@ -175,8 +164,6 @@ private fun Transport.uploadFiles(filesWithPath: List<FileWithPath>) {
 internal inline fun <reified T> encodeToXml(t: T): String {
     return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + xml.encodeToString(t)
 }
-
-internal fun String.removeDot(): String = replace(".", "")
 
 private fun ByteArray.digest(name: String): String {
     val md = MessageDigest.getInstance(name)

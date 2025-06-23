@@ -16,7 +16,6 @@ jobs:
       - uses: actions/checkout@v3
       - run: |
           ./gradlew build
-          ./gradlew -p tests/jvm nmcpZipAggregation --configuration-cache
           ./gradlew -p tests/jvm build
           ./gradlew -p tests/kmp publishAggregationToCentralPortal --configuration-cache
           ./gradlew -p tests/kmp build

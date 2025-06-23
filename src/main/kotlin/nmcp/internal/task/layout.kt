@@ -1,7 +1,4 @@
-package nmcp.internal
-
-import kotlin.collections.get
-import org.apache.tools.ant.taskdefs.BuildNumber
+package nmcp.internal.task
 
 internal data class Gav(
     val groupId: String,

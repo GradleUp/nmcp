@@ -1,29 +1,33 @@
 package nmcp.internal.task
 
-import gratatouille.GInputFile
+import gratatouille.GInputFiles
 import gratatouille.GLogger
 import gratatouille.GTask
 import gratatouille.capitalizeFirstLetter
 import java.net.SocketTimeoutException
+import java.util.zip.ZipEntry
+import java.util.zip.ZipOutputStream
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.TimeSource.Monotonic.markNow
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import nmcp.CentralPortalOptions
+import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.Request
-import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okio.Buffer
+import okio.BufferedSink
 import okio.ByteString
+import okio.use
 import org.gradle.api.Project
-import org.gradle.api.provider.Provider
-import kotlin.time.Duration.Companion.minutes
-import kotlin.time.Duration.Companion.seconds
-import kotlin.time.TimeSource.Monotonic.markNow
-import nmcp.internal.client
 import org.gradle.api.file.FileCollection
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.bundling.Zip
 
 @GTask(pure = false)
@@ -36,7 +40,7 @@ fun nmcpPublishWithPublisherApi(
     baseUrl: String?,
     validationTimeoutSeconds: Long?,
     publishingTimeoutSeconds: Long?,
-    inputFile: GInputFile,
+    inputFiles: GInputFiles,
 ) {
     check(!username.isNullOrBlank()) {
         "Ncmp: username is missing"
@@ -53,7 +57,7 @@ fun nmcpPublishWithPublisherApi(
         .addFormDataPart(
             "bundle",
             publicationName,
-            inputFile.asRequestBody("application/zip".toMediaType()),
+            ZipBody(inputFiles),
         )
         .build()
 
@@ -172,7 +176,7 @@ private fun verifyStatus(
         .let {
             try {
                 client.newCall(it).execute()
-            } catch (e: SocketTimeoutException) {
+            } catch (_: SocketTimeoutException) {
                 return UNKNOWN_QUERY_LATER
             }
         }.use {
@@ -210,74 +214,30 @@ internal object KindAggregation: DeploymentKind
 internal object KindAll: DeploymentKind
 internal class KindSingle(val name: String): DeploymentKind
 
-internal fun Project.registerPublishToCentralPortalTasks(
-    deploymentKind: DeploymentKind,
-    inputFiles: FileCollection,
-    defaultDeploymentName: Provider<String>,
-    spec: CentralPortalOptions,
-) {
-    val zipTaskName: String = when(deploymentKind) {
-        KindAggregation -> "nmcpZipAggregation"
-        KindAll -> "nmcpZipAllPublications"
-        is KindSingle ->  "nmcpZip${deploymentKind.name.capitalizeFirstLetter()}Publication"
-    }
-    val releaseTaskName: String = when(deploymentKind) {
-        KindAggregation -> "nmcpPublishAggregationToCentralPortal"
-        KindAll -> "nmcpPublishAllPublicationsToCentralPortal"
-        is KindSingle ->  "nmcpPublish${deploymentKind.name.capitalizeFirstLetter()}PublicationToCentralPortal"
-    }
-    val snapshotTaskName: String = when(deploymentKind) {
-        KindAggregation -> "nmcpPublishAggregationToCentralPortalSnapshots"
-        KindAll -> "nmcpPublishAllPublicationsToCentralPortalSnapshots"
-        is KindSingle ->  "nmcpPublish${deploymentKind.name.capitalizeFirstLetter()}PublicationToCentralPortalSnapshots"
-    }
-    val zipName: String = when(deploymentKind) {
-        KindAggregation -> "aggregation.zip"
-        KindAll -> "allPublications.zip"
-        is KindSingle ->  "${deploymentKind.name.capitalizeFirstLetter()}Publication.zip"
-    }
-    val lifecycleTaskName: String? = when(deploymentKind) {
-        KindAggregation -> "publishAggregationToCentralPortal"
-        KindAll -> "publishAllPublicationsToCentralPortal"
-        is KindSingle ->  null
+internal class ZipBody(val files: GInputFiles) : RequestBody() {
+    override fun contentType(): MediaType {
+        return "application/octet-stream".toMediaType()
     }
 
-    val zipTaskProvider = tasks.register(zipTaskName, Zip::class.java) {
-        it.from(inputFiles)
-        it.destinationDirectory.set(project.layout.buildDirectory.dir("nmcp/zip"))
-        it.archiveFileName.set(zipName)
-        it.eachFile {
-            // Exclude maven-metadata files, or the bundle is not recognized
-            // See https://slack-chats.kotlinlang.org/t/16407246/anyone-tried-the-https-central-sonatype-org-publish-publish-#c8738fe5-8051-4f64-809f-ca67a645216e
-            if (it.name.startsWith("maven-metadata")) {
-                it.exclude()
+    override fun writeTo(sink: BufferedSink) {
+        val stream = ZipOutputStream(sink.outputStream())
+        files.forEach {
+            if (it.file.isDirectory) {
+                return@forEach
             }
+            // Exclude maven-metadata files or the bundle is not recognized
+            // See https://slack-chats.kotlinlang.org/t/16407246/anyone-tried-the-https-central-sonatype-org-publish-publish-#c8738fe5-8051-4f64-809f-ca67a645216e
+            if (it.file.name.startsWith("maven-metadata")) {
+                return@forEach
+            }
+            stream.putNextEntry(ZipEntry(it.normalizedPath))
+            it.file.inputStream().use {
+                it.copyTo(stream)
+            }
+            stream.closeEntry()
         }
+        stream.finish()
+        stream.flush()
+        sink.flush()
     }
-    val task = registerNmcpPublishWithPublisherApiTask(
-        taskName = releaseTaskName,
-        inputFile = zipTaskProvider.flatMap { it.archiveFile },
-        username = spec.username,
-        password = spec.password,
-        publicationName = spec.publicationName.orElse(defaultDeploymentName),
-        publishingType = spec.publishingType,
-        baseUrl = spec.baseUrl,
-        validationTimeoutSeconds = spec.validationTimeout.map { it.seconds },
-        publishingTimeoutSeconds = spec.publishingTimeout.map { it.seconds },
-    )
-
-    if (lifecycleTaskName != null) {
-        project.tasks.register(lifecycleTaskName) {
-            it.dependsOn(task)
-        }
-    }
-
-    registerNmcpPublishFileByFileTask(
-        taskName = snapshotTaskName,
-        username = spec.username,
-        password = spec.password,
-        url = project.provider { "https://central.sonatype.com/repository/maven-snapshots/" },
-        inputFiles = inputFiles,
-    )
 }
-

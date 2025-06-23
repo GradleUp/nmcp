@@ -1,13 +1,22 @@
 package nmcp.internal
 
-import gratatouille.FileWithPath
-import gratatouille.GInputFiles
+import gratatouille.capitalizeFirstLetter
+import nmcp.CentralPortalOptions
+import nmcp.internal.task.DeploymentKind
+import nmcp.internal.task.KindAggregation
+import nmcp.internal.task.KindAll
+import nmcp.internal.task.KindSingle
+import nmcp.internal.task.registerNmcpPublishFileByFileTask
+import nmcp.internal.task.registerNmcpPublishWithPublisherApiTask
 import org.gradle.api.Named
 import org.gradle.api.Project
 import org.gradle.api.attributes.Attribute
 import org.gradle.api.attributes.HasConfigurableAttributes
 import org.gradle.api.attributes.Usage
 import org.gradle.api.attributes.Usage.USAGE_ATTRIBUTE
+import org.gradle.api.file.FileCollection
+import org.gradle.api.provider.Provider
+import org.gradle.api.tasks.bundling.Zip
 
 internal fun Project.withRequiredPlugin(id: String, block: () -> Unit) {
     var hasPlugin = false
@@ -40,6 +49,53 @@ internal fun HasConfigurableAttributes<*>.configureAttributes(project: Project) 
     }
 }
 
-internal fun GInputFiles.filterFiles(): List<FileWithPath> {
-    return filter { it.file.isFile }
+internal fun Project.registerPublishToCentralPortalTasks(
+    deploymentKind: DeploymentKind,
+    inputFiles: FileCollection,
+    defaultDeploymentName: Provider<String>,
+    spec: CentralPortalOptions,
+) {
+    val releaseTaskName: String = when(deploymentKind) {
+        KindAggregation -> "nmcpPublishAggregationToCentralPortal"
+        KindAll -> "nmcpPublishAllPublicationsToCentralPortal"
+        is KindSingle ->  "nmcpPublish${deploymentKind.name.capitalizeFirstLetter()}PublicationToCentralPortal"
+    }
+    val snapshotTaskName: String = when(deploymentKind) {
+        KindAggregation -> "nmcpPublishAggregationToCentralPortalSnapshots"
+        KindAll -> "nmcpPublishAllPublicationsToCentralPortalSnapshots"
+        is KindSingle ->  "nmcpPublish${deploymentKind.name.capitalizeFirstLetter()}PublicationToCentralPortalSnapshots"
+    }
+
+    val lifecycleTaskName: String? = when(deploymentKind) {
+        KindAggregation -> "publishAggregationToCentralPortal"
+        KindAll -> "publishAllPublicationsToCentralPortal"
+        is KindSingle ->  null
+    }
+
+    val task = registerNmcpPublishWithPublisherApiTask(
+        taskName = releaseTaskName,
+        inputFiles = inputFiles,
+        username = spec.username,
+        password = spec.password,
+        publicationName = spec.publicationName.orElse(defaultDeploymentName),
+        publishingType = spec.publishingType,
+        baseUrl = spec.baseUrl,
+        validationTimeoutSeconds = spec.validationTimeout.map { it.seconds },
+        publishingTimeoutSeconds = spec.publishingTimeout.map { it.seconds },
+    )
+
+    if (lifecycleTaskName != null) {
+        project.tasks.register(lifecycleTaskName) {
+            it.dependsOn(task)
+        }
+    }
+
+    registerNmcpPublishFileByFileTask(
+        taskName = snapshotTaskName,
+        username = spec.username,
+        password = spec.password,
+        url = project.provider { "https://central.sonatype.com/repository/maven-snapshots/" },
+        inputFiles = inputFiles,
+    )
 }
+

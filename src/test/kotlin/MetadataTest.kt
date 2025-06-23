@@ -2,11 +2,10 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlinx.serialization.decodeFromString
-import nl.adaptivity.xmlutil.serialization.XML
-import nmcp.internal.ArtifactMetadata
-import nmcp.internal.VersionMetadata
+import nmcp.internal.task.ArtifactMetadata
+import nmcp.internal.task.VersionMetadata
 import nmcp.internal.task.encodeToXml
-import nmcp.internal.xml
+import nmcp.internal.task.xml
 
 class MetadataTest {
     @Test
