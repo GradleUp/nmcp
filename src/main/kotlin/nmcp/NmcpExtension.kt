@@ -88,6 +88,14 @@ open class NmcpExtension(private val project: Project) {
             }
         }
 
+        val publishAllToNmcpTaskProvider = project.tasks.named("publishAllPublicationsTo${repoName.capitalizeFirstLetter()}Repository")
+        publishAllToNmcpTaskProvider.configure {
+            // This is mostly an internal task, hide it from `./gradlew --tasks`
+            it.group = null
+        }
+
+
+
         val zipTaskProvider = project.tasks.register("zip${capitalized}Publication", Zip::class.java) {
             it.dependsOn(publishToNmcpTaskProvider)
             it.from(m2Dir)
