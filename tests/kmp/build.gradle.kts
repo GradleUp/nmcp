@@ -20,18 +20,11 @@ buildscript {
     }
 }
 
-apply(plugin = "com.gradleup.nmcp.aggregation")
-
 val mockServer = MockWebServer()
 mockServer.enqueue(MockResponse())
 mockServer.enqueue(MockResponse().setBody("{\"deploymentState\": \"PUBLISHED\"}"))
 
-dependencies {
-    add("nmcpAggregation", project(":module1"))
-    add("nmcpAggregation", project(":module2"))
-}
-
-extensions.getByType(nmcp.NmcpAggregationExtension::class.java).apply {
+nmcpAggregation {
     centralPortal {
         if (System.getenv("MAVEN_CENTRAL_USERNAME") == null) {
             username = "placeholder"
