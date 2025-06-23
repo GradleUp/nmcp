@@ -79,7 +79,7 @@ fun publishRelease(
     val timeout1 = validationTimeoutSeconds?.seconds ?: 10.minutes
     if (timeout1.isPositive()) {
         logger.lifecycle("Nmcp: waiting for validation...")
-        waitFor(setOf(VALIDATED, PUBLISHED), timeout1, logger, deploymentId, baseUrl, token)
+        waitFor(setOf(VALIDATED, PUBLISHING, PUBLISHED), timeout1, logger, deploymentId, baseUrl, token)
 
         val timeout2 = publishingTimeoutSeconds?.seconds ?: 0.seconds
         if (publishingType == "AUTOMATIC") {
