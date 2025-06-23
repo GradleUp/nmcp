@@ -17,3 +17,4 @@ kgp = { id = "org.jetbrains.kotlin.jvm", version.ref = "kgp" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 ggp = { id = "com.gradleup.gratatouille", version.ref = "gratatouille" }
 nmcp = { id = "com.gradleup.nmcp", version = "0.1.5" }
+compat = { id = "com.gradleup.compat.patrouille", version = "0.0.0" }
