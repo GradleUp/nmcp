@@ -15,8 +15,6 @@ import org.gradle.api.attributes.HasConfigurableAttributes
 import org.gradle.api.attributes.Usage
 import org.gradle.api.attributes.Usage.USAGE_ATTRIBUTE
 import org.gradle.api.file.FileCollection
-import org.gradle.api.provider.Provider
-import org.gradle.api.tasks.bundling.Zip
 
 internal fun Project.withRequiredPlugin(id: String, block: () -> Unit) {
     var hasPlugin = false
