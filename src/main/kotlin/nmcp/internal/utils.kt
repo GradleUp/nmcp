@@ -71,6 +71,12 @@ internal fun Project.registerPublishToCentralPortalTasks(
         is KindSingle ->  null
     }
 
+    val snapshotsLifecycleTaskName: String? = when(deploymentKind) {
+        KindAggregation -> "publishAggregationToCentralPortalSnapshots"
+        KindAll -> "publishAllPublicationsToCentralPortalSnapshots"
+        is KindSingle ->  null
+    }
+
     val task = registerNmcpPublishWithPublisherApiTask(
         taskName = releaseTaskName,
         inputFiles = inputFiles,
@@ -89,12 +95,17 @@ internal fun Project.registerPublishToCentralPortalTasks(
         }
     }
 
-    registerNmcpPublishFileByFileTask(
+    val snapshots = registerNmcpPublishFileByFileTask(
         taskName = snapshotTaskName,
         username = spec.username,
         password = spec.password,
         url = project.provider { "https://central.sonatype.com/repository/maven-snapshots/" },
         inputFiles = inputFiles,
     )
+    if (snapshotsLifecycleTaskName != null) {
+        project.tasks.register(snapshotsLifecycleTaskName) {
+            it.dependsOn(snapshots)
+        }
+    }
 }
 
