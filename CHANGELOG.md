@@ -1,4 +1,4 @@
-# Version 0.1.6
+# Version 0.2.0
 
 * Configure compatibility flags by @martinbonnin in https://github.com/GradleUp/nmcp/pull/89
 * Change the default publishingType to AUTOMATIC by @martinbonnin in https://github.com/GradleUp/nmcp/pull/90
