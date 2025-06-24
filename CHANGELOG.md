@@ -1,9 +1,18 @@
 # Version 0.1.6
 
-- Configure `jvmTarget` to 17 and Kotlin `apiVersion/languageVersion/coreLibrariesVersion` to 2.0.0. 
-- The default `publicationType` is now `"AUTOMATIC"`, make sure to set it to `"USER_MANAGED"` if you want to manually confirm releases.
-- Add `publishingTimeout` and restore status logs.
-
+* Configure compatibility flags by @martinbonnin in https://github.com/GradleUp/nmcp/pull/89
+* Change the default publishingType to AUTOMATIC by @martinbonnin in https://github.com/GradleUp/nmcp/pull/90
+* Add `publishingTimeout` and restore log messages by @martinbonnin in https://github.com/GradleUp/nmcp/pull/91
+* Compatibility with Kotlin 1.9 by @martinbonnin in https://github.com/GradleUp/nmcp/pull/94
+* Hide internal tasks by @martinbonnin in https://github.com/GradleUp/nmcp/pull/95
+* PUBLISHING is also a valid status by @martinbonnin in https://github.com/GradleUp/nmcp/pull/97
+* Unify snapshots code by @martinbonnin in https://github.com/GradleUp/nmcp/pull/96
+* Add `com.gradleup.nmcp.settings` by @martinbonnin in https://github.com/GradleUp/nmcp/pull/98
+* Remove intermediate zip task by @martinbonnin in https://github.com/GradleUp/nmcp/pull/99
+* Simplify finding a name for the deployment by @martinbonnin in https://github.com/GradleUp/nmcp/pull/100
+* Add publishAggregationToCentralPortalSnapshots as a "shortcut" lifecyle task by @martinbonnin in https://github.com/GradleUp/nmcp/pull/101
+* Only update maven-metadata.xml once all the files have been uploaded by @martinbonnin in https://github.com/GradleUp/nmcp/pull/102
+* 
 # Version 0.1.5
 
 ## Fix for publishing snapshots.
