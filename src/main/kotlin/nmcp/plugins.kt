@@ -1,6 +1,6 @@
 package nmcp
 
-import gratatouille.GPlugin
+import gratatouille.wiring.GPlugin
 import nmcp.internal.DefaultNmcpAggregationExtension
 import nmcp.internal.DefaultNmcpExtension
 import nmcp.internal.nmcpConsumerConfigurationName

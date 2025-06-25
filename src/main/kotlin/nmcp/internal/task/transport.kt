@@ -1,6 +1,6 @@
 package nmcp.internal.task
 
-import gratatouille.GLogger
+import gratatouille.tasks.GLogger
 import java.io.File
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.MediaType

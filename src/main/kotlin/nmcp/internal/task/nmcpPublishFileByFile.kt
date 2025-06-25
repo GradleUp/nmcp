@@ -1,9 +1,9 @@
 package nmcp.internal.task
 
-import gratatouille.FileWithPath
-import gratatouille.GInputFiles
-import gratatouille.GLogger
-import gratatouille.GTask
+import gratatouille.tasks.FileWithPath
+import gratatouille.tasks.GInputFiles
+import gratatouille.tasks.GLogger
+import gratatouille.tasks.GTask
 import java.security.MessageDigest
 import kotlin.text.lastIndexOf
 import kotlin.text.substring
