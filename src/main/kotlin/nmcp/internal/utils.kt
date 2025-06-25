@@ -1,6 +1,6 @@
 package nmcp.internal
 
-import gratatouille.capitalizeFirstLetter
+import gratatouille.wiring.capitalizeFirstLetter
 import nmcp.CentralPortalOptions
 import nmcp.internal.task.DeploymentKind
 import nmcp.internal.task.KindAggregation

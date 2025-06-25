@@ -95,7 +95,6 @@ dependencies {
     implementation(libs.okio)
     implementation(libs.okhttp)
     implementation(libs.xmlutil)
-    implementation(libs.gratatouille.runtime)
     implementation(libs.okhttp.logging.interceptor)
 
     testImplementation(libs.kotlin.test)

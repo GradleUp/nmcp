@@ -1,8 +1,8 @@
 package nmcp.internal.task
 
-import gratatouille.GInputFiles
-import gratatouille.GLogger
-import gratatouille.GTask
+import gratatouille.tasks.GInputFiles
+import gratatouille.tasks.GLogger
+import gratatouille.tasks.GTask
 import java.net.SocketTimeoutException
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream

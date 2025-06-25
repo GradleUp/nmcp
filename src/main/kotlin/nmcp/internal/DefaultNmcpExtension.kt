@@ -1,6 +1,6 @@
 package nmcp.internal
 
-import gratatouille.capitalizeFirstLetter
+import gratatouille.wiring.capitalizeFirstLetter
 import nmcp.CentralPortalOptions
 import nmcp.NmcpExtension
 import nmcp.internal.task.KindAll

@@ -1,7 +1,7 @@
 [versions]
 kgp = "2.1.20"
 ksp = "2.1.20-2.0.0"
-gratatouille = "0.0.8"
+gratatouille = "0.0.10"
 
 [libraries]
 json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1"
@@ -10,7 +10,6 @@ okhttp = "com.squareup.okhttp3:okhttp:4.12.0"
 okhttp-logging-interceptor = "com.squareup.okhttp3:logging-interceptor:4.12.0"
 mockwebserver = "com.squareup.okhttp3:mockwebserver:4.12.0"
 gradle-min = "dev.gradleplugins:gradle-api:8.8"
-gratatouille-runtime = { module = "com.gradleup.gratatouille:gratatouille-runtime", version.ref = "gratatouille" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test" }
 xmlutil = "io.github.pdvrieze.xmlutil:serialization:0.91.1"
 

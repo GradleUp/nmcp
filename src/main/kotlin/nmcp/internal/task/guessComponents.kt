@@ -1,6 +1,6 @@
 package nmcp.internal.task
 
-import gratatouille.GInputFiles
+import gratatouille.tasks.GInputFiles
 import kotlin.collections.distinct
 import kotlin.collections.map
 import kotlin.collections.mapNotNull
