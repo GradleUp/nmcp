@@ -3,8 +3,6 @@ package nmcp.internal
 import gratatouille.wiring.capitalizeFirstLetter
 import nmcp.CentralPortalOptions
 import nmcp.NmcpExtension
-import nmcp.internal.task.KindAll
-import nmcp.internal.task.KindSingle
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.file.ConfigurableFileCollection
@@ -101,7 +99,7 @@ open class DefaultNmcpExtension(private val project: Project): NmcpExtension {
         action.execute(centralPortalOptions)
 
         project.registerPublishToCentralPortalTasks(
-            deploymentKind = KindAll,
+            name = "allPublications",
             inputFiles = filesFor(null),
             spec = centralPortalOptions
         )
@@ -117,7 +115,7 @@ open class DefaultNmcpExtension(private val project: Project): NmcpExtension {
         val publication = project.extensions.getByType(PublishingExtension::class.java).publications.findByName(publicationName) ?: error("Nmcp: Cannot find publication '$publicationName'")
         publication as MavenPublication
         project.registerPublishToCentralPortalTasks(
-            deploymentKind = KindSingle(publicationName),
+            name = "${publicationName}Publication",
             inputFiles = filesFor(publicationName),
             spec = centralPortalOptions
         )
