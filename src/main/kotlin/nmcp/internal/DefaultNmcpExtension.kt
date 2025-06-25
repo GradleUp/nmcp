@@ -3,14 +3,16 @@ package nmcp.internal
 import gratatouille.wiring.capitalizeFirstLetter
 import nmcp.CentralPortalOptions
 import nmcp.NmcpExtension
+import nmcp.internal.task.registerCleanupDirectoryTask
 import org.gradle.api.Action
 import org.gradle.api.Project
-import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 
 open class DefaultNmcpExtension(private val project: Project): NmcpExtension {
-    private val publicationFiles = mutableMapOf<String?, ConfigurableFileCollection>()
+    private val m2Dir = project.layout.buildDirectory.file("nmcp/m2")
+    private val m2Files = project.files()
+    private val cleanupRepository = project.registerCleanupDirectoryTask(directory = m2Dir.map { it.asFile.absolutePath })
 
     init {
         project.configurations.create(nmcpProducerConfigurationName) {
@@ -24,74 +26,46 @@ open class DefaultNmcpExtension(private val project: Project): NmcpExtension {
 
         project.withRequiredPlugin("maven-publish") {
             val publishing = project.extensions.getByType(PublishingExtension::class.java)
-            publishing.publications.configureEach {
-                registerPublicationTasks(it.name)
-            }
-        }
-    }
 
-    private fun filesFor(publicationName: String?): ConfigurableFileCollection {
-        return publicationFiles.getOrPut(publicationName) { project.files() }
-    }
-
-    /**
-     * Create tasks that export the artifacts, signatures and checksums
-     */
-    private fun registerPublicationTasks(publicationName: String) {
-        val publishing = project.extensions.getByType(PublishingExtension::class.java)
-
-        val publication = publishing.publications.findByName(publicationName)
-        if (publication == null) {
-            val candidates = publishing.publications.map { it.name }
-            error("Nmcp: cannot find publication '$publicationName'. Candidates are: '${candidates.joinToString()}'")
-        }
-
-        check(publication is MavenPublication) {
-            error("Nmcp only supports MavenPublication (found ${publication.javaClass.simpleName})")
-        }
-        val capitalized = publicationName.capitalizeFirstLetter()
-
-        val m2Dir = project.layout.buildDirectory.dir("nmcp/m2$capitalized")
-        val repoName = "nmcp$capitalized"
-        publishing.apply {
-            repositories.apply {
+            publishing.repositories.apply {
                 maven {
-                    it.name = repoName
+                    it.name = "nmcp"
                     it.url = project.uri(m2Dir)
                 }
             }
-        }
 
-        val publishToNmcpTaskProvider = project.tasks.named("publish${capitalized}PublicationTo${repoName.capitalizeFirstLetter()}Repository")
+            val publishAllToNmcpTaskProvider = project.tasks.named("publishAllPublicationsToNmcpRepository")
+            publishAllToNmcpTaskProvider.configure {
+                /**
+                 * Hide the task from `./gradlew tasks`
+                 */
+                it.group = null
+            }
+            project.artifacts.add(nmcpProducerConfigurationName, m2Dir) {
+                it.builtBy(publishAllToNmcpTaskProvider)
+            }
 
-        publishToNmcpTaskProvider.configure {
-            // This is mostly an internal task, hide it from `./gradlew --tasks`
-            it.group = null
-            it.doFirst {
-                m2Dir.get().asFile.apply {
-                    deleteRecursively()
-                    mkdirs()
+            m2Files.builtBy(publishAllToNmcpTaskProvider)
+            m2Files.from(project.fileTree(m2Dir))
+
+            publishing.publications.configureEach { publication ->
+                if (publication is MavenPublication) {
+                    val capitalized = publication.name.capitalizeFirstLetter()
+                    val publishToNmcpTaskProvider = project.tasks.named("publish${capitalized}PublicationToNmcpRepository")
+                    publishToNmcpTaskProvider.configure {
+                        /**
+                         * m2Dir is shared between multiple tasks. Those tasks are considered an implementation detail though, and it's considered
+                         * an error for the user to invoke them manually.
+                         *
+                         * As long as the individual tasks are trigger by `publishAllPublicationsTo${Foo}` then this sharing shouldn't be too
+                         * much of an issue and having a single directory greatly simplifies the Gradle model and the output of `./gradlew tasks --all`.
+                         */
+                        it.group = null
+                        it.dependsOn(cleanupRepository)
+                    }
                 }
             }
         }
-
-        val publishAllToNmcpTaskProvider = project.tasks.named("publishAllPublicationsTo${repoName.capitalizeFirstLetter()}Repository")
-        publishAllToNmcpTaskProvider.configure {
-            // This is mostly an internal task, hide it from `./gradlew --tasks`
-            it.group = null
-        }
-
-        val m2Files = project.files()
-        m2Files.builtBy(publishAllToNmcpTaskProvider)
-        m2Files.from(project.fileTree(m2Dir))
-
-        project.artifacts.add(nmcpProducerConfigurationName, m2Dir) {
-            it.builtBy(publishToNmcpTaskProvider)
-        }
-
-        filesFor(publicationName).from(m2Files)
-
-        filesFor(null).from(m2Files)
     }
 
     override fun publishAllPublicationsToCentralPortal(action: Action<CentralPortalOptions>) {
@@ -100,23 +74,7 @@ open class DefaultNmcpExtension(private val project: Project): NmcpExtension {
 
         project.registerPublishToCentralPortalTasks(
             name = "allPublications",
-            inputFiles = filesFor(null),
-            spec = centralPortalOptions
-        )
-    }
-
-    override fun publishToCentralPortal(
-        publicationName: String,
-        action: Action<CentralPortalOptions>,
-    ) {
-        val centralPortalOptions = project.objects.newInstance(CentralPortalOptions::class.java)
-        action.execute(centralPortalOptions)
-
-        val publication = project.extensions.getByType(PublishingExtension::class.java).publications.findByName(publicationName) ?: error("Nmcp: Cannot find publication '$publicationName'")
-        publication as MavenPublication
-        project.registerPublishToCentralPortalTasks(
-            name = "${publicationName}Publication",
-            inputFiles = filesFor(publicationName),
+            inputFiles = m2Files,
             spec = centralPortalOptions
         )
     }
