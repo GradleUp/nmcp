@@ -11,7 +11,6 @@ interface NmcpAggregationExtension {
      * - nmcpPublishAggregationToCentralPortalSnapshots
      */
     fun centralPortal(action: Action<CentralPortalOptions>)
-    
 
     /**
      * Applies the `com.gradleup.nmcp` plugin to every project that also applies `maven-publish`.
