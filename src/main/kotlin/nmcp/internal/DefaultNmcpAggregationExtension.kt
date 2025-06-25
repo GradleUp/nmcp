@@ -1,9 +1,7 @@
 package nmcp.internal
 
-import gratatouille.wiring.capitalizeFirstLetter
 import nmcp.CentralPortalOptions
 import nmcp.NmcpAggregationExtension
-import nmcp.internal.task.registerNmcpPublishFileByFileTask
 import org.gradle.api.Action
 import org.gradle.api.Project
 
@@ -16,12 +14,12 @@ abstract class DefaultNmcpAggregationExtension(private val project: Project) : N
         it.configureAttributes(project)
     }
 
-    private val lenientFiles = consumerConfiguration.incoming.artifactView { it.lenient(true) }.files
+    override val allFiles = consumerConfiguration.incoming.artifactView { it.lenient(true) }.files
 
     override fun centralPortal(action: Action<CentralPortalOptions>) {
         project.registerPublishToCentralPortalTasks(
             name = "aggregation",
-            inputFiles = lenientFiles,
+            inputFiles = allFiles,
             action = action
         )
     }

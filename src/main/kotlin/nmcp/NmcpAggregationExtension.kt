@@ -1,6 +1,7 @@
 package nmcp
 
 import org.gradle.api.Action
+import org.gradle.api.file.FileCollection
 
 interface NmcpAggregationExtension {
     /**
@@ -19,4 +20,9 @@ interface NmcpAggregationExtension {
      * add each subproject to the `nmcpAggregation` configuration dependencies.
      */
     fun publishAllProjectsProbablyBreakingProjectIsolation()
+
+    /**
+     * [allFiles] contains all the files present in the "nmcpAggregation" configuration
+     */
+    val allFiles: FileCollection
 }
