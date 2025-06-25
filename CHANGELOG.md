@@ -1,3 +1,18 @@
+# Version 0.2.1
+
+* Update changelog and readme by @martinbonnin in https://github.com/GradleUp/nmcp/pull/92
+* Remove single module from the README, we want to focus on aggregation use cases by @martinbonnin in https://github.com/GradleUp/nmcp/pull/105
+* Improve logging by @martinbonnin in https://github.com/GradleUp/nmcp/pull/106
+* Use "Authentication: Bearer" instead of "Authentication: UserToken" by @martinbonnin in https://github.com/GradleUp/nmcp/pull/107
+* update Gratatouille by @martinbonnin in https://github.com/GradleUp/nmcp/pull/108
+* Use a lenient configuration by @martinbonnin in https://github.com/GradleUp/nmcp/pull/109
+* Add transport API by @martinbonnin in https://github.com/GradleUp/nmcp/pull/110
+* Drop support for publishing a single publication by @martinbonnin in https://github.com/GradleUp/nmcp/pull/111
+* Validate username and password early by @martinbonnin in https://github.com/GradleUp/nmcp/pull/104
+* [infra] Release automatically by @martinbonnin in https://github.com/GradleUp/nmcp/pull/112
+* Add NmcpAggregationExtension.allFiles by @martinbonnin in https://github.com/GradleUp/nmcp/pull/114
+* hide some symbols by @martinbonnin in https://github.com/GradleUp/nmcp/pull/113
+
 # Version 0.2.0
 
 * Configure compatibility flags by @martinbonnin in https://github.com/GradleUp/nmcp/pull/89
@@ -12,7 +27,7 @@
 * Simplify finding a name for the deployment by @martinbonnin in https://github.com/GradleUp/nmcp/pull/100
 * Add publishAggregationToCentralPortalSnapshots as a "shortcut" lifecyle task by @martinbonnin in https://github.com/GradleUp/nmcp/pull/101
 * Only update maven-metadata.xml once all the files have been uploaded by @martinbonnin in https://github.com/GradleUp/nmcp/pull/102
-* 
+
 # Version 0.1.5
 
 ## Fix for publishing snapshots.
