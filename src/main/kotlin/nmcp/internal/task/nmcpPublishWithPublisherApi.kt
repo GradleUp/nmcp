@@ -58,11 +58,13 @@ fun nmcpPublishWithPublisherApi(
     val publishingType = publishingType ?: "AUTOMATIC"
 
     val baseUrl = baseUrl ?: "https://central.sonatype.com/"
+    val url = baseUrl + "api/v1/publisher/upload?publishingType=$publishingType"
 
+    logger.lifecycle("Uploading deployment to '$url'")
     val deploymentId = Request.Builder()
         .post(body)
         .addHeader("Authorization", "UserToken $token")
-        .url(baseUrl + "api/v1/publisher/upload?publishingType=$publishingType")
+        .url(url)
         .build()
         .let {
             client.newCall(it).execute()
@@ -74,7 +76,7 @@ fun nmcpPublishWithPublisherApi(
             it.body!!.string()
         }
 
-    logger.lifecycle("Nmcp: deployment bundle '$deploymentId' uploaded to '$baseUrl'.")
+    logger.lifecycle("Nmcp: deployment bundle '$deploymentId' uploaded.")
 
     val timeout1 = validationTimeoutSeconds?.seconds ?: 10.minutes
     if (timeout1.isPositive()) {
