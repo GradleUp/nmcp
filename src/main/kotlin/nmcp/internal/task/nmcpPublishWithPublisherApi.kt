@@ -63,7 +63,7 @@ fun nmcpPublishWithPublisherApi(
     logger.lifecycle("Uploading deployment to '$url'")
     val deploymentId = Request.Builder()
         .post(body)
-        .addHeader("Authorization", "UserToken $token")
+        .addHeader("Authorization", "Bearer $token")
         .url(url)
         .build()
         .let {
