@@ -5,7 +5,7 @@ import gratatouille.tasks.GTask
 import java.io.File
 
 @GTask(pure = false)
-fun cleanupDirectory(
+internal fun cleanupDirectory(
     @GInternal
     directory: String
 ) {

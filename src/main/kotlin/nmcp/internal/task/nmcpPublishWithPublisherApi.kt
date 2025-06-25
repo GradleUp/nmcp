@@ -25,7 +25,7 @@ import okio.ByteString
 import okio.use
 
 @GTask(pure = false)
-fun nmcpPublishWithPublisherApi(
+internal fun nmcpPublishWithPublisherApi(
     logger: GLogger,
     username: String?,
     password: String?,
@@ -67,7 +67,7 @@ fun nmcpPublishWithPublisherApi(
         .url(url)
         .build()
         .let {
-            client.newCall(it).execute()
+            nmcpClient.newCall(it).execute()
         }.use {
             if (!it.isSuccessful) {
                 error("Cannot deploy to maven central (status='${it.code}'): ${it.body?.string()}")
@@ -171,7 +171,7 @@ private fun verifyStatus(
         .build()
         .let {
             try {
-                client.newCall(it).execute()
+                nmcpClient.newCall(it).execute()
             } catch (_: SocketTimeoutException) {
                 return UNKNOWN_QUERY_LATER
             }
