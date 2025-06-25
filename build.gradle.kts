@@ -18,7 +18,7 @@ plugins {
 }
 
 group = "com.gradleup.nmcp"
-version = "0.2.1"
+version = "0.2.2-SNAPSHOT"
 
 compatPatrouille {
     java(17)
@@ -83,7 +83,7 @@ gratatouille {
 }
 
 nmcp {
-    centralPortal {
+    publishAllPublicationsToCentralPortal {
         username = System.getenv("CENTRAL_PORTAL_USERNAME")
         password = System.getenv("CENTRAL_PORTAL_PASSWORD")
         publishingType.set("AUTOMATIC")
