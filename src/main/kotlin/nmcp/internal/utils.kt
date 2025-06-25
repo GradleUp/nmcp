@@ -2,10 +2,6 @@ package nmcp.internal
 
 import gratatouille.wiring.capitalizeFirstLetter
 import nmcp.CentralPortalOptions
-import nmcp.internal.task.DeploymentKind
-import nmcp.internal.task.KindAggregation
-import nmcp.internal.task.KindAll
-import nmcp.internal.task.KindSingle
 import nmcp.internal.task.registerNmcpPublishFileByFileTask
 import nmcp.internal.task.registerNmcpPublishWithPublisherApiTask
 import org.gradle.api.Named
@@ -31,7 +27,7 @@ internal fun Project.withRequiredPlugin(id: String, block: () -> Unit) {
     }
 }
 
-internal val nmcpConsumerConfigurationName = "nmcpAggregation"
+val nmcpConsumerConfigurationName = "nmcpAggregation"
 internal val nmcpProducerConfigurationName = "nmcpProducer"
 internal val attribute = "com.gradleup.nmcp"
 internal val attributeValue = "bundle"
@@ -48,32 +44,21 @@ internal fun HasConfigurableAttributes<*>.configureAttributes(project: Project) 
 }
 
 internal fun Project.registerPublishToCentralPortalTasks(
-    deploymentKind: DeploymentKind,
+    name: String,
     inputFiles: FileCollection,
     spec: CentralPortalOptions,
 ) {
-    val releaseTaskName: String = when(deploymentKind) {
-        KindAggregation -> "nmcpPublishAggregationToCentralPortal"
-        KindAll -> "nmcpPublishAllPublicationsToCentralPortal"
-        is KindSingle ->  "nmcpPublish${deploymentKind.name.capitalizeFirstLetter()}PublicationToCentralPortal"
-    }
-    val snapshotTaskName: String = when(deploymentKind) {
-        KindAggregation -> "nmcpPublishAggregationToCentralPortalSnapshots"
-        KindAll -> "nmcpPublishAllPublicationsToCentralPortalSnapshots"
-        is KindSingle ->  "nmcpPublish${deploymentKind.name.capitalizeFirstLetter()}PublicationToCentralPortalSnapshots"
-    }
 
-    val lifecycleTaskName: String? = when(deploymentKind) {
-        KindAggregation -> "publishAggregationToCentralPortal"
-        KindAll -> "publishAllPublicationsToCentralPortal"
-        is KindSingle ->  null
-    }
+    val releaseTaskName = "nmcpPublish${name.capitalizeFirstLetter()}ToCentralPortal"
+    val snapshotTaskName = "nmcpPublish${name.capitalizeFirstLetter()}ToCentralPortalSnapshots"
 
-    val snapshotsLifecycleTaskName: String? = when(deploymentKind) {
-        KindAggregation -> "publishAggregationToCentralPortalSnapshots"
-        KindAll -> "publishAllPublicationsToCentralPortalSnapshots"
-        is KindSingle ->  null
+    val shortcut = when(name) {
+        "aggregation",
+        "allPublications" -> name
+        else ->  null
     }
+    val lifecycleTaskName = shortcut?.let { "publish${it.capitalizeFirstLetter()}ToCentralPortal" }
+    val snapshotsLifecycleTaskName = shortcut?.let { "publish${it.capitalizeFirstLetter()}ToCentralPortalSnapshots" }
 
     val task = registerNmcpPublishWithPublisherApiTask(
         taskName = releaseTaskName,

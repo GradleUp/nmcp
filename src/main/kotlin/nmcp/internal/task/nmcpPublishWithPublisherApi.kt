@@ -205,11 +205,6 @@ private fun verifyStatus(
         }
 }
 
-internal sealed interface DeploymentKind
-internal object KindAggregation: DeploymentKind
-internal object KindAll: DeploymentKind
-internal class KindSingle(val name: String): DeploymentKind
-
 internal class ZipBody(val files: GInputFiles) : RequestBody() {
     override fun contentType(): MediaType {
         return "application/octet-stream".toMediaType()
