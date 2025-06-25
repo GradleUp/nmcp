@@ -102,34 +102,3 @@ Call `publishAggregationToCentralPortalSnapshots` to publish to the snapshots:
 ./gradlew publishAggregationToCentralPortalSnapshots
 # yay everything is uploaded to "https://central.sonatype.com/repository/maven-snapshots/" 🎉
 ```
-
-# Single-module
-
-```kotlin
-plugins {
-  id("maven-publish")
-  id("com.gradleup.nmcp").version("0.2.0")
-}
-
-// Create your publications
-
-nmcp {
-  // publish a single publication. Adds:
-  // - "nmcpPublish${publicationName.capitalize()}PublicationToCentralPortal"
-  // - "nmcpPublish${publicationName.capitalize()}PublicationToCentralPortalSnapshots"
-  publishToCentralPortal(publicationName) {
-    username = TODO("Create a token username at https://central.sonatype.com/account")
-    password = TODO("Create a token password at https://central.sonatype.com/account")
-    // ...
-  }
-
-  // publish all the publications all at once. Adds:
-  // - "nmcpPublishAllPublicationsToCentralPortal"
-  // - "nmcpPublishAllPublicationsToCentralPortalSnapshots"
-  publishAllPublicationsToCentralPortal {
-    username = TODO("Create a token username at https://central.sonatype.com/account")
-    password = TODO("Create a token password at https://central.sonatype.com/account")
-    // ...
-  }
-}
-```
