@@ -9,7 +9,7 @@ import nmcp.transport.NmcpCredentials
 import nmcp.transport.publishFileByFile
 
 @GTask(pure = false)
-fun nmcpPublishFileByFile(
+internal fun nmcpPublishFileByFile(
     logger: GLogger,
     url: String,
     username: String?,

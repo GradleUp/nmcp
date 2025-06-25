@@ -56,7 +56,7 @@ internal class HttpTransport(
     private val credentials: NmcpCredentials?,
     private val logger: GLogger,
 ) : Transport {
-    private val client = nmcp.internal.task.client.newBuilder()
+    private val client = nmcp.internal.task.nmcpClient.newBuilder()
         .addInterceptor { chain ->
             val builder = chain.request().newBuilder()
             if (credentials != null) {
