@@ -48,8 +48,10 @@ internal fun HasConfigurableAttributes<*>.configureAttributes(project: Project) 
 internal fun Project.registerPublishToCentralPortalTasks(
     name: String,
     inputFiles: FileCollection,
-    spec: CentralPortalOptions,
+    action: Action<CentralPortalOptions>,
 ) {
+    val spec = objects.newInstance(CentralPortalOptions::class.java)
+    action.execute(spec)
 
     val releaseTaskName = "nmcpPublish${name.capitalizeFirstLetter()}ToCentralPortal"
     val snapshotTaskName = "nmcpPublish${name.capitalizeFirstLetter()}ToCentralPortalSnapshots"
@@ -92,25 +94,17 @@ internal fun Project.registerPublishToCentralPortalTasks(
             it.dependsOn(snapshots)
         }
     }
-}
-
-fun Project.createCentralPortalOptions(action: Action<CentralPortalOptions>): CentralPortalOptions {
-    val centralPortalOptions = objects.newInstance(CentralPortalOptions::class.java)
-    action.execute(centralPortalOptions)
 
     project.gradle.taskGraph.whenReady {
-        if (it.allTasks.any {
-                it is NmcpPublishWithPublisherApiTask
-            }) {
-            check(centralPortalOptions.username.isPresent) {
+        if (it.hasTask(task.get())) {
+            check(spec.username.isPresent) {
                 "Nmcp: username is missing"
             }
-            check(centralPortalOptions.password.isPresent) {
+            check(spec.password.isPresent) {
                 "Nmcp: password is missing"
             }
         }
     }
-
-    return centralPortalOptions
 }
+
 

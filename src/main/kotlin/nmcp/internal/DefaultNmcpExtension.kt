@@ -69,13 +69,10 @@ open class DefaultNmcpExtension(private val project: Project): NmcpExtension {
     }
 
     override fun publishAllPublicationsToCentralPortal(action: Action<CentralPortalOptions>) {
-        val centralPortalOptions = project.objects.newInstance(CentralPortalOptions::class.java)
-        action.execute(centralPortalOptions)
-
         project.registerPublishToCentralPortalTasks(
             name = "allPublications",
             inputFiles = m2Files,
-            spec = centralPortalOptions
+            action = action
         )
     }
 }
