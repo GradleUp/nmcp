@@ -2,8 +2,10 @@ package nmcp.internal
 
 import gratatouille.wiring.capitalizeFirstLetter
 import nmcp.CentralPortalOptions
+import nmcp.internal.task.NmcpPublishWithPublisherApiTask
 import nmcp.internal.task.registerNmcpPublishFileByFileTask
 import nmcp.internal.task.registerNmcpPublishWithPublisherApiTask
+import org.gradle.api.Action
 import org.gradle.api.Named
 import org.gradle.api.Project
 import org.gradle.api.attributes.Attribute
@@ -46,8 +48,10 @@ internal fun HasConfigurableAttributes<*>.configureAttributes(project: Project) 
 internal fun Project.registerPublishToCentralPortalTasks(
     name: String,
     inputFiles: FileCollection,
-    spec: CentralPortalOptions,
+    action: Action<CentralPortalOptions>,
 ) {
+    val spec = objects.newInstance(CentralPortalOptions::class.java)
+    action.execute(spec)
 
     val releaseTaskName = "nmcpPublish${name.capitalizeFirstLetter()}ToCentralPortal"
     val snapshotTaskName = "nmcpPublish${name.capitalizeFirstLetter()}ToCentralPortalSnapshots"
@@ -90,5 +94,17 @@ internal fun Project.registerPublishToCentralPortalTasks(
             it.dependsOn(snapshots)
         }
     }
+
+    project.gradle.taskGraph.whenReady {
+        if (it.allTasks.any { it is NmcpPublishWithPublisherApiTask }) {
+            check(spec.username.isPresent) {
+                "Nmcp: username is missing"
+            }
+            check(spec.password.isPresent) {
+                "Nmcp: password is missing"
+            }
+        }
+    }
 }
+
 

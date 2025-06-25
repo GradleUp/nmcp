@@ -19,13 +19,10 @@ abstract class DefaultNmcpAggregationExtension(private val project: Project) : N
     private val lenientFiles = consumerConfiguration.incoming.artifactView { it.lenient(true) }.files
 
     override fun centralPortal(action: Action<CentralPortalOptions>) {
-        val centralPortalOptions = project.objects.newInstance(CentralPortalOptions::class.java)
-        action.execute(centralPortalOptions)
-
         project.registerPublishToCentralPortalTasks(
             name = "aggregation",
             inputFiles = lenientFiles,
-            spec = centralPortalOptions
+            action = action
         )
     }
 
