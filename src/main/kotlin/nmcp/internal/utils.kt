@@ -96,7 +96,7 @@ internal fun Project.registerPublishToCentralPortalTasks(
     }
 
     project.gradle.taskGraph.whenReady {
-        if (it.hasTask(task.get())) {
+        if (it.allTasks.any { it is NmcpPublishWithPublisherApiTask }) {
             check(spec.username.isPresent) {
                 "Nmcp: username is missing"
             }
