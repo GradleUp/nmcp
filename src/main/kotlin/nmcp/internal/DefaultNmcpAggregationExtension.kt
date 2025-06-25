@@ -1,7 +1,9 @@
 package nmcp.internal
 
+import gratatouille.wiring.capitalizeFirstLetter
 import nmcp.CentralPortalOptions
 import nmcp.NmcpAggregationExtension
+import nmcp.internal.task.registerNmcpPublishFileByFileTask
 import org.gradle.api.Action
 import org.gradle.api.Project
 

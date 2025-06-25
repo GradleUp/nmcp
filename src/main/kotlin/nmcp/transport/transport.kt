@@ -1,7 +1,8 @@
-package nmcp.internal.task
+package nmcp.transport
 
 import gratatouille.tasks.GLogger
 import java.io.File
+import okhttp3.Credentials
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
@@ -13,7 +14,7 @@ import okio.buffer
 import okio.sink
 import okio.source
 
-internal interface Transport {
+interface Transport {
     fun get(path: String): BufferedSource?
     fun put(path: String, body: Content)
 }
@@ -61,7 +62,7 @@ internal class HttpTransport(
             if (credentials != null) {
                 builder.addHeader(
                     "Authorization",
-                    okhttp3.Credentials.basic(credentials.username, credentials.password),
+                    Credentials.basic(credentials.username, credentials.password),
                 )
             }
             builder.addHeader("Accept", "application/json")
@@ -105,14 +106,7 @@ internal class HttpTransport(
         logger.lifecycle("Nmcp: put '$url'")
 
         val response = Request.Builder()
-            .put(object : RequestBody() {
-                override fun contentType(): MediaType {
-                    return "application/octet-stream".toMediaType()
-                }
-                override fun writeTo(sink: BufferedSink) {
-                    body.writeTo(sink)
-                }
-            })
+            .put(body.toRequestBody())
             .url(url)
             .build()
             .let {
@@ -121,6 +115,18 @@ internal class HttpTransport(
 
         check(response.isSuccessful) {
             "Nmcp: cannot PUT '$url' (statusCode=${response.code}):\n${response.body!!.string()}"
+        }
+    }
+}
+
+fun Content.toRequestBody(): RequestBody {
+    return object : RequestBody() {
+        override fun contentType(): MediaType {
+            return "application/octet-stream".toMediaType()
+        }
+
+        override fun writeTo(sink: BufferedSink) {
+            this@toRequestBody.writeTo(sink)
         }
     }
 }
@@ -145,3 +151,4 @@ internal class FilesystemTransport(
         }
     }
 }
+

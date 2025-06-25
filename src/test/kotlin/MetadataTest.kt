@@ -4,7 +4,7 @@ import kotlin.test.assertNull
 import kotlinx.serialization.decodeFromString
 import nmcp.internal.task.ArtifactMetadata
 import nmcp.internal.task.VersionMetadata
-import nmcp.internal.task.encodeToXml
+import nmcp.transport.encodeToXml
 import nmcp.internal.task.xml
 
 class MetadataTest {
