@@ -1,5 +1,3 @@
-name: pull_request
-
 on:
   push:
     branches: [ main ]
@@ -9,7 +7,7 @@ on:
       - '*.md'
 
 jobs:
-  ci:
+  pull_request:
     runs-on: ubuntu-latest
 
     steps:
