@@ -12,7 +12,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: |
-          ./gradlew publishAllPublicationsToCentralPortalSnapshots
+          LIBRARIAN_VERSION_SHA1=$GITHUB_SHA ./gradlew librarianPublishToGcs
+          ./gradlew librarianPublishToSnapshots
         env:
-          CENTRAL_PORTAL_USERNAME: ${{ secrets.CENTRAL_PORTAL_USERNAME }}
-          CENTRAL_PORTAL_PASSWORD: ${{ secrets.CENTRAL_PORTAL_PASSWORD }}
+          LIBRARIAN_SONATYPE_USERNAME: ${{ secrets.CENTRAL_PORTAL_USERNAME }}
+          LIBRARIAN_SONATYPE_PASSWORD: ${{ secrets.CENTRAL_PORTAL_PASSWORD }}
+          LIBRARIAN_GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
