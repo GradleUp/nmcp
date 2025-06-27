@@ -49,22 +49,21 @@ interface Content {
     fun writeTo(sink: BufferedSink)
 }
 
-internal class NmcpCredentials(val username: String, val password: String)
+private fun Request.Builder.maybeAddAuthorization(authorization: String?) = apply {
+    if (authorization != null) {
+        addHeader("Authorization", authorization)
+    }
+}
 
 internal class HttpTransport(
     baseUrl: String,
-    private val credentials: NmcpCredentials?,
+    private val getAuthorization: String?,
+    private val putAuthorization: String?,
     private val logger: GLogger,
 ) : Transport {
     private val client = nmcp.internal.task.nmcpClient.newBuilder()
         .addInterceptor { chain ->
             val builder = chain.request().newBuilder()
-            if (credentials != null) {
-                builder.addHeader(
-                    "Authorization",
-                    Credentials.basic(credentials.username, credentials.password),
-                )
-            }
             builder.addHeader("Accept", "application/json")
             builder.addHeader("User-Agent", "nmcp")
             chain.proceed(builder.build())
@@ -78,11 +77,12 @@ internal class HttpTransport(
             .addPathSegments(path)
             .build()
 
-        logger.lifecycle("Nmcp: get '$url'")
+        logger.info("Nmcp: get '$url'")
 
         val response = Request.Builder()
             .get()
             .url(url)
+            .maybeAddAuthorization(getAuthorization)
             .build()
             .let {
                 client.newCall(it).execute()
@@ -103,11 +103,12 @@ internal class HttpTransport(
             .addPathSegments(path)
             .build()
 
-        logger.lifecycle("Nmcp: put '$url'")
+        logger.info("Nmcp: put '$url'")
 
         val response = Request.Builder()
             .put(body.toRequestBody())
             .url(url)
+            .maybeAddAuthorization(putAuthorization)
             .build()
             .let {
                 client.newCall(it).execute()

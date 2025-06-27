@@ -72,13 +72,13 @@ public final class nmcp/internal/task/MetadataKt {
 	public static final fun getXml ()Lkotlinx/serialization/StringFormat;
 }
 
-public final class nmcp/internal/task/NmcpPublishFileByFileEntryPoint {
-	public static final field Companion Lnmcp/internal/task/NmcpPublishFileByFileEntryPoint$Companion;
+public final class nmcp/internal/task/NmcpPublishFileByFileToSnapshotsEntryPoint {
+	public static final field Companion Lnmcp/internal/task/NmcpPublishFileByFileToSnapshotsEntryPoint$Companion;
 	public fun <init> ()V
 	public static final fun run (Ljava/util/function/BiConsumer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;)V
 }
 
-public final class nmcp/internal/task/NmcpPublishFileByFileEntryPoint$Companion {
+public final class nmcp/internal/task/NmcpPublishFileByFileToSnapshotsEntryPoint$Companion {
 	public final fun run (Ljava/util/function/BiConsumer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;)V
 }
 
