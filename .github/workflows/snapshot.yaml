@@ -1,12 +1,10 @@
-name: release
-
 on:
   push:
     branches:
       - 'main'
 
 jobs:
-  ci:
+  snapshot:
     runs-on: ubuntu-latest
 
     steps:
