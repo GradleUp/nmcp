@@ -1,0 +1,115 @@
+public abstract class nmcp/CentralPortalOptions {
+	public fun <init> ()V
+	public abstract fun getBaseUrl ()Lorg/gradle/api/provider/Property;
+	public abstract fun getPassword ()Lorg/gradle/api/provider/Property;
+	public abstract fun getPublicationName ()Lorg/gradle/api/provider/Property;
+	public abstract fun getPublishingTimeout ()Lorg/gradle/api/provider/Property;
+	public abstract fun getPublishingType ()Lorg/gradle/api/provider/Property;
+	public abstract fun getUsername ()Lorg/gradle/api/provider/Property;
+	public abstract fun getValidationTimeout ()Lorg/gradle/api/provider/Property;
+}
+
+public abstract interface class nmcp/NmcpAggregationExtension {
+	public abstract fun centralPortal (Lorg/gradle/api/Action;)V
+	public abstract fun getAllFiles ()Lorg/gradle/api/file/FileCollection;
+	public abstract fun publishAllProjectsProbablyBreakingProjectIsolation ()V
+}
+
+public abstract class nmcp/NmcpAggregationPlugin : org/gradle/api/Plugin {
+	public fun <init> ()V
+	public synthetic fun apply (Ljava/lang/Object;)V
+	public fun apply (Lorg/gradle/api/Project;)V
+}
+
+public abstract interface class nmcp/NmcpExtension {
+	public abstract fun publishAllPublicationsToCentralPortal (Lorg/gradle/api/Action;)V
+}
+
+public abstract class nmcp/NmcpPlugin : org/gradle/api/Plugin {
+	public fun <init> ()V
+	public synthetic fun apply (Ljava/lang/Object;)V
+	public fun apply (Lorg/gradle/api/Project;)V
+}
+
+public abstract class nmcp/NmcpSettingsPlugin : org/gradle/api/Plugin {
+	public fun <init> ()V
+	public synthetic fun apply (Ljava/lang/Object;)V
+	public fun apply (Lorg/gradle/api/initialization/Settings;)V
+}
+
+public final class nmcp/PluginsKt {
+	public static final fun nmcp (Lorg/gradle/api/Project;)V
+	public static final fun nmcpAggregation (Lorg/gradle/api/Project;)V
+}
+
+public abstract class nmcp/internal/DefaultNmcpAggregationExtension : nmcp/NmcpAggregationExtension {
+	public fun <init> (Lorg/gradle/api/Project;)V
+	public fun centralPortal (Lorg/gradle/api/Action;)V
+	public fun getAllFiles ()Lorg/gradle/api/file/FileCollection;
+	public fun publishAllProjectsProbablyBreakingProjectIsolation ()V
+}
+
+public class nmcp/internal/DefaultNmcpExtension : nmcp/NmcpExtension {
+	public fun <init> (Lorg/gradle/api/Project;)V
+	public fun publishAllPublicationsToCentralPortal (Lorg/gradle/api/Action;)V
+}
+
+public final class nmcp/internal/UtilsKt {
+	public static final fun getNmcpConsumerConfigurationName ()Ljava/lang/String;
+}
+
+public final class nmcp/internal/task/CleanupDirectoryEntryPoint {
+	public static final field Companion Lnmcp/internal/task/CleanupDirectoryEntryPoint$Companion;
+	public fun <init> ()V
+	public static final fun run (Ljava/lang/String;)V
+}
+
+public final class nmcp/internal/task/CleanupDirectoryEntryPoint$Companion {
+	public final fun run (Ljava/lang/String;)V
+}
+
+public final class nmcp/internal/task/MetadataKt {
+	public static final fun getXml ()Lkotlinx/serialization/StringFormat;
+}
+
+public final class nmcp/internal/task/NmcpPublishFileByFileEntryPoint {
+	public static final field Companion Lnmcp/internal/task/NmcpPublishFileByFileEntryPoint$Companion;
+	public fun <init> ()V
+	public static final fun run (Ljava/util/function/BiConsumer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;)V
+}
+
+public final class nmcp/internal/task/NmcpPublishFileByFileEntryPoint$Companion {
+	public final fun run (Ljava/util/function/BiConsumer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;)V
+}
+
+public final class nmcp/internal/task/NmcpPublishWithPublisherApiEntryPoint {
+	public static final field Companion Lnmcp/internal/task/NmcpPublishWithPublisherApiEntryPoint$Companion;
+	public fun <init> ()V
+	public static final fun run (Ljava/util/function/BiConsumer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Long;Ljava/lang/Long;Ljava/util/List;)V
+}
+
+public final class nmcp/internal/task/NmcpPublishWithPublisherApiEntryPoint$Companion {
+	public final fun run (Ljava/util/function/BiConsumer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Long;Ljava/lang/Long;Ljava/util/List;)V
+}
+
+public final class nmcp/internal/task/OkhttpKt {
+	public static final fun getNmcpClient ()Lokhttp3/OkHttpClient;
+}
+
+public abstract interface class nmcp/transport/Content {
+	public abstract fun writeTo (Lokio/BufferedSink;)V
+}
+
+public final class nmcp/transport/PublishFileByFileKt {
+	public static final fun publishFileByFile (Lnmcp/transport/Transport;Ljava/util/List;)V
+}
+
+public abstract interface class nmcp/transport/Transport {
+	public abstract fun get (Ljava/lang/String;)Lokio/BufferedSource;
+	public abstract fun put (Ljava/lang/String;Lnmcp/transport/Content;)V
+}
+
+public final class nmcp/transport/TransportKt {
+	public static final fun toRequestBody (Lnmcp/transport/Content;)Lokhttp3/RequestBody;
+}
+
