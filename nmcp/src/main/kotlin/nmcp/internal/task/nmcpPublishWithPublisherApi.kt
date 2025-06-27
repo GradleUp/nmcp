@@ -51,7 +51,7 @@ internal fun nmcpPublishWithPublisherApi(
         .addFormDataPart(
             "bundle",
             publicationName ?: inputFiles.findDeploymentName(),
-            ZipBody(inputFiles),
+            ZipBody(inputFiles, logger),
         )
         .build()
 
@@ -205,7 +205,7 @@ private fun verifyStatus(
         }
 }
 
-internal class ZipBody(val files: GInputFiles) : RequestBody() {
+internal class ZipBody(val files: GInputFiles, private val logger: GLogger) : RequestBody() {
     override fun contentType(): MediaType {
         return "application/octet-stream".toMediaType()
     }
@@ -221,6 +221,7 @@ internal class ZipBody(val files: GInputFiles) : RequestBody() {
             if (it.file.name.startsWith("maven-metadata")) {
                 return@forEach
             }
+            logger.info("Nmcp: zip ${it.normalizedPath}")
             stream.putNextEntry(ZipEntry(it.normalizedPath))
             it.file.inputStream().use {
                 it.copyTo(stream)
