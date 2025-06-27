@@ -3,7 +3,7 @@ package nmcp.internal
 import gratatouille.wiring.capitalizeFirstLetter
 import nmcp.CentralPortalOptions
 import nmcp.internal.task.NmcpPublishWithPublisherApiTask
-import nmcp.internal.task.registerNmcpPublishFileByFileTask
+import nmcp.internal.task.registerNmcpPublishFileByFileToSnapshotsTask
 import nmcp.internal.task.registerNmcpPublishWithPublisherApiTask
 import org.gradle.api.Action
 import org.gradle.api.Named
@@ -82,11 +82,11 @@ internal fun Project.registerPublishToCentralPortalTasks(
         }
     }
 
-    val snapshots = registerNmcpPublishFileByFileTask(
+    val snapshots = registerNmcpPublishFileByFileToSnapshotsTask(
         taskName = snapshotTaskName,
         username = spec.username,
         password = spec.password,
-        url = project.provider { "https://central.sonatype.com/repository/maven-snapshots/" },
+        snapshotsUrl = project.provider { "https://central.sonatype.com/repository/maven-snapshots/" },
         inputFiles = inputFiles,
     )
     if (snapshotsLifecycleTaskName != null) {

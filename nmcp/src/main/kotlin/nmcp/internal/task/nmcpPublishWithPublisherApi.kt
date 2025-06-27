@@ -166,7 +166,7 @@ private fun verifyStatus(
 ): Status {
     Request.Builder()
         .post(ByteString.EMPTY.toRequestBody())
-        .addHeader("Authorization", "UserToken $token")
+        .addHeader("Authorization", "Bearer $token")
         .url(baseUrl + "api/v1/publisher/status?id=$deploymentId")
         .build()
         .let {
