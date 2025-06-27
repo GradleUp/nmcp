@@ -2,7 +2,6 @@ package nmcp.transport
 
 import gratatouille.tasks.GLogger
 import java.io.File
-import okhttp3.Credentials
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
@@ -13,6 +12,7 @@ import okio.BufferedSource
 import okio.buffer
 import okio.sink
 import okio.source
+import okio.use
 
 interface Transport {
     fun get(path: String): BufferedSource?
@@ -20,29 +20,38 @@ interface Transport {
 }
 
 internal fun Transport.put(path: String, body: String) {
-    put(path, object : Content {
-        override fun writeTo(sink: BufferedSink) {
-            sink.writeUtf8(body)
-        }
-    })
+    put(
+        path,
+        object : Content {
+            override fun writeTo(sink: BufferedSink) {
+                sink.writeUtf8(body)
+            }
+        },
+    )
 }
 
 internal fun Transport.put(path: String, body: ByteArray) {
-    put(path, object : Content {
-        override fun writeTo(sink: BufferedSink) {
-            sink.write(body)
-        }
-    })
+    put(
+        path,
+        object : Content {
+            override fun writeTo(sink: BufferedSink) {
+                sink.write(body)
+            }
+        },
+    )
 }
 
 internal fun Transport.put(path: String, body: File) {
-    put(path, object : Content {
-        override fun writeTo(sink: BufferedSink) {
-            body.source().use {
-                sink.writeAll(it)
+    put(
+        path,
+        object : Content {
+            override fun writeTo(sink: BufferedSink) {
+                body.source().use {
+                    sink.writeAll(it)
+                }
             }
-        }
-    })
+        },
+    )
 }
 
 interface Content {
@@ -105,18 +114,18 @@ internal class HttpTransport(
 
         logger.info("Nmcp: put '$url'")
 
-        val response = Request.Builder()
+        Request.Builder()
             .put(body.toRequestBody())
             .url(url)
             .maybeAddAuthorization(putAuthorization)
             .build()
             .let {
                 client.newCall(it).execute()
+            }.use { response ->
+                check(response.isSuccessful) {
+                    "Nmcp: cannot PUT '$url' (statusCode=${response.code}):\n${response.body!!.string()}"
+                }
             }
-
-        check(response.isSuccessful) {
-            "Nmcp: cannot PUT '$url' (statusCode=${response.code}):\n${response.body!!.string()}"
-        }
     }
 }
 
@@ -134,7 +143,7 @@ fun Content.toRequestBody(): RequestBody {
 
 internal class FilesystemTransport(
     private val basePath: String,
-): Transport {
+) : Transport {
     override fun get(path: String): BufferedSource? {
         val file = File(basePath).resolve(path)
         if (!file.exists()) {
