@@ -1,4 +1,4 @@
-_New accounts created after Feb. 1st 2024 are configured to use the new publishing by default and can use this plugin. Other accounts can continue publishing to OSSRH the usual way until [June 30th 2025](https://central.sonatype.org/news/20250326_ossrh_sunset/)._
+_New accounts created after Mar. 12th 2024 are configured to use the new publishing by default and can use this plugin. If your account was created before Mar. 12th 2024, [OSSRH is sunset on June 30th 2025](https://central.sonatype.org/news/20250326_ossrh_sunset/). You'll need to either [migrate to the central portal](https://central.sonatype.org/faq/what-is-different-between-central-portal-and-legacy-ossrh/#process-to-migrate) or [update your url to the Portal OSSRH staging API url](https://central.sonatype.org/publish/publish-portal-ossrh-staging-api/)_
 
 ---
 
