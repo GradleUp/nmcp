@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: |
-          ./gradlew librarianPublishToMavenCentral
+          LIBRARIAN_RELEASE=true ./gradlew librarianPublishToMavenCentral
         env:
           LIBRARIAN_SONATYPE_PASSWORD: ${{ secrets.CENTRAL_PORTAL_PASSWORD }}
           LIBRARIAN_SONATYPE_USERNAME: ${{ secrets.CENTRAL_PORTAL_USERNAME }}
