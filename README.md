@@ -2,7 +2,7 @@ _New accounts created after Mar. 12th 2024 are configured to use the new publish
 
 _If your account was created after Mar. 12th 2024, you'll need to either [migrate to the central portal](https://central.sonatype.org/faq/what-is-different-between-central-portal-and-legacy-ossrh/#process-to-migrate) or [update your url to the Portal OSSRH staging API url](https://central.sonatype.org/publish/publish-portal-ossrh-staging-api/)._
 
-_The current date for [OSSRH sunsetting](https://central.sonatype.org/news/20250326_ossrh_sunset/).  is June, 30th 2025_
+_The current date for [OSSRH sunsetting](https://central.sonatype.org/news/20250326_ossrh_sunset/) is June, 30th 2025_
 
 ---
 
