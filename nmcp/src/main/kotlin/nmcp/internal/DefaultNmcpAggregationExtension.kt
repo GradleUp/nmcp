@@ -29,7 +29,7 @@ abstract class DefaultNmcpAggregationExtension(private val project: Project) : N
             "publishAllProjectsProbablyBreakingProjectIsolation() must be called from root project"
         }
 
-        project.subprojects { aproject ->
+        project.allprojects { aproject ->
             aproject.pluginManager.withPlugin("maven-publish") {
                 aproject.pluginManager.apply("com.gradleup.nmcp")
 
