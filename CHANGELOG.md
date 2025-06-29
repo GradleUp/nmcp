@@ -1,3 +1,9 @@
+# Version 1.0.0-rc.0
+
+* Make uploading snapshots less verbose by @martinbonnin in https://github.com/GradleUp/nmcp/pull/120
+* Add logs for zipping the files by @martinbonnin in https://github.com/GradleUp/nmcp/pull/121
+* Fix an OkHttp response leak by @martinbonnin in https://github.com/GradleUp/nmcp/pull/122
+
 # Version 0.2.1
 
 * Update changelog and readme by @martinbonnin in https://github.com/GradleUp/nmcp/pull/92
