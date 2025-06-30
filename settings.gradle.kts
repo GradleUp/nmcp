@@ -8,10 +8,10 @@ pluginManagement {
         }
     }
     repositories {
-        exclusiveContent {
-            forRepository { maven("https://storage.googleapis.com/gradleup/m2") }
-            filter {
+        maven("https://storage.googleapis.com/gradleup/m2") {
+            content {
                 includeGroup("com.gradleup.librarian")
+                includeGroup("com.gradleup.nmcp")
             }
         }
     }

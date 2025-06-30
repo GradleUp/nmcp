@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.ksp).apply(false)
     alias(libs.plugins.ggp).apply(false)
     alias(libs.plugins.librarian).apply(false)
+    alias(libs.plugins.nmcp).apply(false)
     alias(libs.plugins.compat).apply(false)
     alias(libs.plugins.serialization).apply(false)
 }
