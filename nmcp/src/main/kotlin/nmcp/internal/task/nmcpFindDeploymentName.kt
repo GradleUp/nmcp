@@ -1,16 +1,20 @@
 package nmcp.internal.task
 
 import gratatouille.tasks.GInputFiles
+import gratatouille.tasks.GOutputFile
+import gratatouille.tasks.GTask
 import kotlin.collections.distinct
 import kotlin.collections.map
 import kotlin.collections.mapNotNull
 import kotlin.collections.single
+import kotlin.text.buildString
 import kotlin.text.endsWith
 import kotlin.text.substringBeforeLast
 
 
-internal fun GInputFiles.findDeploymentName(): String {
-  val gavs = mapNotNull {
+@GTask
+internal fun nmcpFindDeploymentName(inputFiles: GInputFiles, outputFile: GOutputFile) {
+  val gavs = inputFiles.mapNotNull {
     if (!it.normalizedPath.endsWith(".pom")) {
       return@mapNotNull null
     }
@@ -22,7 +26,7 @@ internal fun GInputFiles.findDeploymentName(): String {
   val artifacts = gavs.map { it.artifactId }.distinct()
   val versions = gavs.map { it.version }.distinct()
 
-  return buildString {
+  val deploymentName = buildString {
       if (groups.size == 1) {
           append(groups.single())
       } else {
@@ -41,4 +45,5 @@ internal fun GInputFiles.findDeploymentName(): String {
           append("multiple-versions")
       }
   }
+  outputFile.writeText(deploymentName)
 }

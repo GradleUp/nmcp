@@ -1,5 +1,6 @@
 package nmcp.internal.task
 
+import gratatouille.tasks.GInputFile
 import gratatouille.tasks.GInputFiles
 import gratatouille.tasks.GLogger
 import gratatouille.tasks.GTask
@@ -18,6 +19,7 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.Request
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okio.Buffer
 import okio.BufferedSink
@@ -29,12 +31,12 @@ internal fun nmcpPublishWithPublisherApi(
     logger: GLogger,
     username: String?,
     password: String?,
-    publicationName: String?,
+    publicationName: String,
     publishingType: String?,
     baseUrl: String?,
     validationTimeoutSeconds: Long?,
     publishingTimeoutSeconds: Long?,
-    inputFiles: GInputFiles,
+    inputFile: GInputFile,
 ) {
     check(!username.isNullOrBlank()) {
         "Nmcp: username is missing"
@@ -50,8 +52,8 @@ internal fun nmcpPublishWithPublisherApi(
     val body = MultipartBody.Builder()
         .addFormDataPart(
             "bundle",
-            publicationName ?: inputFiles.findDeploymentName(),
-            ZipBody(inputFiles, logger),
+            publicationName,
+            inputFile.asRequestBody("application/octet-stream".toMediaType()),
         )
         .build()
 

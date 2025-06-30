@@ -72,6 +72,16 @@ public final class nmcp/internal/task/MetadataKt {
 	public static final fun getXml ()Lkotlinx/serialization/StringFormat;
 }
 
+public final class nmcp/internal/task/NmcpFindDeploymentNameEntryPoint {
+	public static final field Companion Lnmcp/internal/task/NmcpFindDeploymentNameEntryPoint$Companion;
+	public fun <init> ()V
+	public static final fun run (Ljava/util/List;Ljava/io/File;)V
+}
+
+public final class nmcp/internal/task/NmcpFindDeploymentNameEntryPoint$Companion {
+	public final fun run (Ljava/util/List;Ljava/io/File;)V
+}
+
 public final class nmcp/internal/task/NmcpPublishFileByFileToSnapshotsEntryPoint {
 	public static final field Companion Lnmcp/internal/task/NmcpPublishFileByFileToSnapshotsEntryPoint$Companion;
 	public fun <init> ()V
@@ -85,11 +95,11 @@ public final class nmcp/internal/task/NmcpPublishFileByFileToSnapshotsEntryPoint
 public final class nmcp/internal/task/NmcpPublishWithPublisherApiEntryPoint {
 	public static final field Companion Lnmcp/internal/task/NmcpPublishWithPublisherApiEntryPoint$Companion;
 	public fun <init> ()V
-	public static final fun run (Ljava/util/function/BiConsumer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Long;Ljava/lang/Long;Ljava/util/List;)V
+	public static final fun run (Ljava/util/function/BiConsumer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Long;Ljava/lang/Long;Ljava/io/File;)V
 }
 
 public final class nmcp/internal/task/NmcpPublishWithPublisherApiEntryPoint$Companion {
-	public final fun run (Ljava/util/function/BiConsumer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Long;Ljava/lang/Long;Ljava/util/List;)V
+	public final fun run (Ljava/util/function/BiConsumer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Long;Ljava/lang/Long;Ljava/io/File;)V
 }
 
 public final class nmcp/internal/task/OkhttpKt {
