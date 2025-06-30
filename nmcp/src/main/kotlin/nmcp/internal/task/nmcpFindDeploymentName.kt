@@ -27,23 +27,43 @@ internal fun nmcpFindDeploymentName(inputFiles: GInputFiles, outputFile: GOutput
   val versions = gavs.map { it.version }.distinct()
 
   val deploymentName = buildString {
-      if (groups.size == 1) {
-          append(groups.single())
-      } else {
-          append("multiple-groups")
-      }
+      append(groups.toDisplayName())
       append(':')
-      if (artifacts.size == 1) {
-          append(artifacts.single())
-      } else {
-          append("multiple-artifacts")
-      }
+      append(artifacts.toDisplayName())
       append(':')
-      if (versions.size == 1) {
-          append(versions.single())
-      } else {
-          append("multiple-versions")
-      }
+      append(versions.toDisplayName())
   }
   outputFile.writeText(deploymentName)
+}
+
+fun longestCommonPrefix(strings: List<String>): String {
+    if (strings.isEmpty()) return ""
+
+    // Start with the first string as the prefix
+    var prefix = strings[0]
+
+    for (i in 1 until strings.size) {
+        val current = strings[i]
+        var j = 0
+
+        // Compare characters until they mismatch or end of one string
+        while (j < prefix.length && j < current.length && prefix[j] == current[j]) {
+            j++
+        }
+
+        // Trim the prefix to the matched part
+        prefix = prefix.substring(0, j)
+
+        // Early termination if there's no common prefix
+        if (prefix.isEmpty()) return ""
+    }
+
+    return prefix
+}
+
+fun List<String>.toDisplayName(): String {
+    if (size == 1) {
+        return single()
+    }
+    return "${longestCommonPrefix(this)}*"
 }
