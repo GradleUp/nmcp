@@ -1,3 +1,10 @@
+
+# Version 1.0.0-rc.1
+
+* Publish all projects (including root), and not only subprojects by @martinbonnin in https://github.com/GradleUp/nmcp/pull/124
+* Add intermediate zip task back by @martinbonnin in https://github.com/GradleUp/nmcp/pull/126
+* Update librarian and nmcp bootstrap versions (fixes the aggregation plugin marker) by @martinbonnin in https://github.com/GradleUp/nmcp/pull/128
+
 # Version 1.0.0-rc.0
 
 * Make uploading snapshots less verbose by @martinbonnin in https://github.com/GradleUp/nmcp/pull/120
