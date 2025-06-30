@@ -3,6 +3,7 @@ package nmcp.internal
 import gratatouille.wiring.capitalizeFirstLetter
 import nmcp.CentralPortalOptions
 import nmcp.internal.task.NmcpPublishWithPublisherApiTask
+import nmcp.internal.task.registerNmcpFindDeploymentNameTask
 import nmcp.internal.task.registerNmcpPublishFileByFileToSnapshotsTask
 import nmcp.internal.task.registerNmcpPublishWithPublisherApiTask
 import org.gradle.api.Action
@@ -13,6 +14,7 @@ import org.gradle.api.attributes.HasConfigurableAttributes
 import org.gradle.api.attributes.Usage
 import org.gradle.api.attributes.Usage.USAGE_ATTRIBUTE
 import org.gradle.api.file.FileCollection
+import org.gradle.api.tasks.bundling.Zip
 
 internal fun Project.withRequiredPlugin(id: String, block: () -> Unit) {
     var hasPlugin = false
@@ -55,6 +57,8 @@ internal fun Project.registerPublishToCentralPortalTasks(
 
     val releaseTaskName = "nmcpPublish${name.capitalizeFirstLetter()}ToCentralPortal"
     val snapshotTaskName = "nmcpPublish${name.capitalizeFirstLetter()}ToCentralPortalSnapshots"
+    val zipTaskName = "nmcpZip${name.capitalizeFirstLetter()}"
+    val findDeploymentNameTaskName = "nmcpFind${name.capitalizeFirstLetter()}DeploymentName"
 
     val shortcut = when(name) {
         "aggregation",
@@ -64,12 +68,30 @@ internal fun Project.registerPublishToCentralPortalTasks(
     val lifecycleTaskName = shortcut?.let { "publish${it.capitalizeFirstLetter()}ToCentralPortal" }
     val snapshotsLifecycleTaskName = shortcut?.let { "publish${it.capitalizeFirstLetter()}ToCentralPortalSnapshots" }
 
+    val zipName = "${name}.zip"
+    val zipTaskProvider = tasks.register(zipTaskName, Zip::class.java) {
+        it.from(inputFiles)
+        it.destinationDirectory.set(project.layout.buildDirectory.dir("nmcp/zip"))
+        it.archiveFileName.set(zipName)
+        it.eachFile {
+            // Exclude maven-metadata files, or the bundle is not recognized
+            // See https://slack-chats.kotlinlang.org/t/16407246/anyone-tried-the-https-central-sonatype-org-publish-publish-#c8738fe5-8051-4f64-809f-ca67a645216e
+            if (it.name.startsWith("maven-metadata")) {
+                it.exclude()
+            }
+        }
+    }
+
+    val findDeploymentNameTaskProvider = registerNmcpFindDeploymentNameTask(
+        taskName = findDeploymentNameTaskName,
+        inputFiles = inputFiles,
+    )
     val task = registerNmcpPublishWithPublisherApiTask(
         taskName = releaseTaskName,
-        inputFiles = inputFiles,
+        inputFile = zipTaskProvider.flatMap { it.archiveFile },
         username = spec.username,
         password = spec.password,
-        publicationName = spec.publicationName,
+        publicationName = spec.publicationName.orElse(findDeploymentNameTaskProvider.flatMap { it.outputFile }.map { it.asFile.readText() }),
         publishingType = spec.publishingType,
         baseUrl = spec.baseUrl,
         validationTimeoutSeconds = spec.validationTimeout.map { it.seconds },
