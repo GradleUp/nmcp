@@ -60,10 +60,14 @@ tasks.register("checkZip") {
             }
         }
 
-//        println(paths.sorted().joinToString(",\n"))
+        //println(paths.sorted().joinToString(",\n"))
         check(
             paths.sorted().equals(
                 listOf(
+                    "sample/",
+                    "sample/kmp/",
+                    "sample/kmp/module1-js/",
+                    "sample/kmp/module1-js/0.0.1/",
                     "sample/kmp/module1-js/0.0.1/module1-js-0.0.1-sources.jar",
                     "sample/kmp/module1-js/0.0.1/module1-js-0.0.1-sources.jar.md5",
                     "sample/kmp/module1-js/0.0.1/module1-js-0.0.1-sources.jar.sha1",
@@ -84,6 +88,8 @@ tasks.register("checkZip") {
                     "sample/kmp/module1-js/0.0.1/module1-js-0.0.1.pom.sha1",
                     "sample/kmp/module1-js/0.0.1/module1-js-0.0.1.pom.sha256",
                     "sample/kmp/module1-js/0.0.1/module1-js-0.0.1.pom.sha512",
+                    "sample/kmp/module1-jvm/",
+                    "sample/kmp/module1-jvm/0.0.1/",
                     "sample/kmp/module1-jvm/0.0.1/module1-jvm-0.0.1-sources.jar",
                     "sample/kmp/module1-jvm/0.0.1/module1-jvm-0.0.1-sources.jar.md5",
                     "sample/kmp/module1-jvm/0.0.1/module1-jvm-0.0.1-sources.jar.sha1",
@@ -104,6 +110,8 @@ tasks.register("checkZip") {
                     "sample/kmp/module1-jvm/0.0.1/module1-jvm-0.0.1.pom.sha1",
                     "sample/kmp/module1-jvm/0.0.1/module1-jvm-0.0.1.pom.sha256",
                     "sample/kmp/module1-jvm/0.0.1/module1-jvm-0.0.1.pom.sha512",
+                    "sample/kmp/module1-linuxarm64/",
+                    "sample/kmp/module1-linuxarm64/0.0.1/",
                     "sample/kmp/module1-linuxarm64/0.0.1/module1-linuxarm64-0.0.1-sources.jar",
                     "sample/kmp/module1-linuxarm64/0.0.1/module1-linuxarm64-0.0.1-sources.jar.md5",
                     "sample/kmp/module1-linuxarm64/0.0.1/module1-linuxarm64-0.0.1-sources.jar.sha1",
@@ -124,6 +132,8 @@ tasks.register("checkZip") {
                     "sample/kmp/module1-linuxarm64/0.0.1/module1-linuxarm64-0.0.1.pom.sha1",
                     "sample/kmp/module1-linuxarm64/0.0.1/module1-linuxarm64-0.0.1.pom.sha256",
                     "sample/kmp/module1-linuxarm64/0.0.1/module1-linuxarm64-0.0.1.pom.sha512",
+                    "sample/kmp/module1/",
+                    "sample/kmp/module1/0.0.1/",
                     "sample/kmp/module1/0.0.1/module1-0.0.1-kotlin-tooling-metadata.json",
                     "sample/kmp/module1/0.0.1/module1-0.0.1-kotlin-tooling-metadata.json.md5",
                     "sample/kmp/module1/0.0.1/module1-0.0.1-kotlin-tooling-metadata.json.sha1",
@@ -149,6 +159,8 @@ tasks.register("checkZip") {
                     "sample/kmp/module1/0.0.1/module1-0.0.1.pom.sha1",
                     "sample/kmp/module1/0.0.1/module1-0.0.1.pom.sha256",
                     "sample/kmp/module1/0.0.1/module1-0.0.1.pom.sha512",
+                    "sample/kmp/module2-js/",
+                    "sample/kmp/module2-js/0.0.1/",
                     "sample/kmp/module2-js/0.0.1/module2-js-0.0.1-sources.jar",
                     "sample/kmp/module2-js/0.0.1/module2-js-0.0.1-sources.jar.md5",
                     "sample/kmp/module2-js/0.0.1/module2-js-0.0.1-sources.jar.sha1",
@@ -169,6 +181,8 @@ tasks.register("checkZip") {
                     "sample/kmp/module2-js/0.0.1/module2-js-0.0.1.pom.sha1",
                     "sample/kmp/module2-js/0.0.1/module2-js-0.0.1.pom.sha256",
                     "sample/kmp/module2-js/0.0.1/module2-js-0.0.1.pom.sha512",
+                    "sample/kmp/module2-jvm/",
+                    "sample/kmp/module2-jvm/0.0.1/",
                     "sample/kmp/module2-jvm/0.0.1/module2-jvm-0.0.1-sources.jar",
                     "sample/kmp/module2-jvm/0.0.1/module2-jvm-0.0.1-sources.jar.md5",
                     "sample/kmp/module2-jvm/0.0.1/module2-jvm-0.0.1-sources.jar.sha1",
@@ -189,6 +203,8 @@ tasks.register("checkZip") {
                     "sample/kmp/module2-jvm/0.0.1/module2-jvm-0.0.1.pom.sha1",
                     "sample/kmp/module2-jvm/0.0.1/module2-jvm-0.0.1.pom.sha256",
                     "sample/kmp/module2-jvm/0.0.1/module2-jvm-0.0.1.pom.sha512",
+                    "sample/kmp/module2-linuxarm64/",
+                    "sample/kmp/module2-linuxarm64/0.0.1/",
                     "sample/kmp/module2-linuxarm64/0.0.1/module2-linuxarm64-0.0.1-sources.jar",
                     "sample/kmp/module2-linuxarm64/0.0.1/module2-linuxarm64-0.0.1-sources.jar.md5",
                     "sample/kmp/module2-linuxarm64/0.0.1/module2-linuxarm64-0.0.1-sources.jar.sha1",
@@ -209,6 +225,8 @@ tasks.register("checkZip") {
                     "sample/kmp/module2-linuxarm64/0.0.1/module2-linuxarm64-0.0.1.pom.sha1",
                     "sample/kmp/module2-linuxarm64/0.0.1/module2-linuxarm64-0.0.1.pom.sha256",
                     "sample/kmp/module2-linuxarm64/0.0.1/module2-linuxarm64-0.0.1.pom.sha512",
+                    "sample/kmp/module2/",
+                    "sample/kmp/module2/0.0.1/",
                     "sample/kmp/module2/0.0.1/module2-0.0.1-kotlin-tooling-metadata.json",
                     "sample/kmp/module2/0.0.1/module2-0.0.1-kotlin-tooling-metadata.json.md5",
                     "sample/kmp/module2/0.0.1/module2-0.0.1-kotlin-tooling-metadata.json.sha1",
