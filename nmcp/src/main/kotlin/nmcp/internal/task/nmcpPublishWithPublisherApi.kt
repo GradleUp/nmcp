@@ -117,7 +117,7 @@ private fun waitFor(
     val mark = markNow()
     while (true) {
         check(mark.elapsedNow() < timeout) {
-            "Nmcp: timeout while checking deployment '$deploymentId'. You might need to check the deployment status on the Central Portal UI (see $baseUrl$), or you could increase the timeout."
+            "Nmcp: timeout while checking deployment '$deploymentId'. You might need to check the deployment status on the Central Portal UI (see $baseUrl), or you could increase the timeout."
         }
 
         val status = verifyStatus(
