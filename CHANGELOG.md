@@ -1,4 +1,10 @@
 
+# Version 1.0.0
+
+* Try to guess better deployment names by @martinbonnin in https://github.com/GradleUp/nmcp/pull/130
+* Fix typo in log message in `nmcpPublishWithPublisherApi.kt` by @SimonMarquis in https://github.com/GradleUp/nmcp/pull/131
+* Add GitHub action to publish Kdocs by @martinbonnin in https://github.com/GradleUp/nmcp/pull/135
+
 # Version 1.0.0-rc.1
 
 * Publish all projects (including root), and not only subprojects by @martinbonnin in https://github.com/GradleUp/nmcp/pull/124
