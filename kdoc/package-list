@@ -3,6 +3,5 @@ $dokka.linkExtension:html
 
 module:nmcp
 nmcp
-nmcp.internal
 nmcp.internal.task
 nmcp.transport
