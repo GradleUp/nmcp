@@ -9,7 +9,7 @@ import org.gradle.api.Project
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 
-internal open class DefaultNmcpExtension(private val project: Project): NmcpExtension {
+private abstract class DefaultNmcpExtension(private val project: Project): NmcpExtension {
     private val m2Dir = project.layout.buildDirectory.file("nmcp/m2")
     private val m2Files = project.files()
     private val cleanupRepository = project.registerCleanupDirectoryTask(directory = m2Dir.map { it.asFile.absolutePath })
