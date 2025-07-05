@@ -42,18 +42,6 @@ public final class nmcp/PluginsKt {
 	public static final fun nmcpAggregation (Lorg/gradle/api/Project;)V
 }
 
-public abstract class nmcp/internal/DefaultNmcpAggregationExtension : nmcp/NmcpAggregationExtension {
-	public fun <init> (Lorg/gradle/api/Project;)V
-	public fun centralPortal (Lorg/gradle/api/Action;)V
-	public fun getAllFiles ()Lorg/gradle/api/file/FileCollection;
-	public fun publishAllProjectsProbablyBreakingProjectIsolation ()V
-}
-
-public class nmcp/internal/DefaultNmcpExtension : nmcp/NmcpExtension {
-	public fun <init> (Lorg/gradle/api/Project;)V
-	public fun publishAllPublicationsToCentralPortal (Lorg/gradle/api/Action;)V
-}
-
 public final class nmcp/internal/UtilsKt {
 	public static final fun getNmcpConsumerConfigurationName ()Ljava/lang/String;
 }
@@ -102,12 +90,12 @@ public final class nmcp/internal/task/NmcpPublishWithPublisherApiEntryPoint$Comp
 	public final fun run (Ljava/util/function/BiConsumer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Long;Ljava/lang/Long;Ljava/io/File;)V
 }
 
-public final class nmcp/internal/task/OkhttpKt {
-	public static final fun getNmcpClient ()Lokhttp3/OkHttpClient;
-}
-
 public abstract interface class nmcp/transport/Content {
 	public abstract fun writeTo (Lokio/BufferedSink;)V
+}
+
+public final class nmcp/transport/OkhttpKt {
+	public static final fun getNmcpClient ()Lokhttp3/OkHttpClient;
 }
 
 public final class nmcp/transport/PublishFileByFileKt {

@@ -70,7 +70,7 @@ internal class HttpTransport(
     private val putAuthorization: String?,
     private val logger: GLogger,
 ) : Transport {
-    private val client = nmcp.internal.task.nmcpClient.newBuilder()
+    private val client = nmcpClient.newBuilder()
         .addInterceptor { chain ->
             val builder = chain.request().newBuilder()
             builder.addHeader("Accept", "application/json")

@@ -1,4 +1,4 @@
-package nmcp.internal.task
+package nmcp.transport
 
 import java.time.Duration
 import okhttp3.OkHttpClient

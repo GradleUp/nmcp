@@ -5,7 +5,7 @@ import nmcp.NmcpAggregationExtension
 import org.gradle.api.Action
 import org.gradle.api.Project
 
-abstract class DefaultNmcpAggregationExtension(private val project: Project) : NmcpAggregationExtension {
+internal abstract class DefaultNmcpAggregationExtension(private val project: Project) : NmcpAggregationExtension {
 
     internal val consumerConfiguration = project.configurations.create(nmcpConsumerConfigurationName) {
         it.isCanBeResolved = true

@@ -26,7 +26,7 @@ gratatouille {
 dependencies {
     implementation(libs.json)
     implementation(libs.okio)
-    implementation(libs.okhttp)
+    api(libs.okhttp)
     implementation(libs.xmlutil)
 
     testImplementation(libs.kotlin.test)
