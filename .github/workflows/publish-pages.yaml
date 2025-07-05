@@ -3,6 +3,12 @@ on:
     branches: ["main"]
   workflow_dispatch:
 
+# Allow this job to clone the repo and create a page deployment
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
   publish-pages:
     runs-on: ubuntu-latest
