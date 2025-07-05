@@ -42,10 +42,6 @@ public final class nmcp/PluginsKt {
 	public static final fun nmcpAggregation (Lorg/gradle/api/Project;)V
 }
 
-public final class nmcp/internal/UtilsKt {
-	public static final fun getNmcpConsumerConfigurationName ()Ljava/lang/String;
-}
-
 public final class nmcp/internal/task/CleanupDirectoryEntryPoint {
 	public static final field Companion Lnmcp/internal/task/CleanupDirectoryEntryPoint$Companion;
 	public fun <init> ()V
@@ -54,10 +50,6 @@ public final class nmcp/internal/task/CleanupDirectoryEntryPoint {
 
 public final class nmcp/internal/task/CleanupDirectoryEntryPoint$Companion {
 	public final fun run (Ljava/lang/String;)V
-}
-
-public final class nmcp/internal/task/MetadataKt {
-	public static final fun getXml ()Lkotlinx/serialization/StringFormat;
 }
 
 public final class nmcp/internal/task/NmcpFindDeploymentNameEntryPoint {
