@@ -14,6 +14,7 @@ import kotlin.time.TimeSource.Monotonic.markNow
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
+import nmcp.transport.nmcpClient
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody

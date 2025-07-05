@@ -76,6 +76,6 @@ internal data class ArtifactMetadata(
     )
 }
 
-val xml: StringFormat = XML {
+internal val xml: StringFormat = XML {
     indent = 2
 }

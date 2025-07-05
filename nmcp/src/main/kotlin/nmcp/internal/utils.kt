@@ -31,7 +31,7 @@ internal fun Project.withRequiredPlugin(id: String, block: () -> Unit) {
     }
 }
 
-val nmcpConsumerConfigurationName = "nmcpAggregation"
+internal val nmcpConsumerConfigurationName = "nmcpAggregation"
 internal val nmcpProducerConfigurationName = "nmcpProducer"
 internal val attribute = "com.gradleup.nmcp"
 internal val attributeValue = "bundle"
