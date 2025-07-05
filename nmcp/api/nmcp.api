@@ -37,11 +37,6 @@ public abstract class nmcp/NmcpSettingsPlugin : org/gradle/api/Plugin {
 	public fun apply (Lorg/gradle/api/initialization/Settings;)V
 }
 
-public final class nmcp/PluginsKt {
-	public static final fun nmcp (Lorg/gradle/api/Project;)V
-	public static final fun nmcpAggregation (Lorg/gradle/api/Project;)V
-}
-
 public final class nmcp/internal/task/CleanupDirectoryEntryPoint {
 	public static final field Companion Lnmcp/internal/task/CleanupDirectoryEntryPoint$Companion;
 	public fun <init> ()V
