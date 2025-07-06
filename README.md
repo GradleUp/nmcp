@@ -107,6 +107,6 @@ Call `publishAggregationToCentralPortalSnapshots` to publish to the snapshots:
 # yay everything is uploaded to "https://central.sonatype.com/repository/maven-snapshots/" 🎉
 ```
 
-## KDoc
+# KDoc
 
 The API reference is available at https://gradleup.com/nmcp/kdoc/nmcp/index.html
