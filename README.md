@@ -134,7 +134,7 @@ nmcpAggregation {
 }
 ```
 
-## Inspect the deployment content
+# Inspect the deployment content
 
 The `nmcpZipAggregation` task is an intermediate task of `publishAggregationToCentralPortal` that generates the ZIP file that is then sent to Maven Central.  
 You can use this task to inspect the entire content before publishing your project.
