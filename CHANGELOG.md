@@ -1,4 +1,12 @@
 
+# Version 1.0.1
+
+* Tweak symbols visibility by @martinbonnin in https://github.com/GradleUp/nmcp/pull/138
+* Hide more symbols by @martinbonnin in https://github.com/GradleUp/nmcp/pull/140
+* Fix publishingTimeout KDoc by @martinbonnin in https://github.com/GradleUp/nmcp/pull/146
+* Fix parsing artifact metadata with a modelVersion by @martinbonnin in https://github.com/GradleUp/nmcp/pull/147
+* Document all options in `README.md` by @SimonMarquis in https://github.com/GradleUp/nmcp/pull/145
+
 # Version 1.0.0
 
 * Try to guess better deployment names by @martinbonnin in https://github.com/GradleUp/nmcp/pull/130
