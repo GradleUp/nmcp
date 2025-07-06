@@ -110,6 +110,7 @@ Call `publishAggregationToCentralPortalSnapshots` to publish to the snapshots:
 # All options
 
 ```kotlin
+// root/build.gradle[.kts]
 nmcpAggregation {
   centralPortal {
     // publish manually from the portal
