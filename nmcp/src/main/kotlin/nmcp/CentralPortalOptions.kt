@@ -61,7 +61,7 @@ abstract class CentralPortalOptions {
      * [publishingTimeout] specifies what duration to wait for the publishing to complete.
      * You may pass the special value '0' to disable waiting for publishing altogether.
      *
-     * Default: 10 minutes.
+     * Default: 0.
      */
     abstract val publishingTimeout: Property<Duration>
 
