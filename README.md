@@ -107,36 +107,29 @@ Call `publishAggregationToCentralPortalSnapshots` to publish to the snapshots:
 # yay everything is uploaded to "https://central.sonatype.com/repository/maven-snapshots/" 🎉
 ```
 
-# Advanced usage
-
-## Skip the validation timeout
-
-By default, `publishAggregationToCentralPortal` waits for Maven Central to validate the publication.  
-This might not be desirable on CI jobs where reaching the timeout leads to the job failure.  
-You can disable this behavior by setting the timeout(s) to `Duration.ZERO`, and the publication task will then immediately finish after uploading the artifacts.
+# All options
 
 ```kotlin
-// root/build.gradle[.kts]
 nmcpAggregation {
   centralPortal {
-    // Main timeout to wait for the deployment validation 
+    // publish manually from the portal
+    publishingType = "USER_MANAGED"
+
+    // Increase the validation timeout to 30 minutes
+    validationTimeout = java.time.Duration.of(30, ChronoUnit.MINUTES)
+    // Disable waiting for validation
     validationTimeout = java.time.Duration.ZERO
-    // Additional timeout to wait specifically for the publication with the AUTOMATIC `publishingType`
+
+    // Publish automatically once validation is successful
+    publishingType = "AUTOMATIC"
+
+    // Increase the publishing timeout to 30 minutes
+    publishingTimeout = java.time.Duration.of(30, ChronoUnit.MINUTES)
+    // Disable waiting for publishing
     publishingTimeout = java.time.Duration.ZERO
-  }
-}
-```
 
-## Customize the publication name
-
-You can provide a custom name for your publication, which will be displayed in Maven Central's deployment dashboard.  
-By default, it generates a name from the deployment contents. If the deployment contains several publications, it will show the common parts (typically `groupId` and `version`).
-
-```kotlin
-// root/build.gradle[.kts]
-nmcpAggregation {
-  centralPortal {
-    publicationName = "My Awesome Library"
+    // Customize the publication name 
+    publicationName = "My Awesome Library version $version"
   }
 }
 ```
