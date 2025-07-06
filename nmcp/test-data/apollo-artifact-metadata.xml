@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>com.apollographql.apollo</groupId>
+  <artifactId>apollo-api-jvm</artifactId>
+  <versioning>
+    <latest>5.0.0-SNAPSHOT</latest>
+    <release/>
+    <versions>
+      <version>4.1.2-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20250618175334</lastUpdated>
+  </versioning>
+</metadata>

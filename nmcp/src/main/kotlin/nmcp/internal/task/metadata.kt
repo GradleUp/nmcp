@@ -7,6 +7,9 @@ import nl.adaptivity.xmlutil.serialization.XmlChildrenName
 import nl.adaptivity.xmlutil.serialization.XmlElement
 import nl.adaptivity.xmlutil.serialization.XmlSerialName
 
+/**
+ * See https://maven.apache.org/xsd/repository-metadata-1.1.0.xsd
+ */
 @Serializable
 @XmlSerialName("metadata")
 internal data class VersionMetadata(
@@ -55,6 +58,7 @@ internal data class VersionMetadata(
 @Serializable
 @XmlSerialName("metadata")
 internal data class ArtifactMetadata(
+    val modelVersion: String = "1.1.0",
     @XmlElement
     val groupId: String,
     @XmlElement
