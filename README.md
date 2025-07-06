@@ -151,6 +151,6 @@ You can use this task to inspect the entire content before publishing your proje
 # go to build/nmcp/zip/aggregation.zip
 ```
 
-## KDoc
+# KDoc
 
 The API reference is available at https://gradleup.com/nmcp/kdoc/nmcp/index.html

@@ -1,3 +1,4 @@
+import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -8,27 +9,14 @@ import nmcp.transport.encodeToXml
 import nmcp.internal.task.xml
 
 class MetadataTest {
+
     @Test
-    fun artifactMetadataIsDecodedSuccessfully() {
-        // language=xml
-        val xmlData = """
-            <?xml version="1.0" encoding="UTF-8"?>
-            <metadata>
-              <groupId>com.apollographql.apollo</groupId>
-              <artifactId>apollo-api-jvm</artifactId>
-              <versioning>
-                <latest>5.0.0-SNAPSHOT</latest>
-                <release/>
-                <versions>
-                  <version>4.1.2-SNAPSHOT</version>
-                  <version>5.0.0-SNAPSHOT</version>
-                </versions>
-                <lastUpdated>20250618175334</lastUpdated>
-              </versioning>
-            </metadata>
-        """.trimIndent()
+    fun apolloArtifactMetadataIsDecodedSuccessfully() {
+        val xmlData = testData("apollo-artifact-metadata.xml")
 
         xml.decodeFromString<ArtifactMetadata>(xmlData).apply {
+            // The metadata doesn't have modelVersion but it is initialized to the default
+            assertEquals("1.1.0", modelVersion)
             assertEquals("com.apollographql.apollo", groupId)
             assertEquals("apollo-api-jvm", artifactId)
             versioning.apply {
@@ -55,7 +43,7 @@ class MetadataTest {
         // language=xml
         val xmlData = """
             <?xml version="1.0" encoding="UTF-8"?>
-            <metadata>
+            <metadata modelVersion="1.1.0">
               <groupId>com.apollographql.apollo</groupId>
               <artifactId>apollo-api-jvm</artifactId>
               <versioning>
@@ -89,52 +77,8 @@ class MetadataTest {
     }
 
     @Test
-    fun versionMetadataIsDecodedSuccessfully() {
-        // language=xml
-        val metadata = """
-            <?xml version="1.0" encoding="UTF-8"?>
-            <metadata modelVersion="1.1.0">
-              <groupId>com.apollographql.apollo</groupId>
-              <artifactId>apollo-api-jvm</artifactId>
-              <versioning>
-                <lastUpdated>20250618175232</lastUpdated>
-                <snapshot>
-                  <timestamp>20250618.175232</timestamp>
-                  <buildNumber>62</buildNumber>
-                </snapshot>
-                <snapshotVersions>
-                  <snapshotVersion>
-                    <extension>jar</extension>
-                    <value>5.0.0-20250618.175232-62</value>
-                    <updated>20250618175232</updated>
-                  </snapshotVersion>
-                  <snapshotVersion>
-                    <extension>module</extension>
-                    <value>5.0.0-20250618.175232-62</value>
-                    <updated>20250618175232</updated>
-                  </snapshotVersion>
-                  <snapshotVersion>
-                    <extension>pom</extension>
-                    <value>5.0.0-20250618.175232-62</value>
-                    <updated>20250618175232</updated>
-                  </snapshotVersion>
-                  <snapshotVersion>
-                    <classifier>javadoc</classifier>
-                    <extension>jar</extension>
-                    <value>5.0.0-20250618.175232-62</value>
-                    <updated>20250618175232</updated>
-                  </snapshotVersion>
-                  <snapshotVersion>
-                    <classifier>sources</classifier>
-                    <extension>jar</extension>
-                    <value>5.0.0-20250618.175232-62</value>
-                    <updated>20250618175232</updated>
-                  </snapshotVersion>
-                </snapshotVersions>
-              </versioning>
-              <version>5.0.0-SNAPSHOT</version>
-            </metadata>
-        """.trimIndent()
+    fun apolloVersionMetadataIsDecodedSuccessfully() {
+        val metadata = testData("apollo-version-metadata.xml")
 
         xml.decodeFromString<VersionMetadata>(metadata).apply {
             assertEquals("com.apollographql.apollo", groupId)
@@ -252,4 +196,23 @@ class MetadataTest {
         val data = xml.decodeFromString<ArtifactMetadata>(xmlData)
         assertNull(data.versioning.release)
     }
+
+    @Test
+    fun sealedObjectInstanceArtifactMetadataIsDecodedSuccessfully() {
+        testData("sealed-object-instances-artifact-metadata.xml").let {
+            xml.decodeFromString<ArtifactMetadata>(it)
+        }
+    }
+
+    @Test
+    fun sealedObjectInstanceVersionMetadataIsDecodedSuccessfully() {
+        testData("sealed-object-instances-version-metadata.xml").let {
+            xml.decodeFromString<VersionMetadata>(it)
+        }
+    }
+}
+
+
+private fun testData(name: String): String {
+    return File("test-data").resolve(name).readText()
 }
