@@ -107,6 +107,44 @@ Call `publishAggregationToCentralPortalSnapshots` to publish to the snapshots:
 # yay everything is uploaded to "https://central.sonatype.com/repository/maven-snapshots/" 🎉
 ```
 
+# All options
+
+```kotlin
+// root/build.gradle[.kts]
+nmcpAggregation {
+  centralPortal {
+    // publish manually from the portal
+    publishingType = "USER_MANAGED"
+
+    // Increase the validation timeout to 30 minutes
+    validationTimeout = java.time.Duration.of(30, ChronoUnit.MINUTES)
+    // Disable waiting for validation
+    validationTimeout = java.time.Duration.ZERO
+
+    // Publish automatically once validation is successful
+    publishingType = "AUTOMATIC"
+
+    // Increase the publishing timeout to 30 minutes
+    publishingTimeout = java.time.Duration.of(30, ChronoUnit.MINUTES)
+    // Disable waiting for publishing
+    publishingTimeout = java.time.Duration.ZERO
+
+    // Customize the publication name 
+    publicationName = "My Awesome Library version $version"
+  }
+}
+```
+
+# Inspect the deployment content
+
+The `nmcpZipAggregation` task is an intermediate task of `publishAggregationToCentralPortal` that generates the ZIP file that is then sent to Maven Central.  
+You can use this task to inspect the entire content before publishing your project.
+
+```bash
+./gradlew nmcpZipAggregation
+# go to build/nmcp/zip/aggregation.zip
+```
+
 # KDoc
 
 The API reference is available at https://gradleup.com/nmcp/kdoc/nmcp/index.html
