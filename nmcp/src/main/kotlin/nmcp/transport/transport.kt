@@ -1,11 +1,8 @@
 package nmcp.transport
 
-import gratatouille.tasks.GLogger
 import java.io.File
-import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.Request
 import okhttp3.RequestBody
 import okio.BufferedSink
 import okio.BufferedSource
@@ -56,77 +53,6 @@ internal fun Transport.put(path: String, body: File) {
 
 interface Content {
     fun writeTo(sink: BufferedSink)
-}
-
-private fun Request.Builder.maybeAddAuthorization(authorization: String?) = apply {
-    if (authorization != null) {
-        addHeader("Authorization", authorization)
-    }
-}
-
-internal class HttpTransport(
-    baseUrl: String,
-    private val getAuthorization: String?,
-    private val putAuthorization: String?,
-    private val logger: GLogger,
-) : Transport {
-    private val client = nmcpClient.newBuilder()
-        .addInterceptor { chain ->
-            val builder = chain.request().newBuilder()
-            builder.addHeader("Accept", "application/json")
-            builder.addHeader("User-Agent", "nmcp")
-            chain.proceed(builder.build())
-        }
-        .build()
-
-    private val baseUrl = baseUrl.toHttpUrl()
-
-    override fun get(path: String): BufferedSource? {
-        val url = baseUrl.newBuilder()
-            .addPathSegments(path)
-            .build()
-
-        logger.info("Nmcp: get '$url'")
-
-        val response = Request.Builder()
-            .get()
-            .url(url)
-            .maybeAddAuthorization(getAuthorization)
-            .build()
-            .let {
-                client.newCall(it).execute()
-            }
-
-        if (response.code == 404) {
-            return null
-        }
-        check(response.isSuccessful) {
-            "Nmcp: cannot GET '$url' (statusCode=${response.code}):\n${response.body!!.string()}"
-        }
-
-        return response.body!!.source()
-    }
-
-    override fun put(path: String, body: Content) {
-        val url = baseUrl.newBuilder()
-            .addPathSegments(path)
-            .build()
-
-        logger.info("Nmcp: put '$url'")
-
-        Request.Builder()
-            .put(body.toRequestBody())
-            .url(url)
-            .maybeAddAuthorization(putAuthorization)
-            .build()
-            .let {
-                client.newCall(it).execute()
-            }.use { response ->
-                check(response.isSuccessful) {
-                    "Nmcp: cannot PUT '$url' (statusCode=${response.code}):\n${response.body!!.string()}"
-                }
-            }
-    }
 }
 
 fun Content.toRequestBody(): RequestBody {
