@@ -36,7 +36,7 @@ internal fun nmcpFindDeploymentName(inputFiles: GInputFiles, outputFile: GOutput
   outputFile.writeText(deploymentName)
 }
 
-internal fun longestCommonPrefix(strings: List<String>): String {
+private fun longestCommonPrefix(strings: List<String>): String {
     if (strings.isEmpty()) return ""
 
     // Start with the first string as the prefix
@@ -61,7 +61,7 @@ internal fun longestCommonPrefix(strings: List<String>): String {
     return prefix
 }
 
-internal fun List<String>.toDisplayName(): String {
+private fun List<String>.toDisplayName(): String {
     if (size == 1) {
         return single()
     }
