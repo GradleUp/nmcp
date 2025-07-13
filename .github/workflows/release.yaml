@@ -6,6 +6,7 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
+    if: github.event.repository.fork == false
 
     steps:
       - uses: actions/checkout@v3
