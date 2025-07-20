@@ -36,6 +36,7 @@ internal val nmcpProducerConfigurationName = "nmcpProducer"
 internal val attribute = "com.gradleup.nmcp"
 internal val attributeValue = "bundle"
 internal val usageValue = "nmcp"
+internal val nmcpTaskGroup = "nmcp"
 
 internal fun HasConfigurableAttributes<*>.configureAttributes(project: Project) {
     attributes {
@@ -100,6 +101,7 @@ internal fun Project.registerPublishToCentralPortalTasks(
 
     if (lifecycleTaskName != null) {
         project.tasks.register(lifecycleTaskName) {
+            it.group = nmcpTaskGroup
             it.dependsOn(task)
         }
     }
@@ -113,6 +115,7 @@ internal fun Project.registerPublishToCentralPortalTasks(
     )
     if (snapshotsLifecycleTaskName != null) {
         project.tasks.register(snapshotsLifecycleTaskName) {
+            it.group = nmcpTaskGroup
             it.dependsOn(snapshots)
         }
     }
