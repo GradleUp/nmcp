@@ -98,10 +98,12 @@ internal class HttpTransport(
             }
 
         if (response.code == 404) {
+            response.close()
             return null
         }
-        check(response.isSuccessful) {
-            "Nmcp: cannot GET '$url' (statusCode=${response.code}):\n${response.body!!.string()}"
+        if(!response.isSuccessful) {
+            response.close()
+            error("Nmcp: cannot GET '$url' (statusCode=${response.code}):\n${response.body!!.string()}")
         }
 
         return response.body!!.source()
