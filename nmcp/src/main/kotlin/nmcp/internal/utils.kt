@@ -66,6 +66,11 @@ internal fun Project.registerPublishToCentralPortalTasks(
         "allPublications" -> name
         else ->  null
     }
+    val description = when(name) {
+        "aggregation" -> "Publishes the aggregation"
+        "allPublications" -> "Publishes all the maven publications"
+        else ->  null
+    }
     val lifecycleTaskName = shortcut?.let { "publish${it.capitalizeFirstLetter()}ToCentralPortal" }
     val snapshotsLifecycleTaskName = shortcut?.let { "publish${it.capitalizeFirstLetter()}ToCentralPortalSnapshots" }
 
@@ -102,6 +107,7 @@ internal fun Project.registerPublishToCentralPortalTasks(
     if (lifecycleTaskName != null) {
         project.tasks.register(lifecycleTaskName) {
             it.group = nmcpTaskGroup
+            it.description = "$description to the Central Releases repository."
             it.dependsOn(task)
         }
     }
@@ -116,6 +122,7 @@ internal fun Project.registerPublishToCentralPortalTasks(
     if (snapshotsLifecycleTaskName != null) {
         project.tasks.register(snapshotsLifecycleTaskName) {
             it.group = nmcpTaskGroup
+            it.description = "$description to the Central Snapshots repository."
             it.dependsOn(snapshots)
         }
     }
