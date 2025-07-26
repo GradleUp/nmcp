@@ -14,6 +14,7 @@ import org.gradle.api.attributes.HasConfigurableAttributes
 import org.gradle.api.attributes.Usage
 import org.gradle.api.attributes.Usage.USAGE_ATTRIBUTE
 import org.gradle.api.file.FileCollection
+import org.gradle.api.publish.plugins.PublishingPlugin.PUBLISH_TASK_GROUP
 import org.gradle.api.tasks.bundling.Zip
 
 internal fun Project.withRequiredPlugin(id: String, block: () -> Unit) {
@@ -36,7 +37,6 @@ internal val nmcpProducerConfigurationName = "nmcpProducer"
 internal val attribute = "com.gradleup.nmcp"
 internal val attributeValue = "bundle"
 internal val usageValue = "nmcp"
-internal val nmcpTaskGroup = "nmcp"
 
 internal fun HasConfigurableAttributes<*>.configureAttributes(project: Project) {
     attributes {
@@ -106,7 +106,7 @@ internal fun Project.registerPublishToCentralPortalTasks(
 
     if (lifecycleTaskName != null) {
         project.tasks.register(lifecycleTaskName) {
-            it.group = nmcpTaskGroup
+            it.group = PUBLISH_TASK_GROUP
             it.description = "$description to the Central Releases repository."
             it.dependsOn(task)
         }
@@ -121,7 +121,7 @@ internal fun Project.registerPublishToCentralPortalTasks(
     )
     if (snapshotsLifecycleTaskName != null) {
         project.tasks.register(snapshotsLifecycleTaskName) {
-            it.group = nmcpTaskGroup
+            it.group = PUBLISH_TASK_GROUP
             it.description = "$description to the Central Snapshots repository."
             it.dependsOn(snapshots)
         }
