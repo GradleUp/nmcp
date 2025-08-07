@@ -145,6 +145,10 @@ You can use this task to inspect the entire content before publishing your proje
 # go to build/nmcp/zip/aggregation.zip
 ```
 
+# Requirements
+
+Nmcp requires Java 17+, Gradle 8.8+ for the settings plugin and Gradle 8.0+ otherwise.
+
 # KDoc
 
 The API reference is available at https://gradleup.com/nmcp/kdoc/nmcp/index.html
