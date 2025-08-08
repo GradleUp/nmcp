@@ -10,6 +10,7 @@ import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 
 internal abstract class DefaultNmcpExtension(private val project: Project): NmcpExtension {
+    private var centralPortalConfigured = false
     private val m2Dir = project.layout.buildDirectory.file("nmcp/m2")
     private val m2Files = project.files()
     private val cleanupRepository = project.registerCleanupDirectoryTask(directory = m2Dir.map { it.asFile.absolutePath })
@@ -69,6 +70,11 @@ internal abstract class DefaultNmcpExtension(private val project: Project): Nmcp
     }
 
     override fun publishAllPublicationsToCentralPortal(action: Action<CentralPortalOptions>) {
+        check(!centralPortalConfigured) {
+            "Nmcp: centralPortal {} must be called only once"
+        }
+        centralPortalConfigured = true
+
         project.registerPublishToCentralPortalTasks(
             name = "allPublications",
             inputFiles = m2Files,
