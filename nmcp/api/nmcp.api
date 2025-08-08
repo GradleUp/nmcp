@@ -81,10 +81,6 @@ public abstract interface class nmcp/transport/Content {
 	public abstract fun writeTo (Lokio/BufferedSink;)V
 }
 
-public final class nmcp/transport/OkhttpKt {
-	public static final fun getNmcpClient ()Lokhttp3/OkHttpClient;
-}
-
 public final class nmcp/transport/PublishFileByFileKt {
 	public static final fun publishFileByFile (Lnmcp/transport/Transport;Ljava/util/List;)V
 }
