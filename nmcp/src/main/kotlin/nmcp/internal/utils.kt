@@ -6,6 +6,8 @@ import nmcp.internal.task.NmcpPublishWithPublisherApiTask
 import nmcp.internal.task.registerNmcpFindDeploymentNameTask
 import nmcp.internal.task.registerNmcpPublishFileByFileToSnapshotsTask
 import nmcp.internal.task.registerNmcpPublishWithPublisherApiTask
+import nmcp.nmcpAggregationExtensionName
+import nmcp.nmcpExtensionName
 import org.gradle.api.Action
 import org.gradle.api.Named
 import org.gradle.api.Project
@@ -127,18 +129,30 @@ internal fun Project.registerPublishToCentralPortalTasks(
         }
     }
 
+    /**
+     * Detect early if the username and/or password are missing.
+     * This gives feedback to the user before compiling all projects.
+     */
     project.gradle.taskGraph.whenReady {
+        val extensionName = when(name) {
+            "aggregation" -> nmcpAggregationExtensionName
+            else -> nmcpExtensionName
+        }
         if (it.hasTask(taskPath(project, task.name))) {
             check(spec.username.isPresent) {
-                "Nmcp: username is missing"
+                "Nmcp: '${extensionName}.username' is missing, check your Nmcp configuration."
             }
             check(spec.password.isPresent) {
-                "Nmcp: password is missing"
+                "Nmcp: '${extensionName}.password' is missing, check your Nmcp configuration."
             }
         }
     }
 }
 
 private fun taskPath(project: Project, taskName: String): String {
-    return "${project.path}:$taskName"
+    return buildString {
+        append(project.path)
+        if (project.path != ":") append(":")
+        append(taskName)
+    }
 }

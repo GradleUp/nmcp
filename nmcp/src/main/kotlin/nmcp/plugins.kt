@@ -8,14 +8,17 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.initialization.Settings
 
+internal val nmcpExtensionName = "nmcp"
+internal val nmcpAggregationExtensionName = "nmcpAggregation"
+
 @GPlugin(id = "com.gradleup.nmcp")
 internal fun nmcp(project: Project) {
-    project.extensions.create(NmcpExtension::class.java, "nmcp", DefaultNmcpExtension::class.java, project)
+    project.extensions.create(NmcpExtension::class.java, nmcpExtensionName, DefaultNmcpExtension::class.java, project)
 }
 
 @GPlugin(id = "com.gradleup.nmcp.aggregation")
 internal fun nmcpAggregation(project: Project) {
-    project.extensions.create(NmcpAggregationExtension::class.java, "nmcpAggregation", DefaultNmcpAggregationExtension::class.java, project)
+    project.extensions.create(NmcpAggregationExtension::class.java, nmcpAggregationExtensionName, DefaultNmcpAggregationExtension::class.java, project)
 }
 
 @Suppress("UnstableApiUsage")
