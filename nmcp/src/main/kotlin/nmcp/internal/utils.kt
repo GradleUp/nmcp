@@ -134,16 +134,17 @@ internal fun Project.registerPublishToCentralPortalTasks(
      * This gives feedback to the user before compiling all projects.
      */
     project.gradle.taskGraph.whenReady {
-        val extensionName = when(name) {
-            "aggregation" -> nmcpAggregationExtensionName
-            else -> nmcpExtensionName
-        }
         if (it.hasTask(taskPath(project, task.name))) {
+            val publishingType = spec.publishingType.orNull
+            val validValues = listOf("AUTOMATIC", "USER_MANAGED")
+            check(publishingType == null || publishingType in validValues) {
+                "Nmcp: invalid Central Portal publishingType value '$publishingType'. Must be one of ${validValues}."
+            }
             check(spec.username.isPresent) {
-                "Nmcp: '${extensionName}.username' is missing, check your Nmcp configuration."
+                "Nmcp: Central Portal 'username' is missing, check your Nmcp configuration."
             }
             check(spec.password.isPresent) {
-                "Nmcp: '${extensionName}.password' is missing, check your Nmcp configuration."
+                "Nmcp: Central Portal 'password' is missing, check your Nmcp configuration."
             }
         }
     }

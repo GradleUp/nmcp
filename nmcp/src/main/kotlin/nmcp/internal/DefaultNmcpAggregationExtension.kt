@@ -6,6 +6,7 @@ import org.gradle.api.Action
 import org.gradle.api.Project
 
 internal abstract class DefaultNmcpAggregationExtension(private val project: Project) : NmcpAggregationExtension {
+    private var centralPortalConfigured = false
 
     internal val consumerConfiguration = project.configurations.create(nmcpConsumerConfigurationName) {
         it.isCanBeResolved = true
@@ -17,6 +18,11 @@ internal abstract class DefaultNmcpAggregationExtension(private val project: Pro
     override val allFiles = consumerConfiguration.incoming.artifactView { it.lenient(true) }.files
 
     override fun centralPortal(action: Action<CentralPortalOptions>) {
+        check(!centralPortalConfigured) {
+            "Nmcp: centralPortal {} must be called only once"
+        }
+        centralPortalConfigured = true
+
         project.registerPublishToCentralPortalTasks(
             name = "aggregation",
             inputFiles = allFiles,
