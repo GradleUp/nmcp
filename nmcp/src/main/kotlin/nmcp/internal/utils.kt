@@ -140,12 +140,5 @@ internal fun Project.registerPublishToCentralPortalTasks(
 }
 
 private fun taskPath(project: Project, taskName: String): String {
-    return buildString {
-        append(":")
-        if (project.rootProject != project) {
-            append(project.rootProject.name)
-            append(":")
-        }
-        append(taskName)
-    }
+    return "${project.path}:$taskName"
 }
