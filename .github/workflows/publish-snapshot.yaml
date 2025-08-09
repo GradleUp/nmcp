@@ -1,19 +1,18 @@
 on:
   push:
-    branches:
-      - 'main'
+    branches: [ main ]
 
 jobs:
-  snapshot:
+  publish-snapshot:
     runs-on: ubuntu-latest
     if: github.event.repository.fork == false
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 #v4.2.2
       - run: |
           LIBRARIAN_VERSION_SHA1=$GITHUB_SHA ./gradlew librarianPublishToGcs
           ./gradlew librarianPublishToSnapshots
         env:
-          LIBRARIAN_SONATYPE_USERNAME: ${{ secrets.CENTRAL_PORTAL_USERNAME }}
           LIBRARIAN_SONATYPE_PASSWORD: ${{ secrets.CENTRAL_PORTAL_PASSWORD }}
+          LIBRARIAN_SONATYPE_USERNAME: ${{ secrets.CENTRAL_PORTAL_USERNAME }}
           LIBRARIAN_GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
