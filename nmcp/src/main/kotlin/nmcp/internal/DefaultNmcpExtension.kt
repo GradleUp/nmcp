@@ -81,4 +81,9 @@ internal abstract class DefaultNmcpExtension(private val project: Project): Nmcp
             action = action
         )
     }
+
+    override fun extraFiles(files: Any) {
+        project.artifacts.add(nmcpProducerConfigurationName, files)
+        m2Files.from(files)
+    }
 }
