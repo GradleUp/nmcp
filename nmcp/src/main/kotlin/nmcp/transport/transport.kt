@@ -125,7 +125,18 @@ internal class HttpTransport(
                 client.newCall(it).execute()
             }.use { response ->
                 check(response.isSuccessful) {
-                    "Nmcp: cannot PUT '$url' (statusCode=${response.code}):\n${response.body!!.string()}"
+                    buildString {
+                        appendLine("Nmcp: cannot PUT '$url' (statusCode=${response.code}).")
+                        appendLine("Response body: ${response.body!!.string()}")
+                        appendLine("Things to double check:")
+                        // I have seen 401 for this
+                        appendLine(" - Are your credentials correct?")
+                        appendLine(" - Did you enable the snapshots on your namespace at https://central.sonatype.com/publishing/namespaces?")
+                        // I have seen 400 for this
+                        appendLine(" - Is your version ending with `-SNAPSHOT`?")
+                        // I have seen 400 for this
+                        appendLine(" - Have you made a first release for this group and artifact? (it's not 100% clear if it's a strong requirement but something worth double checking)")
+                    }
                 }
             }
     }
