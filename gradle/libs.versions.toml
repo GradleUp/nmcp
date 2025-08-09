@@ -11,6 +11,7 @@ mockwebserver = "com.squareup.okhttp3:mockwebserver:4.12.0"
 gradle-min = "dev.gradleplugins:gradle-api:8.8"
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test" }
 xmlutil = "io.github.pdvrieze.xmlutil:serialization:0.91.1"
+kgp = { module = "org.jetbrains.kotlin.jvm:org.jetbrains.kotlin.jvm.gradle.plugin", version.ref = "kgp" }
 
 [plugins]
 kgp = { id = "org.jetbrains.kotlin.jvm", version.ref = "kgp" }

@@ -13,8 +13,8 @@ buildscript {
     }
 
     dependencies {
-        classpath("build-logic:build-logic")
         classpath("com.gradleup.nmcp:nmcp")
+        classpath(libs.kgp)
         classpath(libs.mockwebserver)
         classpath(libs.okhttp)
     }
