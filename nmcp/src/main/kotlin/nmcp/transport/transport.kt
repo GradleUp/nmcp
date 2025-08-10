@@ -134,8 +134,11 @@ internal class HttpTransport(
                         appendLine(" - Did you enable the snapshots on your namespace at https://central.sonatype.com/publishing/namespaces?")
                         // I have seen 400 for this
                         appendLine(" - Is your version ending with `-SNAPSHOT`?")
-                        // I have seen 400 for this
-                        appendLine(" - Have you made a first release for this group and artifact? (it's not 100% clear if it's a strong requirement but something worth double checking)")
+                        /**
+                         * I have seen 400 for this.
+                         * From testing, it looks like a failed deployment is enough to unlock the snapshots.
+                         */
+                        appendLine(" - Have you made a first release for this group and artifact? (it's not 100% clear if it's a strict requirement there have been report of snapshots not accepting uploads before a deployment was attempted)")
                     }
                 }
             }
