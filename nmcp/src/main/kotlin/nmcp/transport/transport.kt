@@ -130,7 +130,7 @@ internal class HttpTransport(
                         appendLine("Response body: ${response.body!!.string()}")
                         appendLine("Things to double check:")
                         /**
-                         * I have seen 400 for this
+                         * I have seen 401 for this
                          */
                         appendLine(" - Are your credentials correct?")
                         appendLine(" - Did you enable the snapshots on your namespace at https://central.sonatype.com/publishing/namespaces?")
