@@ -8,10 +8,8 @@
 import com.gradleup.librarian.cli.updateRepo
 
 updateRepo(args) {
-  file("README.md") {
-    val file = File("README.md")
-    val newContent = file.readText()
-        .replace(Regex("\\.version\\(\"[^\"]*\"\\)"), ".version(\"$version\")")
-    file.writeText(newContent)
-  }
+    file("README.md") {
+        replacePluginId("com.gradleup.nmcp.aggregation")
+        replacePluginId("com.gradleup.nmcp")
+    }
 }
