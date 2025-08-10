@@ -2,11 +2,13 @@ import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 import kotlinx.serialization.decodeFromString
 import nmcp.internal.task.ArtifactMetadata
 import nmcp.internal.task.VersionMetadata
 import nmcp.transport.encodeToXml
 import nmcp.internal.task.xml
+import nmcp.transport.timestampNow
 
 class MetadataTest {
 
@@ -209,6 +211,14 @@ class MetadataTest {
         testData("sealed-object-instances-version-metadata.xml").let {
             xml.decodeFromString<VersionMetadata>(it)
         }
+    }
+
+    @Test
+    fun timestampTest() {
+        // Something that looks like 20250618175334
+        assertTrue(
+            Regex("""\d{4}\d{2}\d{2}\d{6}""").matches(timestampNow())
+        )
     }
 }
 
