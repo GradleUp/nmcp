@@ -168,7 +168,7 @@ private fun Transport.uploadFiles(filesWithPath: List<FileWithPath>) {
     }
 }
 
-fun timestampNow(): String {
+internal fun timestampNow(): String {
     val now = Instant.now().atZone(java.time.ZoneOffset.UTC)
 
     return String.format("%04d%02d%02d%02d%02d%02d", now.year, now.monthValue, now.dayOfMonth, now.hour, now.minute, now.second)
