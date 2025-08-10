@@ -1,3 +1,23 @@
+# Version 1.0.3
+
+Compatibility with isolated projects alongside a few UX improvements.
+
+## All changes
+* Add description to the tasks so that they are visible in `./gradlew --tasks` by @martinbonnin in https://github.com/GradleUp/nmcp/pull/160
+* Compatibility with isolated projects by @martinbonnin in https://github.com/GradleUp/nmcp/pull/164
+* Better error message on missing credentials by @martinbonnin in https://github.com/GradleUp/nmcp/pull/167
+* Hide nmcpClient by @martinbonnin in https://github.com/GradleUp/nmcp/pull/168
+* Check that `publishingType` has a valid value by @martinbonnin in https://github.com/GradleUp/nmcp/pull/169
+* Improve the error message on publishing errors by @martinbonnin in https://github.com/GradleUp/nmcp/pull/149
+* Add NmcpExtension.extraFiles() by @martinbonnin in https://github.com/GradleUp/nmcp/pull/170
+* Bump compat-patrouille by @martinbonnin in https://github.com/GradleUp/nmcp/pull/172
+
+# Version 1.0.2
+
+* Add simple check to prevent some GHA workflows to run on forks by @SimonMarquis in https://github.com/GradleUp/nmcp/pull/152
+* Replace `DisplayNameTest` with a more robust `FindDeploymentNameTest` by @SimonMarquis in https://github.com/GradleUp/nmcp/pull/151
+* Make tasks visible in `./gradlew tasks` by @martinbonnin in https://github.com/GradleUp/nmcp/pull/156
+* Fix OkHttp Response leak by @martinbonnin in https://github.com/GradleUp/nmcp/pull/158
 
 # Version 1.0.1
 
