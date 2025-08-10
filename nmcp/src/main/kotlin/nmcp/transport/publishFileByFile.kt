@@ -36,7 +36,7 @@ fun publishFileByFile(
             /**
              * This is a snapshot:
              * - update the [version metadata](https://maven.apache.org/repositories/metadata.html).
-             * - path the file names to include the new build number.
+             * - patch the file names to include the new build number.
              *
              * See https://s01.oss.sonatype.org/content/repositories/snapshots/com/apollographql/apollo/apollo-api-jvm/maven-metadata.xml for an example.
              *
