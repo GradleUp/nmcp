@@ -129,16 +129,19 @@ internal class HttpTransport(
                         appendLine("Nmcp: cannot PUT '$url' (statusCode=${response.code}).")
                         appendLine("Response body: ${response.body!!.string()}")
                         appendLine("Things to double check:")
-                        // I have seen 401 for this
+                        /**
+                         * I have seen 400 for this
+                         */
                         appendLine(" - Are your credentials correct?")
                         appendLine(" - Did you enable the snapshots on your namespace at https://central.sonatype.com/publishing/namespaces?")
-                        // I have seen 400 for this
+                        /**
+                         * I have seen 400 for this
+                         */
                         appendLine(" - Is your version ending with `-SNAPSHOT`?")
                         /**
                          * I have seen 400 for this.
-                         * From testing, it looks like a failed deployment is enough to unlock the snapshots.
                          */
-                        appendLine(" - Have you made a first release for this group and artifact? (it's not 100% clear if it's a strict requirement there have been report of snapshots not accepting uploads before a deployment was attempted)")
+                        appendLine(" - Does your artifact have a proper extension (.jar, .pom, ...)?")
                     }
                 }
             }
