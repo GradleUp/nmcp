@@ -3,6 +3,7 @@ package nmcp.transport
 import gratatouille.tasks.FileWithPath
 import gratatouille.tasks.GInputFiles
 import java.security.MessageDigest
+import java.time.Instant
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import nmcp.internal.task.ArtifactMetadata
@@ -21,6 +22,8 @@ fun publishFileByFile(
         .map { it.normalizedPath.substringBeforeLast('/') }
         .distinct()
 
+    val lastUpdated = timestampNow()
+
     gavPaths.forEach { gavPath ->
         val gav = Gav.from(gavPath)
         val version = gav.version
@@ -38,8 +41,8 @@ fun publishFileByFile(
              * See https://s01.oss.sonatype.org/content/repositories/snapshots/com/apollographql/apollo/apollo-api-jvm/maven-metadata.xml for an example.
              *
              * For snapshots, it's not 100% clear who owns the metadata as the repository might expire some snapshot and therefore need to rewrite the
-             * metadata to keep things consistent. This means, there are 2 possibly concurrent writers to maven-metadata.xml: the repository and the
-             * publisher. Hopefully it's not too much of a problem in practice.
+             * metadata to keep things consistent. This means there are 2 possibly concurrent writers to maven-metadata.xml: the repository and the
+             * publisher. Hopefully, it's not too much of a problem in practice.
              *
              * See https://github.com/gradle/gradle/blob/d1ee068b1ee7f62ffcbb549352469307781af72e/platforms/software/maven/src/main/java/org/gradle/api/publish/maven/internal/publisher/MavenRemotePublisher.java#L70.
              */
@@ -47,12 +50,21 @@ fun publishFileByFile(
             val localVersionMetadataFile = gavFiles.firstOrNull {
                 it.normalizedPath == versionMetadataPath
             }
-            if (localVersionMetadataFile == null) {
-                error("Nmcp: cannot find version maven-metadata.xml in '$gavPath'")
+            val localVersionMetadata = if (localVersionMetadataFile != null) {
+                xml.decodeFromString<VersionMetadata>(localVersionMetadataFile.file.readText())
+            } else {
+                VersionMetadata(
+                    groupId = gav.groupId,
+                    artifactId = gav.artifactId,
+                    version = gav.version,
+                    versioning = VersionMetadata.Versioning(
+                        snapshot = VersionMetadata.Snapshot(timestamp = lastUpdated, buildNumber = 1),
+                        lastUpdated = lastUpdated,
+                        snapshotVersions = emptyList()
+                    )
+                )
             }
 
-            val localVersionMetadata =
-                xml.decodeFromString<VersionMetadata>(localVersionMetadataFile.file.readText())
             val remoteVersionMetadata = transport.get(versionMetadataPath)
 
             val buildNumber = if (remoteVersionMetadata == null) {
@@ -100,12 +112,22 @@ fun publishFileByFile(
         }
         val artifactMetadataPath = "${gavPath.substring(0, index)}/maven-metadata.xml"
         val localArtifactMetadataFile = allFiles.firstOrNull { it.normalizedPath == artifactMetadataPath }
-        if (localArtifactMetadataFile == null) {
-            error("Nmcp: cannot find artifact metadata at '${artifactMetadataPath}'")
+        val localArtifactMetadata = if (localArtifactMetadataFile == null) {
+            // The publisher did not artifact level metadata, let's
+            ArtifactMetadata(
+                groupId = gav.groupId,
+                artifactId = gav.artifactId,
+                versioning = ArtifactMetadata.Versioning(
+                    latest = gav.version,
+                    release = gav.version,
+                    versions = emptyList(),
+                    lastUpdated = lastUpdated,
+                )
+            )
+        } else {
+            xml.decodeFromString<ArtifactMetadata>(localArtifactMetadataFile.file.readText())
         }
 
-        val localArtifactMetadata =
-            xml.decodeFromString<ArtifactMetadata>(localArtifactMetadataFile.file.readText())
         val remoteArtifactMetadata = transport.get(artifactMetadataPath)
 
         val existingVersions = if (remoteArtifactMetadata != null) {
@@ -141,6 +163,12 @@ private fun Transport.uploadFiles(filesWithPath: List<FileWithPath>) {
     filesWithPath.sortedBy { it.normalizedPath }.forEach {
         put(it.normalizedPath, it.file)
     }
+}
+
+internal fun timestampNow(): String {
+    val now = Instant.now().atZone(java.time.ZoneOffset.UTC)
+
+    return String.format("%04d%02d%02d%02d%02d%02d", now.year, now.monthValue, now.dayOfMonth, now.hour, now.minute, now.second)
 }
 
 /**

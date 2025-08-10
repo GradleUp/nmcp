@@ -11,7 +11,6 @@ plugins {
     alias(libs.plugins.kgp)
     alias(libs.plugins.ksp)
     alias(libs.plugins.ggp)
-    alias(libs.plugins.compat)
     alias(libs.plugins.serialization)
 }
 
