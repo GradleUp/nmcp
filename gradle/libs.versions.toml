@@ -12,6 +12,7 @@ gradle-min = "dev.gradleplugins:gradle-api:8.8"
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test" }
 xmlutil = "io.github.pdvrieze.xmlutil:serialization:0.91.1"
 kgp = { module = "org.jetbrains.kotlin.jvm:org.jetbrains.kotlin.jvm.gradle.plugin", version.ref = "kgp" }
+coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2"
 
 [plugins]
 kgp = { id = "org.jetbrains.kotlin.jvm", version.ref = "kgp" }

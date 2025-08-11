@@ -71,4 +71,12 @@ abstract class CentralPortalOptions {
      * Default: "https://central.sonatype.com/".
      */
     abstract val baseUrl: Property<String>
+
+    /**
+     * The parallelism level for uploading publications to snapshots.
+     * Inside a publication (a similar group/artifact), files are still uploaded serially.
+     *
+     * Default: 1.
+     */
+    abstract val uploadSnapshotsParallelism: Property<Int>
 }
