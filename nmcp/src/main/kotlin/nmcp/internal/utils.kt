@@ -8,6 +8,7 @@ import nmcp.internal.task.registerNmcpPublishFileByFileToSnapshotsTask
 import nmcp.internal.task.registerNmcpPublishWithPublisherApiTask
 import nmcp.nmcpAggregationExtensionName
 import nmcp.nmcpExtensionName
+import nmcp.transport.defaultParallelism
 import org.gradle.api.Action
 import org.gradle.api.Named
 import org.gradle.api.Project
@@ -121,7 +122,7 @@ internal fun Project.registerPublishToCentralPortalTasks(
         password = spec.password,
         snapshotsUrl = project.provider { "https://central.sonatype.com/repository/maven-snapshots/" },
         inputFiles = inputFiles,
-        parallelism = spec.uploadSnapshotsParallelism,
+        parallelism = spec.uploadSnapshotsParallelism.orElse(defaultParallelism),
     )
     if (snapshotsLifecycleTaskName != null) {
         project.tasks.register(snapshotsLifecycleTaskName) {

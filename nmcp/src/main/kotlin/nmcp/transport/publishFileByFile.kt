@@ -18,11 +18,13 @@ import nmcp.internal.task.replaceBuildNumber
 import nmcp.internal.task.xml
 import okio.ByteString.Companion.toByteString
 
+internal val defaultParallelism = 8
+
 fun publishFileByFile(
     transport: Transport,
     inputFiles: GInputFiles,
 ) {
-    return publishFileByFile(transport, inputFiles, 1)
+    return publishFileByFile(transport, inputFiles, defaultParallelism)
 }
 
 fun publishFileByFile(
