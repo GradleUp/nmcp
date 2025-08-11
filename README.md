@@ -147,7 +147,7 @@ You can use this task to inspect the entire content before publishing your proje
 
 # Requirements
 
-Nmcp requires Java 17+, Gradle 8.8+ for the settings plugin and Gradle 8.2+ otherwise.
+Nmcp requires Java 17+, Gradle 8.8+ for the settings plugin and Gradle 8.3+ otherwise.
 
 # KDoc
 
