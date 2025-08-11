@@ -5,6 +5,7 @@ public abstract class nmcp/CentralPortalOptions {
 	public abstract fun getPublicationName ()Lorg/gradle/api/provider/Property;
 	public abstract fun getPublishingTimeout ()Lorg/gradle/api/provider/Property;
 	public abstract fun getPublishingType ()Lorg/gradle/api/provider/Property;
+	public abstract fun getUploadSnapshotsParallelism ()Lorg/gradle/api/provider/Property;
 	public abstract fun getUsername ()Lorg/gradle/api/provider/Property;
 	public abstract fun getValidationTimeout ()Lorg/gradle/api/provider/Property;
 }
@@ -61,11 +62,11 @@ public final class nmcp/internal/task/NmcpFindDeploymentNameEntryPoint$Companion
 public final class nmcp/internal/task/NmcpPublishFileByFileToSnapshotsEntryPoint {
 	public static final field Companion Lnmcp/internal/task/NmcpPublishFileByFileToSnapshotsEntryPoint$Companion;
 	public fun <init> ()V
-	public static final fun run (Ljava/util/function/BiConsumer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;)V
+	public static final fun run (Ljava/util/function/BiConsumer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;I)V
 }
 
 public final class nmcp/internal/task/NmcpPublishFileByFileToSnapshotsEntryPoint$Companion {
-	public final fun run (Ljava/util/function/BiConsumer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;)V
+	public final fun run (Ljava/util/function/BiConsumer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;I)V
 }
 
 public final class nmcp/internal/task/NmcpPublishWithPublisherApiEntryPoint {
@@ -84,6 +85,7 @@ public abstract interface class nmcp/transport/Content {
 
 public final class nmcp/transport/PublishFileByFileKt {
 	public static final fun publishFileByFile (Lnmcp/transport/Transport;Ljava/util/List;)V
+	public static final fun publishFileByFile (Lnmcp/transport/Transport;Ljava/util/List;I)V
 }
 
 public abstract interface class nmcp/transport/Transport {

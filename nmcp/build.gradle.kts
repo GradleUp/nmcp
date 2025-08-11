@@ -25,6 +25,7 @@ gratatouille {
 dependencies {
     implementation(libs.json)
     implementation(libs.okio)
+    implementation(libs.coroutines)
     api(libs.okhttp)
     implementation(libs.xmlutil)
 

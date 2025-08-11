@@ -16,6 +16,7 @@ import org.gradle.api.attributes.HasConfigurableAttributes
 import org.gradle.api.attributes.Usage
 import org.gradle.api.attributes.Usage.USAGE_ATTRIBUTE
 import org.gradle.api.file.FileCollection
+import org.gradle.api.provider.Property
 import org.gradle.api.publish.plugins.PublishingPlugin.PUBLISH_TASK_GROUP
 import org.gradle.api.tasks.bundling.Zip
 
@@ -120,6 +121,7 @@ internal fun Project.registerPublishToCentralPortalTasks(
         password = spec.password,
         snapshotsUrl = project.provider { "https://central.sonatype.com/repository/maven-snapshots/" },
         inputFiles = inputFiles,
+        parallelism = spec.uploadSnapshotsParallelism,
     )
     if (snapshotsLifecycleTaskName != null) {
         project.tasks.register(snapshotsLifecycleTaskName) {

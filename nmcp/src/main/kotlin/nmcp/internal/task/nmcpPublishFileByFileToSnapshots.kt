@@ -14,6 +14,7 @@ internal fun nmcpPublishFileByFileToSnapshots(
     username: String?,
     password: String?,
     inputFiles: GInputFiles,
+    parallelism: Int,
 ) {
     val authorizationHeader = if (username != null) {
         check(!password.isNullOrBlank()) {
@@ -36,5 +37,5 @@ internal fun nmcpPublishFileByFileToSnapshots(
     )
 
     logger.lifecycle("Nmcp: uploading files to $snapshotsUrl")
-    publishFileByFile(transport, inputFiles)
+    publishFileByFile(transport, inputFiles, parallelism)
 }
