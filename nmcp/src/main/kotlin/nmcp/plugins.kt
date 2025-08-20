@@ -4,7 +4,6 @@ import gratatouille.wiring.GPlugin
 import nmcp.internal.DefaultNmcpAggregationExtension
 import nmcp.internal.DefaultNmcpExtension
 import nmcp.internal.nmcpConsumerConfigurationName
-import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.initialization.Settings
 
@@ -18,22 +17,25 @@ internal fun nmcp(project: Project) {
 
 @GPlugin(id = "com.gradleup.nmcp.aggregation")
 internal fun nmcpAggregation(project: Project) {
-    project.extensions.create(NmcpAggregationExtension::class.java, nmcpAggregationExtensionName, DefaultNmcpAggregationExtension::class.java, project)
+    project.extensions.create(
+        NmcpAggregationExtension::class.java,
+        nmcpAggregationExtensionName,
+        DefaultNmcpAggregationExtension::class.java,
+        project,
+    )
 }
 
 @Suppress("UnstableApiUsage")
-abstract class NmcpSettingsPlugin: Plugin<Settings> {
-    override fun apply(target: Settings) {
-        target.gradle.lifecycle.beforeProject { project ->
-            if (project.rootProject == project) {
-                project.pluginManager.apply("com.gradleup.nmcp.aggregation")
+internal fun nmcpSettings(settings: Settings) {
+    settings.gradle.lifecycle.beforeProject { project ->
+        if (project.rootProject == project) {
+            project.pluginManager.apply("com.gradleup.nmcp.aggregation")
 
-                project.subprojects {
-                    project.dependencies.add(nmcpConsumerConfigurationName, project.dependencies.create(it))
-                }
-            } else {
-                project.pluginManager.apply("com.gradleup.nmcp")
+            project.subprojects {
+                project.dependencies.add(nmcpConsumerConfigurationName, project.dependencies.create(it))
             }
+        } else {
+            project.pluginManager.apply("com.gradleup.nmcp")
         }
     }
 }
