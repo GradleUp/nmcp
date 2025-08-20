@@ -33,6 +33,11 @@ dependencies {
     compileOnly(libs.gradle.min)
 }
 
+gratatouille {
+    // remove when https://github.com/GradleUp/gratatouille/pull/66 is released
+    pluginMarker("com.gradleup.nmcp.settings")
+}
+
 /**
  * This is so that we can use the plugin if we are an included build
  */
