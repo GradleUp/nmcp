@@ -131,6 +131,9 @@ nmcpAggregation {
 
     // Customize the publication name 
     publicationName = "My Awesome Library version $version"
+
+    // send publications one after the other instead of in parallel (might be slower) 
+    uploadSnapshotsParallelism.set(1)
   }
 }
 ```
