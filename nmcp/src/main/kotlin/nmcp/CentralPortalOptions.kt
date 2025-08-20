@@ -76,7 +76,7 @@ abstract class CentralPortalOptions {
      * The parallelism level for uploading publications to snapshots.
      * Inside a publication (a similar group/artifact), files are still uploaded serially.
      *
-     * Default: 1.
+     * Default: 8.
      */
     abstract val uploadSnapshotsParallelism: Property<Int>
 }
