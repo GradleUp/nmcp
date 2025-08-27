@@ -8,13 +8,7 @@ pluginManagement {
         }
     }
     repositories {
-        maven("https://storage.googleapis.com/gradleup/m2") {
-            content {
-                includeGroup("com.gradleup.librarian")
-                includeGroup("com.gradleup.nmcp")
-                includeGroup("com.gradleup.compat.patrouille")
-            }
-        }
+        maven("https://storage.googleapis.com/gradleup/m2")
     }
 }
 

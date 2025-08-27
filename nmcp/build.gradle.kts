@@ -17,7 +17,9 @@ plugins {
 Librarian.module(project)
 
 gratatouille {
-    codeGeneration()
+    codeGeneration {
+        addDependencies.set(false)
+    }
     pluginMarker("com.gradleup.nmcp", "default")
     pluginMarker("com.gradleup.nmcp.aggregation", "default")
 }
@@ -26,6 +28,8 @@ dependencies {
     implementation(libs.json)
     implementation(libs.okio)
     implementation(libs.coroutines)
+    implementation(libs.gratatouille.wiring.runtime)
+    implementation(libs.gratatouille.tasks.runtime)
     api(libs.okhttp)
     implementation(libs.xmlutil)
 
