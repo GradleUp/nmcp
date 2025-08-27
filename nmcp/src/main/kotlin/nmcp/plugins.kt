@@ -26,6 +26,7 @@ internal fun nmcpAggregation(project: Project) {
 }
 
 @Suppress("UnstableApiUsage")
+@GPlugin(id = "com.gradleup.nmcp.settings")
 internal fun nmcpSettings(settings: Settings) {
     settings.gradle.lifecycle.beforeProject { project ->
         if (project.rootProject == project) {
