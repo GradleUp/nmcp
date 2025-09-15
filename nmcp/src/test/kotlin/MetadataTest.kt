@@ -1,4 +1,5 @@
 import java.io.File
+import java.time.Instant
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -8,7 +9,7 @@ import nmcp.internal.task.ArtifactMetadata
 import nmcp.internal.task.VersionMetadata
 import nmcp.transport.encodeToXml
 import nmcp.internal.task.xml
-import nmcp.transport.timestampNow
+import nmcp.transport.asTimestamp
 
 class MetadataTest {
 
@@ -217,7 +218,7 @@ class MetadataTest {
     fun timestampTest() {
         // Something that looks like 20250618175334
         assertTrue(
-            Regex("""\d{4}\d{2}\d{2}\d{6}""").matches(timestampNow())
+            Regex("""\d{4}\d{2}\d{2}\d{6}""").matches(Instant.now().asTimestamp(false))
         )
     }
 }

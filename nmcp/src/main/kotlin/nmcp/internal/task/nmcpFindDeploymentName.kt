@@ -24,7 +24,7 @@ internal fun nmcpFindDeploymentName(inputFiles: GInputFiles, outputFile: GOutput
 
   val groups = gavs.map { it.groupId }.distinct()
   val artifacts = gavs.map { it.artifactId }.distinct()
-  val versions = gavs.map { it.version }.distinct()
+  val versions = gavs.map { it.baseVersion }.distinct()
 
   val deploymentName = buildString {
       append(groups.toDisplayName())
