@@ -1,13 +1,12 @@
 package nmcp.internal
 
 import gratatouille.wiring.capitalizeFirstLetter
+import java.io.File
 import nmcp.CentralPortalOptions
-import nmcp.internal.task.NmcpPublishWithPublisherApiTask
 import nmcp.internal.task.registerNmcpFindDeploymentNameTask
+import nmcp.internal.task.registerNmcpPublishFileByFileToFileSystemTask
 import nmcp.internal.task.registerNmcpPublishFileByFileToSnapshotsTask
 import nmcp.internal.task.registerNmcpPublishWithPublisherApiTask
-import nmcp.nmcpAggregationExtensionName
-import nmcp.nmcpExtensionName
 import nmcp.transport.defaultParallelism
 import org.gradle.api.Action
 import org.gradle.api.Named
@@ -17,7 +16,6 @@ import org.gradle.api.attributes.HasConfigurableAttributes
 import org.gradle.api.attributes.Usage
 import org.gradle.api.attributes.Usage.USAGE_ATTRIBUTE
 import org.gradle.api.file.FileCollection
-import org.gradle.api.provider.Property
 import org.gradle.api.publish.plugins.PublishingPlugin.PUBLISH_TASK_GROUP
 import org.gradle.api.tasks.bundling.Zip
 
@@ -52,11 +50,17 @@ internal fun HasConfigurableAttributes<*>.configureAttributes(project: Project) 
     }
 }
 
+internal enum class Kind {
+    aggregation,
+    allPublications
+}
+
 internal fun Project.registerPublishToCentralPortalTasks(
-    name: String,
+    kind: Kind,
     inputFiles: FileCollection,
     action: Action<CentralPortalOptions>,
 ) {
+    val name = kind.name
     val spec = objects.newInstance(CentralPortalOptions::class.java)
     action.execute(spec)
 
@@ -65,18 +69,14 @@ internal fun Project.registerPublishToCentralPortalTasks(
     val zipTaskName = "nmcpZip${name.capitalizeFirstLetter()}"
     val findDeploymentNameTaskName = "nmcpFind${name.capitalizeFirstLetter()}DeploymentName"
 
-    val shortcut = when(name) {
-        "aggregation",
-        "allPublications" -> name
-        else ->  null
-    }
     val description = when(name) {
         "aggregation" -> "Publishes the aggregation"
         "allPublications" -> "Publishes all the maven publications"
         else ->  null
     }
-    val lifecycleTaskName = shortcut?.let { "publish${it.capitalizeFirstLetter()}ToCentralPortal" }
-    val snapshotsLifecycleTaskName = shortcut?.let { "publish${it.capitalizeFirstLetter()}ToCentralPortalSnapshots" }
+    val centralPortalLifecycleTaskName = "publish${name.capitalizeFirstLetter()}ToCentralPortal"
+    val snapshotsLifecycleTaskName = "publish${name.capitalizeFirstLetter()}ToCentralPortalSnapshots"
+    val mavenLocalLifecycleTaskName = "publish${name.capitalizeFirstLetter()}ToMavenLocal"
 
     val zipName = "${name}.zip"
     val zipTaskProvider = tasks.register(zipTaskName, Zip::class.java) {
@@ -107,16 +107,13 @@ internal fun Project.registerPublishToCentralPortalTasks(
         validationTimeoutSeconds = spec.validationTimeout.map { it.seconds },
         publishingTimeoutSeconds = spec.publishingTimeout.map { it.seconds },
     )
-
-    if (lifecycleTaskName != null) {
-        project.tasks.register(lifecycleTaskName) {
-            it.group = PUBLISH_TASK_GROUP
-            it.description = "$description to the Central Releases repository."
-            it.dependsOn(task)
-        }
+    project.tasks.register(centralPortalLifecycleTaskName) {
+        it.group = PUBLISH_TASK_GROUP
+        it.description = "$description to the Central Releases repository."
+        it.dependsOn(task)
     }
 
-    val snapshots = registerNmcpPublishFileByFileToSnapshotsTask(
+    val centralSnapshots = registerNmcpPublishFileByFileToSnapshotsTask(
         taskName = snapshotTaskName,
         username = spec.username,
         password = spec.password,
@@ -124,12 +121,24 @@ internal fun Project.registerPublishToCentralPortalTasks(
         inputFiles = inputFiles,
         parallelism = spec.uploadSnapshotsParallelism.orElse(defaultParallelism),
     )
-    if (snapshotsLifecycleTaskName != null) {
-        project.tasks.register(snapshotsLifecycleTaskName) {
-            it.group = PUBLISH_TASK_GROUP
-            it.description = "$description to the Central Snapshots repository."
-            it.dependsOn(snapshots)
-        }
+    project.tasks.register(snapshotsLifecycleTaskName) {
+        it.group = PUBLISH_TASK_GROUP
+        it.description = "$description to your Maven Local repository."
+        it.dependsOn(centralSnapshots)
+    }
+
+    val m2File = File(System.getProperty("user.home")).resolve(".m2/repository")
+
+    val mavenLocal = registerNmcpPublishFileByFileToFileSystemTask(
+        taskName = snapshotTaskName,
+        m2AbsolutePath = project.provider { m2File.absolutePath },
+        inputFiles = inputFiles,
+        parallelism = spec.uploadSnapshotsParallelism.orElse(defaultParallelism),
+    )
+    project.tasks.register(mavenLocalLifecycleTaskName) {
+        it.group = PUBLISH_TASK_GROUP
+        it.description = "$description to the Central Snapshots repository."
+        it.dependsOn(mavenLocal)
     }
 
     /**
