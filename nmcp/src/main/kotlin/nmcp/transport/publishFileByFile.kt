@@ -4,6 +4,7 @@ import gratatouille.tasks.FileWithPath
 import gratatouille.tasks.GInputFiles
 import java.security.MessageDigest
 import java.time.Instant
+import java.time.ZoneOffset
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
@@ -14,7 +15,7 @@ import kotlinx.serialization.encodeToString
 import nmcp.internal.task.ArtifactMetadata
 import nmcp.internal.task.Gav
 import nmcp.internal.task.VersionMetadata
-import nmcp.internal.task.replaceBuildNumber
+import nmcp.internal.task.Artifact
 import nmcp.internal.task.xml
 import okio.ByteString.Companion.toByteString
 
@@ -37,7 +38,7 @@ fun publishFileByFile(
         .map { it.normalizedPath.substringBeforeLast('/') }
         .distinct()
 
-    val lastUpdated = timestampNow()
+    val lastUpdated = Instant.now()
 
     runBlocking {
         withContext(Dispatchers.IO.limitedParallelism(parallelism)) {
@@ -53,11 +54,11 @@ fun publishFileByFile(
 private fun publishGav(
     gavPath: String,
     allFiles: List<FileWithPath>,
-    lastUpdated: String,
+    lastUpdated: Instant,
     transport: Transport,
 ) {
     val gav = Gav.from(gavPath)
-    val version = gav.version
+    val version = gav.baseVersion
     val gavFiles = allFiles.filter { it.normalizedPath.startsWith(gavPath) }
 
     /**
@@ -69,58 +70,65 @@ private fun publishGav(
          * - update the [version metadata](https://maven.apache.org/repositories/metadata.html).
          * - patch the file names to include the new build number.
          *
-         * See https://s01.oss.sonatype.org/content/repositories/snapshots/com/apollographql/apollo/apollo-api-jvm/maven-metadata.xml for an example.
-         *
          * For snapshots, it's not 100% clear who owns the metadata as the repository might expire some snapshot and therefore need to rewrite the
          * metadata to keep things consistent. This means there are 2 possibly concurrent writers to maven-metadata.xml: the repository and the
          * publisher. Hopefully, it's not too much of a problem in practice.
          *
          * See https://github.com/gradle/gradle/blob/d1ee068b1ee7f62ffcbb549352469307781af72e/platforms/software/maven/src/main/java/org/gradle/api/publish/maven/internal/publisher/MavenRemotePublisher.java#L70.
+         *
          */
         val versionMetadataPath = "$gavPath/maven-metadata.xml"
-        val localVersionMetadataFile = gavFiles.firstOrNull {
-            it.normalizedPath == versionMetadataPath
-        }
-        val localVersionMetadata = if (localVersionMetadataFile != null) {
-            xml.decodeFromString<VersionMetadata>(localVersionMetadataFile.file.readText())
-        } else {
-            VersionMetadata(
-                groupId = gav.groupId,
-                artifactId = gav.artifactId,
-                version = gav.version,
-                versioning = VersionMetadata.Versioning(
-                    snapshot = VersionMetadata.Snapshot(timestamp = lastUpdated, buildNumber = 1),
-                    lastUpdated = lastUpdated,
-                    snapshotVersions = emptyList(),
-                ),
-            )
-        }
-
         val remoteVersionMetadata = transport.get(versionMetadataPath)
-
         val buildNumber = if (remoteVersionMetadata == null) {
             1
         } else {
             xml.decodeFromString<VersionMetadata>(remoteVersionMetadata.use { it.readUtf8() }).versioning.snapshot.buildNumber + 1
         }
 
-        val newVersionMetadata = localVersionMetadata.copy(
-            versioning = localVersionMetadata.versioning.copy(
-                snapshot = localVersionMetadata.versioning.snapshot.copy(buildNumber = buildNumber),
-            ),
-        )
+        val renamedFiles = mutableListOf<FileWithPath>()
+        val snapshotVersions = mutableListOf<VersionMetadata.SnapshotVersion>()
 
-        val renamedFiles = gavFiles.mapNotNull {
+        gavFiles.forEach {
             if (it.file.name.startsWith("maven-metadata.xml")) {
-                return@mapNotNull null
+                return@forEach
             }
-            val newName = it.file.name.replaceBuildNumber(gav.artifactId, gav.version, buildNumber)
-            FileWithPath(it.file, "$gavPath/$newName")
+            val artifact = Artifact.from(it.file.name, gav.artifactId, gav.baseVersion)
+            val newVersion = "${gav.baseVersion.removeSuffix("-SNAPSHOT")}-${lastUpdated.asTimestamp(true)}-$buildNumber"
+            val newArtifact = artifact.copy(version = newVersion)
+            val newName = newArtifact.fileName()
+            renamedFiles.add(FileWithPath(it.file, "$gavPath/${newName}"))
+
+            if (newArtifact.extension.substringAfterLast('.') !in checksums) {
+                snapshotVersions.add(
+                    VersionMetadata.SnapshotVersion(
+                        classifier = newArtifact.classifier,
+                        extension = newArtifact.extension,
+                        value = newArtifact.version,
+                        updated = lastUpdated.asTimestamp(false),
+                    ),
+                )
+            }
         }
+
+        val versionMetadata =
+            VersionMetadata(
+                groupId = gav.groupId,
+                artifactId = gav.artifactId,
+                version = gav.baseVersion,
+                versioning = VersionMetadata.Versioning(
+                    snapshot = VersionMetadata.Snapshot(
+                        timestamp = lastUpdated.asTimestamp(true),
+                        buildNumber = buildNumber,
+                    ),
+                    lastUpdated = lastUpdated.asTimestamp(false),
+                    snapshotVersions = snapshotVersions,
+                ),
+            )
+
 
         transport.uploadFiles(renamedFiles)
 
-        val bytes = encodeToXml(newVersionMetadata).toByteArray()
+        val bytes = encodeToXml(versionMetadata).toByteArray()
         transport.put(versionMetadataPath, bytes)
         setOf("md5", "sha1", "sha256", "sha512").forEach {
             transport.put("$versionMetadataPath.$it", bytes.digest(it.uppercase()))
@@ -135,7 +143,7 @@ private fun publishGav(
     /**
      * Update the [artifact metadata](https://maven.apache.org/repositories/metadata.html).
      *
-     * See https://repo1.maven.org/maven2/com/apollographql/apollo/apollo-api-jvm/maven-metadata.xml for an example.
+     * See https://repo1.maven.org/maven2/com/apollographql/apollo/apollo-api-jvm/maven-metadata.xml for an example of artifact metadata.
      */
     val index = gavPath.lastIndexOf('/')
     check(index != -1) {
@@ -149,10 +157,10 @@ private fun publishGav(
             groupId = gav.groupId,
             artifactId = gav.artifactId,
             versioning = ArtifactMetadata.Versioning(
-                latest = gav.version,
-                release = gav.version,
+                latest = gav.baseVersion,
+                release = gav.baseVersion,
                 versions = emptyList(),
-                lastUpdated = lastUpdated,
+                lastUpdated = lastUpdated.asTimestamp(false),
             ),
         )
     } else {
@@ -171,8 +179,8 @@ private fun publishGav(
      * See https://github.com/gradle/gradle/blob/cb0c615fb8e3690971bb7f89ad80f58943360624/platforms/software/maven/src/main/java/org/gradle/api/publish/maven/internal/publisher/AbstractMavenPublisher.java#L116.
      */
     val versions = existingVersions.toMutableList()
-    if (!versions.none { it == gav.version }) {
-        versions.add(gav.version)
+    if (!versions.none { it == gav.baseVersion }) {
+        versions.add(gav.baseVersion)
     }
     val newArtifactMetadata = localArtifactMetadata.copy(
         versioning = localArtifactMetadata.versioning.copy(
@@ -182,7 +190,7 @@ private fun publishGav(
 
     val bytes = encodeToXml(newArtifactMetadata).toByteArray()
     transport.put(artifactMetadataPath, bytes)
-    setOf("md5", "sha1", "sha256", "sha512").forEach {
+    checksums.forEach {
         transport.put("$artifactMetadataPath.$it", bytes.digest(it.uppercase()))
     }
 }
@@ -194,11 +202,12 @@ private fun Transport.uploadFiles(filesWithPath: List<FileWithPath>) {
     }
 }
 
-internal fun timestampNow(): String {
-    val now = Instant.now().atZone(java.time.ZoneOffset.UTC)
+internal fun Instant.asTimestamp(withDot: Boolean): String {
+    val now = this.atZone(ZoneOffset.UTC)
 
+    val dot = if (withDot) "." else ""
     return String.format(
-        "%04d%02d%02d%02d%02d%02d",
+        "%04d%02d%02d${dot}%02d%02d%02d",
         now.year,
         now.monthValue,
         now.dayOfMonth,
@@ -207,6 +216,8 @@ internal fun timestampNow(): String {
         now.second,
     )
 }
+
+internal val checksums = setOf("md5", "sha1", "sha256", "sha512")
 
 /**
  * Helper function to add the `<?xml...` preamble as I haven't found how to do it with xmlutils
