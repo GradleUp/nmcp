@@ -24,7 +24,7 @@ internal abstract class DefaultNmcpAggregationExtension(private val project: Pro
         centralPortalConfigured = true
 
         project.registerPublishToCentralPortalTasks(
-            name = "aggregation",
+            kind = Kind.aggregation,
             inputFiles = allFiles,
             action = action
         )
