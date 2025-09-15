@@ -66,6 +66,7 @@ internal fun Project.registerPublishToCentralPortalTasks(
 
     val releaseTaskName = "nmcpPublish${name.capitalizeFirstLetter()}ToCentralPortal"
     val snapshotTaskName = "nmcpPublish${name.capitalizeFirstLetter()}ToCentralPortalSnapshots"
+    val localTaskName = "nmcpPublish${name.capitalizeFirstLetter()}ToMavenLocal"
     val zipTaskName = "nmcpZip${name.capitalizeFirstLetter()}"
     val findDeploymentNameTaskName = "nmcpFind${name.capitalizeFirstLetter()}DeploymentName"
 
@@ -76,7 +77,6 @@ internal fun Project.registerPublishToCentralPortalTasks(
     }
     val centralPortalLifecycleTaskName = "publish${name.capitalizeFirstLetter()}ToCentralPortal"
     val snapshotsLifecycleTaskName = "publish${name.capitalizeFirstLetter()}ToCentralPortalSnapshots"
-    val mavenLocalLifecycleTaskName = "publish${name.capitalizeFirstLetter()}ToMavenLocal"
 
     val zipName = "${name}.zip"
     val zipTaskProvider = tasks.register(zipTaskName, Zip::class.java) {
@@ -123,23 +123,17 @@ internal fun Project.registerPublishToCentralPortalTasks(
     )
     project.tasks.register(snapshotsLifecycleTaskName) {
         it.group = PUBLISH_TASK_GROUP
-        it.description = "$description to your Maven Local repository."
+        it.description = "$description to the Central Snapshots repository."
         it.dependsOn(centralSnapshots)
     }
 
     val m2File = File(System.getProperty("user.home")).resolve(".m2/repository")
-
-    val mavenLocal = registerNmcpPublishFileByFileToFileSystemTask(
-        taskName = snapshotTaskName,
+    registerNmcpPublishFileByFileToFileSystemTask(
+        taskName = localTaskName,
         m2AbsolutePath = project.provider { m2File.absolutePath },
         inputFiles = inputFiles,
         parallelism = spec.uploadSnapshotsParallelism.orElse(defaultParallelism),
     )
-    project.tasks.register(mavenLocalLifecycleTaskName) {
-        it.group = PUBLISH_TASK_GROUP
-        it.description = "$description to the Central Snapshots repository."
-        it.dependsOn(mavenLocal)
-    }
 
     /**
      * Detect early if the username and/or password are missing.
