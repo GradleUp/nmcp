@@ -20,8 +20,6 @@ gratatouille {
     codeGeneration {
         addDependencies.set(false)
     }
-    pluginMarker("com.gradleup.nmcp", "default")
-    pluginMarker("com.gradleup.nmcp.aggregation", "default")
 }
 
 dependencies {
