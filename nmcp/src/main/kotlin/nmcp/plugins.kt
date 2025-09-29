@@ -32,7 +32,7 @@ internal fun nmcpSettings(settings: Settings) {
         if (project.rootProject == project) {
             project.pluginManager.apply("com.gradleup.nmcp.aggregation")
 
-            project.subprojects {
+            project.allprojects {
                 project.dependencies.add(nmcpConsumerConfigurationName, project.dependencies.create(it))
             }
         }
