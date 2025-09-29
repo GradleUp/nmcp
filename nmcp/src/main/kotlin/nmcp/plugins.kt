@@ -35,10 +35,9 @@ internal fun nmcpSettings(settings: Settings) {
             project.subprojects {
                 project.dependencies.add(nmcpConsumerConfigurationName, project.dependencies.create(it))
             }
-        } else {
-            project.pluginManager.withPlugin("maven-publish") {
-                project.pluginManager.apply("com.gradleup.nmcp")
-            }
+        }
+        project.pluginManager.withPlugin("maven-publish") {
+            project.pluginManager.apply("com.gradleup.nmcp")
         }
     }
 }
