@@ -1,3 +1,40 @@
+# Version 1.2.0
+
+Bunch of fixes + you can now call `nmcpPublishAggregationToMavenLocal` to verify your publishing process and/or test locally.
+
+## All Changes
+* Add plugin marker for the settings plugin by @martinbonnin in https://github.com/GradleUp/nmcp/pull/184
+* Update to gratatouille 0.1.1 and use @GPlugin for the settings plugin by @martinbonnin in https://github.com/GradleUp/nmcp/pull/185
+* Use the snapshot version of the gratatouille plugin by @martinbonnin in https://github.com/GradleUp/nmcp/pull/187
+* Add nmcpPublishAggregationToMavenLocal by @martinbonnin in https://github.com/GradleUp/nmcp/pull/192
+* Always populate snapshotVersions manually by @martinbonnin in https://github.com/GradleUp/nmcp/pull/193
+* Bump bootstrapped version by @martinbonnin in https://github.com/GradleUp/nmcp/pull/194
+
+# Version 1.1.0
+
+This version uploads SNAPSHOTs publications in parallel by default (inside a single publication, files are still uploaded serially, which means this is only useful for multi-publications uploads). 
+
+On the Apollo Kotlin repo, this made the snapshot CI workflow down to ~30min from ~1h previously. 
+
+If you notice any issue, you can roll back to the previous behaviour with `uploadSnapshotsParallelism`:
+
+```kotlin
+nmcpAggregation {
+  centralPortal {
+     uploadSnapshotsParallelism.set(1)
+  }
+}
+```
+
+You may also experiment with different values of parallelism (current default is 8). If you do, let us know your findings!
+
+## All changes
+* Improve comment and error message  https://github.com/GradleUp/nmcp/pull/176
+* Add option to upload snapshots in parallel by @martinbonnin in https://github.com/GradleUp/nmcp/pull/180
+* Update compat-patrouille https://github.com/GradleUp/nmcp/pull/179
+* Enable parallelism by default by @martinbonnin in https://github.com/GradleUp/nmcp/pull/181
+
+
 # Version 1.0.3
 
 Compatibility with isolated projects alongside a few UX improvements.
