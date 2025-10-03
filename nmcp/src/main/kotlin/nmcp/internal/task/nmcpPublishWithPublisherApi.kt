@@ -90,7 +90,7 @@ internal fun nmcpPublishWithPublisherApi(
         if (publishingType == "AUTOMATIC") {
             if (timeout2.isPositive()) {
                 logger.lifecycle("Nmcp: deployment is validated, waiting for publication...")
-                waitFor(setOf(PUBLISHED), timeout1, logger, deploymentId, baseUrl, token)
+                waitFor(setOf(PUBLISHED), timeout2, logger, deploymentId, baseUrl, token)
                 logger.lifecycle("Nmcp: deployment is published.")
             } else {
                 logger.lifecycle("Nmcp: deployment is publishing... Check the central portal UI to verify its status.")
