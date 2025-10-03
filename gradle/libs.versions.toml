@@ -1,6 +1,6 @@
 [versions]
-kgp = "2.1.20"
-ksp = "2.1.20-2.0.0"
+kgp = "2.2.20"
+ksp = "2.2.20-2.0.3"
 gratatouille-runtime = "0.1.1"
 gratatouille-plugin = "0.1.2-SNAPSHOT-907e08d6a0b673cfd6c2ff7cadb548362e636cb7"
 
