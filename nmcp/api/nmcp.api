@@ -59,6 +59,16 @@ public final class nmcp/internal/task/NmcpFindDeploymentNameEntryPoint$Companion
 	public final fun run (Ljava/util/List;Ljava/io/File;)V
 }
 
+public final class nmcp/internal/task/NmcpPublishFileByFileToFileSystemEntryPoint {
+	public static final field Companion Lnmcp/internal/task/NmcpPublishFileByFileToFileSystemEntryPoint$Companion;
+	public fun <init> ()V
+	public static final fun run (Ljava/util/function/BiConsumer;Ljava/lang/String;Ljava/util/List;I)V
+}
+
+public final class nmcp/internal/task/NmcpPublishFileByFileToFileSystemEntryPoint$Companion {
+	public final fun run (Ljava/util/function/BiConsumer;Ljava/lang/String;Ljava/util/List;I)V
+}
+
 public final class nmcp/internal/task/NmcpPublishFileByFileToSnapshotsEntryPoint {
 	public static final field Companion Lnmcp/internal/task/NmcpPublishFileByFileToSnapshotsEntryPoint$Companion;
 	public fun <init> ()V
