@@ -142,6 +142,10 @@ internal class HttpTransport(
                          * I have seen 400 for this.
                          */
                         appendLine(" - Does your artifact have a proper extension (.jar, .pom, ...)?")
+                        /**
+                         * I have seen 403 for this.
+                         */
+                        appendLine(" - Is your groupId correct?")
                     }
                 }
             }
