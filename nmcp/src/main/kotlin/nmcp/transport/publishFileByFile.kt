@@ -2,6 +2,7 @@ package nmcp.transport
 
 import gratatouille.tasks.FileWithPath
 import gratatouille.tasks.GInputFiles
+import java.io.File
 import java.security.MessageDigest
 import java.time.Instant
 import java.time.ZoneOffset
@@ -26,6 +27,27 @@ fun publishFileByFile(
     inputFiles: GInputFiles,
 ) {
     return publishFileByFile(transport, inputFiles, defaultParallelism)
+}
+
+/**
+ * Publishes to a local repository.
+ *
+ * [publishFileByFile] computes the group and version maven-metadata.xml files.
+ *
+ * @param from a directory containing the files to publish as a m2 layout without maven-metadata.xml.
+ * @param into the destination directory.
+ */
+fun publishFileByFile(
+    from: File,
+    into: File,
+) {
+    return publishFileByFile(
+        FilesystemTransport(into.absolutePath),
+        from.walk().filter { it.isFile }.map {
+            FileWithPath(it, it.relativeTo(from).path)
+        }.toList(),
+        defaultParallelism,
+    )
 }
 
 fun publishFileByFile(
@@ -93,7 +115,8 @@ private fun publishGav(
                 return@forEach
             }
             val artifact = Artifact.from(it.file.name, gav.artifactId, gav.baseVersion)
-            val newVersion = "${gav.baseVersion.removeSuffix("-SNAPSHOT")}-${lastUpdated.asTimestamp(true)}-$buildNumber"
+            val newVersion =
+                "${gav.baseVersion.removeSuffix("-SNAPSHOT")}-${lastUpdated.asTimestamp(true)}-$buildNumber"
             val newArtifact = artifact.copy(version = newVersion)
             val newName = newArtifact.fileName()
             renamedFiles.add(FileWithPath(it.file, "$gavPath/${newName}"))
