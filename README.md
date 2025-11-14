@@ -22,7 +22,7 @@ Configure `nmcp` in your root project using the quick way:
 ```kotlin
 // root/build.gradle[.kts]
 plugins {
-  id("com.gradleup.nmcp.aggregation").version("1.2.0")
+  id("com.gradleup.nmcp.aggregation").version("1.2.1")
 }
 
 nmcpAggregation {
@@ -64,7 +64,7 @@ You can be 100% compatible by adding the plugin to each module you want to publi
 ```kotlin
 //root/module/build.gradle.kts
 plugins {
-  id("com.gradleup.nmcp").version("1.2.0")
+  id("com.gradleup.nmcp").version("1.2.1")
 }
 ```
 
@@ -73,7 +73,7 @@ And then list all modules in your root project:
 ```kotlin
 //root/build.gradle.kts
 plugins {
-  id("com.gradleup.nmcp.aggregation").version("1.2.0")
+  id("com.gradleup.nmcp.aggregation").version("1.2.1")
 }
 
 nmcpAggregation {
