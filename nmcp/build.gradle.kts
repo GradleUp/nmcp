@@ -27,7 +27,9 @@ dependencies {
     implementation(libs.okio)
     implementation(libs.coroutines)
     implementation(libs.gratatouille.wiring.runtime)
-    implementation(libs.gratatouille.tasks.runtime)
+    api(libs.gratatouille.tasks.runtime) {
+        because("publishFileByFile requires GInputFiles")
+    }
     api(libs.okhttp)
     implementation(libs.xmlutil)
 

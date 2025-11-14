@@ -94,6 +94,7 @@ public abstract interface class nmcp/transport/Content {
 }
 
 public final class nmcp/transport/PublishFileByFileKt {
+	public static final fun publishFileByFile (Ljava/io/File;Ljava/io/File;)V
 	public static final fun publishFileByFile (Lnmcp/transport/Transport;Ljava/util/List;)V
 	public static final fun publishFileByFile (Lnmcp/transport/Transport;Ljava/util/List;I)V
 }
