@@ -12,6 +12,8 @@ import org.gradle.api.publish.maven.MavenPublication
 internal abstract class DefaultNmcpExtension(private val project: Project): NmcpExtension {
     private var centralPortalConfigured = false
     private val m2Dir = project.layout.buildDirectory.file("nmcp/m2")
+
+    // TODO: it's not clear whether we need that while we could simply resolve the project artifacts
     private val m2Files = project.files()
     private val cleanupRepository = project.registerCleanupDirectoryTask(directory = m2Dir.map { it.asFile.absolutePath })
 
