@@ -1,3 +1,15 @@
+
+# Version 1.2.1
+
+A few fixes mostly around the settings plugin + fixed the publishing timeout.
+
+## All Changes
+* Settings plugin: only apply to subprojects if the maven-publish plugin is applied by @martinbonnin in https://github.com/GradleUp/nmcp/pull/196
+* Settings plugin: allow the root project to apply both the regular and aggregation plugins by @martinbonnin in https://github.com/GradleUp/nmcp/pull/198
+* Use allprojects {} instead of subprojects {} by @martinbonnin in https://github.com/GradleUp/nmcp/pull/199
+* Fix publishing timeout by @martinbonnin in https://github.com/GradleUp/nmcp/pull/201
+* Add publishFileByFile(File, File) helper function by @martinbonnin in https://github.com/GradleUp/nmcp/pull/207
+
 # Version 1.2.0
 
 Bunch of fixes + you can now call `nmcpPublishAggregationToMavenLocal` to verify your publishing process and/or test locally.
