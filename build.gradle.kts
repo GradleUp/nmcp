@@ -3,7 +3,7 @@ import com.gradleup.librarian.gradle.Librarian
 plugins {
     alias(libs.plugins.kgp).apply(false)
     alias(libs.plugins.ksp).apply(false)
-    alias(libs.plugins.ggp).apply(false)
+    alias(libs.plugins.gratatouille.wiring).apply(false)
     alias(libs.plugins.librarian).apply(false)
     alias(libs.plugins.nmcp).apply(false)
     alias(libs.plugins.compat).apply(false)

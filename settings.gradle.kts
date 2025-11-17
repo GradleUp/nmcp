@@ -20,4 +20,4 @@ pluginManagement {
 
 rootProject.name = "nmcp-root"
 
-include(":nmcp")
+include(":nmcp", ":nmcp-tasks")
