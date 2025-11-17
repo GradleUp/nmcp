@@ -1,8 +1,8 @@
 [versions]
 kgp = "2.2.20"
-ksp = "2.2.20-2.0.3"
-gratatouille-runtime = "0.1.1"
-gratatouille-plugin = "0.1.2-SNAPSHOT-907e08d6a0b673cfd6c2ff7cadb548362e636cb7"
+ksp = "2.3.2"
+gratatouille-runtime = "0.1.3"
+gratatouille-plugin = "0.1.3"
 
 [libraries]
 json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1"
@@ -21,7 +21,8 @@ gratatouille-tasks-runtime = { module = "com.gradleup.gratatouille:gratatouille-
 kgp = { id = "org.jetbrains.kotlin.jvm", version.ref = "kgp" }
 serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kgp" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-ggp = { id = "com.gradleup.gratatouille", version.ref = "gratatouille-plugin" }
+gratatouille-wiring = { id = "com.gradleup.gratatouille.wiring", version.ref = "gratatouille-plugin" }
+gratatouille-tasks = { id = "com.gradleup.gratatouille.tasks", version.ref = "gratatouille-plugin" }
 librarian = { id = "com.gradleup.librarian", version = "0.2.2-SNAPSHOT-44b68f3cb157b53cd19d63b93c6eeae967d1da4a" }
 nmcp = { id = "com.gradleup.nmcp", version = "1.2.1-SNAPSHOT-e592afcb0bceeb0cfd7adec28f8f3580a01831ff" }
 compat = { id = "com.gradleup.compat.patrouille", version = "0.0.1-SNAPSHOT-9da44b3b93e36a196ae5afc9f7a79a46a82763cd" }

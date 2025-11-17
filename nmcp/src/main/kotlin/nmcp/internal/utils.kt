@@ -7,7 +7,6 @@ import nmcp.internal.task.registerNmcpFindDeploymentNameTask
 import nmcp.internal.task.registerNmcpPublishFileByFileToFileSystemTask
 import nmcp.internal.task.registerNmcpPublishFileByFileToSnapshotsTask
 import nmcp.internal.task.registerNmcpPublishWithPublisherApiTask
-import nmcp.transport.defaultParallelism
 import org.gradle.api.Action
 import org.gradle.api.Named
 import org.gradle.api.Project
@@ -18,6 +17,8 @@ import org.gradle.api.attributes.Usage.USAGE_ATTRIBUTE
 import org.gradle.api.file.FileCollection
 import org.gradle.api.publish.plugins.PublishingPlugin.PUBLISH_TASK_GROUP
 import org.gradle.api.tasks.bundling.Zip
+
+internal val defaultParallelism = 8
 
 internal fun Project.withRequiredPlugin(id: String, block: () -> Unit) {
     var hasPlugin = false

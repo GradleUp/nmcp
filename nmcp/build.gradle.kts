@@ -1,17 +1,9 @@
-import org.gradle.api.internal.artifacts.ivyservice.projectmodule.ProjectPublicationRegistry
-import org.gradle.api.internal.project.ProjectInternal
-import org.gradle.internal.Describables
 import com.gradleup.librarian.gradle.Librarian
-import org.gradle.internal.DisplayName
-import org.gradle.kotlin.dsl.support.serviceOf
-import org.gradle.plugin.use.internal.DefaultPluginId
-import org.gradle.plugin.use.resolve.internal.local.PluginPublication
 
 plugins {
     alias(libs.plugins.kgp)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.ggp)
-    alias(libs.plugins.serialization)
+    id("com.gradleup.gratatouille.wiring")
 }
 
 Librarian.module(project)
@@ -20,35 +12,12 @@ gratatouille {
     codeGeneration {
         addDependencies.set(false)
     }
+    pluginLocalPublication("com.gradleup.nmcp.settings")
 }
 
 dependencies {
-    implementation(libs.json)
-    implementation(libs.okio)
-    implementation(libs.coroutines)
-    implementation(libs.gratatouille.wiring.runtime)
-    api(libs.gratatouille.tasks.runtime) {
-        because("publishFileByFile requires GInputFiles")
-    }
-    api(libs.okhttp)
-    implementation(libs.xmlutil)
-
-    testImplementation(libs.kotlin.test)
+    gratatouille(project(":nmcp-tasks"))
     compileOnly(libs.gradle.min)
+    implementation(libs.gratatouille.wiring.runtime)
+    testImplementation(libs.kotlin.test)
 }
-
-/**
- * This is so that we can use the plugin if we are an included build
- */
-val registry = project.serviceOf<ProjectPublicationRegistry>()
-
-class LocalPluginPublication(private val name: String, private val id: String) : PluginPublication {
-    override fun getDisplayName(): DisplayName {
-        return Describables.withTypeAndName("plugin", name)
-    }
-
-    override fun getPluginId(): PluginId {
-        return DefaultPluginId.of(id)
-    }
-}
-registry.registerPublication((project as ProjectInternal).projectIdentity, LocalPluginPublication("nmcp settings plugin", "com.gradleup.nmcp.settings"))
