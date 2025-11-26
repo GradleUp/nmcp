@@ -131,7 +131,7 @@ private fun waitFor(
         } else if (status in target) {
             return
         } else {
-            logger.lifecycle("Nmcp: deployment status is '$status', will try again in ${pollingInterval.inWholeSeconds}s (${timeout - mark.elapsedNow()} left)...")
+            logger.lifecycle("Nmcp: deployment status is '$status', will try again in ${pollingInterval.inWholeSeconds}s (${(timeout - mark.elapsedNow()).inWholeSeconds.seconds} left)...")
             // Wait for the next attempt to reduce the load on the Central Portal API
             Thread.sleep(pollingInterval.inWholeMilliseconds)
             continue
