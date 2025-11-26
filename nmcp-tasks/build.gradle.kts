@@ -30,3 +30,13 @@ dependencies {
 
     testImplementation(libs.kotlin.test)
 }
+
+/**
+ * Gradle wants to substitute the external artifact with ourselves for some reason, and this ends up
+ * as an input of `cleanupDirectory` since it's the classpath
+ *
+ * https://github.com/gradle/gradle/issues/1629
+ */
+tasks.named("cleanupDirectory").configure {
+    dependsOn("jar")
+}
