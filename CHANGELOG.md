@@ -1,4 +1,8 @@
 
+# Version 1.3.0
+
+Enable [classloader isolation](https://github.com/GradleUp/gratatouille?tab=readme-ov-file#classloader-isolation-optional) to fix issues such as #210.
+
 # Version 1.2.1
 
 A few fixes mostly around the settings plugin + fixed the publishing timeout.
