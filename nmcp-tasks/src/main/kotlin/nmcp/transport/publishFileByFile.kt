@@ -199,10 +199,12 @@ private fun publishGav(
     }
 
     /**
+     * Make sure there is always at least one version.
+     * This is needed at least for things like https://shields.io, probably other things too.
      * See https://github.com/gradle/gradle/blob/cb0c615fb8e3690971bb7f89ad80f58943360624/platforms/software/maven/src/main/java/org/gradle/api/publish/maven/internal/publisher/AbstractMavenPublisher.java#L116.
      */
     val versions = existingVersions.toMutableList()
-    if (!versions.none { it == gav.baseVersion }) {
+    if (versions.none { it == gav.baseVersion }) {
         versions.add(gav.baseVersion)
     }
     val newArtifactMetadata = localArtifactMetadata.copy(
