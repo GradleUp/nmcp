@@ -12,7 +12,9 @@ Librarian.module(project)
 gratatouille {
     codeGeneration {
         addDependencies.set(false)
-        classLoaderIsolation()
+        classLoaderIsolation {
+            configurationName.set("nmcpTasks")
+        }
     }
 }
 
