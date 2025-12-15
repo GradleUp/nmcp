@@ -62,10 +62,12 @@ internal abstract class DefaultNmcpExtension(private val project: Project): Nmcp
                          * an error for the user to invoke them manually.
                          *
                          * As long as the individual tasks are trigger by `publishAllPublicationsTo${Foo}` then this sharing shouldn't be too
-                         * much of an issue and having a single directory greatly simplifies the Gradle model and the output of `./gradlew tasks --all`.
+                         * much of an issue, and having a single directory greatly simplifies the Gradle model and the output of `./gradlew tasks --all`.
                          */
                         it.group = null
                         it.dependsOn(cleanupRepository)
+                        // See https://github.com/GradleUp/nmcp/issues/216#issuecomment-3655649387
+                        it.outputs.upToDateWhen { false }
                     }
                 }
             }
