@@ -27,8 +27,8 @@ plugins {
 
 nmcpAggregation {
   centralPortal {
-    username = TODO("Create a token username at https://central.sonatype.com/account")
-    password = TODO("Create a token password at https://central.sonatype.com/account")
+    username = TODO("Create a token username at https://central.sonatype.com/")
+    password = TODO("Create a token password at https://central.sonatype.com/")
     // publish manually from the portal
     publishingType = "USER_MANAGED"
     // or if you want to publish automatically
@@ -78,8 +78,8 @@ plugins {
 
 nmcpAggregation {
   centralPortal {
-    username = TODO("Create a token username at https://central.sonatype.com/account")
-    password = TODO("Create a token password at https://central.sonatype.com/account")
+    username = TODO("Create a token username at https://central.sonatype.com/")
+    password = TODO("Create a token password at https://central.sonatype.com/")
     publishingType = "USER_MANAGED"
   }
 }
