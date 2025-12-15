@@ -23,6 +23,8 @@ interface NmcpAggregationExtension {
 
     /**
      * [allFiles] contains all the files present in the "nmcpAggregation" configuration
+     *
+     * This [FileCollection] is a multi-rooted [org.gradle.api.file.FileTree] containing only files
      */
     val allFiles: FileCollection
 }
