@@ -59,11 +59,9 @@ internal enum class Kind {
 internal fun Project.registerPublishToCentralPortalTasks(
     kind: Kind,
     inputFiles: FileCollection,
-    action: Action<CentralPortalOptions>,
+    spec: CentralPortalOptions,
 ) {
     val name = kind.name
-    val spec = objects.newInstance(CentralPortalOptions::class.java)
-    action.execute(spec)
 
     val releaseTaskName = "nmcpPublish${name.capitalizeFirstLetter()}ToCentralPortal"
     val snapshotTaskName = "nmcpPublish${name.capitalizeFirstLetter()}ToCentralPortalSnapshots"

@@ -12,6 +12,7 @@ import org.gradle.api.publish.maven.MavenPublication
 internal abstract class DefaultNmcpExtension(private val project: Project): NmcpExtension {
     private var centralPortalConfigured = false
     private val m2Dir = project.layout.buildDirectory.file("nmcp/m2")
+    private val spec = project.objects.newInstance(CentralPortalOptions::class.java)
 
     // TODO: it's not clear whether we need that while we could simply resolve the project artifacts
     private val m2Files = project.files()
@@ -68,20 +69,16 @@ internal abstract class DefaultNmcpExtension(private val project: Project): Nmcp
                     }
                 }
             }
+            project.registerPublishToCentralPortalTasks(
+                kind = Kind.allPublications,
+                inputFiles = m2Files,
+                spec = spec
+            )
         }
     }
 
     override fun publishAllPublicationsToCentralPortal(action: Action<CentralPortalOptions>) {
-        check(!centralPortalConfigured) {
-            "Nmcp: centralPortal {} must be called only once"
-        }
-        centralPortalConfigured = true
-
-        project.registerPublishToCentralPortalTasks(
-            kind = Kind.allPublications,
-            inputFiles = m2Files,
-            action = action
-        )
+        action.execute(spec)
     }
 
     override fun extraFiles(files: Any) {
