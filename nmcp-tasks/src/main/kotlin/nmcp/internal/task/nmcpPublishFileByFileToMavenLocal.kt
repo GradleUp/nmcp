@@ -20,7 +20,7 @@ internal fun nmcpPublishFileByFileToFileSystem(
     check(Path(m2AbsolutePath).isAbsolute) {
         "Nmcp: path '$m2AbsolutePath' is not an absolute path"
     }
-    logger.lifecycle("Nmcp: copying files to $m2AbsolutePath")
+    logger.info("Nmcp: copying files to $m2AbsolutePath")
 
     File(m2AbsolutePath).mkdirs()
     publishFileByFile(FilesystemTransport(m2AbsolutePath), inputFiles, parallelism)
