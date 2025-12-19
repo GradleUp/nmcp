@@ -13,10 +13,10 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
+import nmcp.internal.task.Artifact
 import nmcp.internal.task.ArtifactMetadata
 import nmcp.internal.task.Gav
 import nmcp.internal.task.VersionMetadata
-import nmcp.internal.task.Artifact
 import nmcp.internal.task.xml
 import okio.ByteString.Companion.toByteString
 
@@ -172,23 +172,18 @@ private fun publishGav(
     check(index != -1) {
         "Nmcp: invalid gav path: '$gavPath'"
     }
+
     val artifactMetadataPath = "${gavPath.substring(0, index)}/maven-metadata.xml"
-    val localArtifactMetadataFile = allFiles.firstOrNull { it.normalizedPath == artifactMetadataPath }
-    val localArtifactMetadata = if (localArtifactMetadataFile == null) {
-        // The publisher did not artifact level metadata, let's
-        ArtifactMetadata(
+    val artifactMetadata = ArtifactMetadata(
             groupId = gav.groupId,
             artifactId = gav.artifactId,
             versioning = ArtifactMetadata.Versioning(
-                latest = gav.baseVersion,
-                release = gav.baseVersion,
+                latest = "TODO",
+                release = "TODO",
                 versions = emptyList(),
-                lastUpdated = lastUpdated.asTimestamp(false),
+                lastUpdated = "TODO",
             ),
         )
-    } else {
-        xml.decodeFromString<ArtifactMetadata>(localArtifactMetadataFile.file.readText())
-    }
 
     val remoteArtifactMetadata = transport.get(artifactMetadataPath)
 
@@ -207,9 +202,19 @@ private fun publishGav(
     if (versions.none { it == gav.baseVersion }) {
         versions.add(gav.baseVersion)
     }
-    val newArtifactMetadata = localArtifactMetadata.copy(
-        versioning = localArtifactMetadata.versioning.copy(
-            versions = versions,
+    val newArtifactMetadata = artifactMetadata.copy(
+        // Patch the
+        versioning = artifactMetadata.versioning.copy(
+            latest = gav.baseVersion,
+            /**
+             * XXX: this is not correct, but doing this correctly would require parsing semantic versioning here
+             * to get the highest non-SNAPSHOT version.
+             * I am not too keen on introducing that complexity here, and in general cases, repositories shouldn't
+             * mix snapshots and releases, so I'm hoping this is all fine.
+             */
+            release = gav.baseVersion,
+            lastUpdated = lastUpdated.asTimestamp(false),
+            versions = versions.sorted(),
         ),
     )
 
