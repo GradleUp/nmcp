@@ -1,3 +1,7 @@
+.vscode
+dist
+node_modules
+.astro
 .idea
 .gradle
 build

@@ -1,0 +1,82 @@
+---
+title: Quickstart
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+Nmcp (New Maven Central Publishing) is a plugin that uses the new [Central Portal publisher API](https://central.sonatype.org/publish/publish-portal-api/) to publish existing publications to Maven Central and Snapshots.
+
+Nmcp is compatible with modern Gradle development practices:
+* Compatible with [Configuration Cache](https://docs.gradle.org/current/userguide/configuration_cache_enabling.html).
+* Compatible with [Isolated project](https://docs.gradle.org/current/userguide/isolated_projects.html).
+* Compatible with [multi-project builds](https://docs.gradle.org/current/userguide/multi_project_builds.html).
+* Uses [classloader isolation](https://mbonnin.net/2025-08-24_isolation_101/) to prevent conflicts with other plugins.
+* Uses [Gradle 8.8 lifecycle callbacks ](https://docs.gradle.org/8.8/release-notes.html) for easy configuration.
+
+<Aside>
+Nmcp does **not** create publications or apply the `maven-publish` plugin. This must be done using other means. Nmcp uses existing publications, stages them locally and uploads a zip to the Central Portal publisher API.
+
+For a higher level API use [vanniktech/gradle-maven-publish-plugin](https://github.com/vanniktech/gradle-maven-publish-plugin/).
+</Aside>
+
+### Requirements
+
+Nmcp requires Java 17+, Gradle 8.8+ for the settings plugin and Gradle 8.2+ otherwise.
+
+
+
+### Configuring the settings plugin
+
+_We recommend using the settings plugin to configure all your logic in your `settings.gradle[.kts]` file. For a lower level API, you may also apply the Nmcp plugins directly in your `build.gradle[.kts]` files. See the [manual configuration](/nmcp/manual-configuration) page for more details._
+
+Add the `com.gradleup.nmcp.settings` plugin to your `settings.gradle[.kts]` file and configure the `nmcpAggregation` extension:
+
+```kotlin
+// settings.gradle[.kts]
+plugins {
+  id("com.gradleup.nmcp.aggregation").version("1.3.0")
+}
+
+nmcpAggregation {
+  centralPortal {
+    username = TODO("Create a token username at https://central.sonatype.com/")
+    password = TODO("Create a token password at https://central.sonatype.com/")
+
+    // optional: publish manually from the portal
+    publishingType = "USER_MANAGED"
+
+    // optional: configure the name of your publication in the portal UI
+    publicationName = "my-publication:$version"
+
+    // optional: increase the validation timeout to 30 minutes
+    validationTimeout = java.time.Duration.of(30, ChronoUnit.MINUTES)
+
+    // optional: disable waiting for publishing
+    publishingTimeout = java.time.Duration.ZERO
+
+    // optional: send publications serially instead of in parallel (might be slower)
+    uploadSnapshotsParallelism.set(1)
+  }
+}
+```
+
+Call `publishAggregationToCentralPortal` to publish the aggregation:
+
+```bash
+./gradlew publishAggregationToCentralPortal
+# yay everything is uploaded 🎉
+# go to https://central.sonatype.com/ to release if you used USER_MANAGED
+```
+
+Call `publishAggregationToCentralPortalSnapshots` to publish to the snapshots:
+
+```bash
+./gradlew publishAggregationToCentralPortalSnapshots
+# yay everything is uploaded to "https://central.sonatype.com/repository/maven-snapshots/" 🎉
+```
+
+Under the hood, the `com.gradle.nmcp.settings` plugin applies the `com.gradleup.nmcp` plugin to all your projects and `com.gradleup.nmcp.aggregation` to your root project.
+
+If you're using Gradle < 8.8, if you have a convention plugin or if you need more control over the aggregation, you may also configure the subplugins manually and get more control.
+
+See the [manual configuration page](/nmcp/manual-configuration) for more details.

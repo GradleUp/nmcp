@@ -1,0 +1,20 @@
+---
+title: Debugging
+---
+
+### Inspect the deployment content
+
+The `nmcpZipAggregation` task is an intermediate task of `publishAggregationToCentralPortal` that generates the ZIP file that is then sent to Maven Central.
+You can use this task to inspect the entire content before publishing your project.
+
+```bash
+./gradlew nmcpZipAggregation
+# the zip file is in build/nmcp/zip/aggregation.zip
+```
+
+Alternatively, you may publish to your Maven Local `~/.m2` repository using `nmcpPublishAggregationToMavenLocal`.
+
+```bash
+./gradlew nmcpPublishAggregationToMavenLocal
+# the files are copied to ~/.m2
+```
