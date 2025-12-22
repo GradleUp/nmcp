@@ -16,24 +16,34 @@ public abstract interface class nmcp/NmcpAggregationExtension {
 	public abstract fun publishAllProjectsProbablyBreakingProjectIsolation ()V
 }
 
-public abstract class nmcp/NmcpAggregationPlugin : org/gradle/api/Plugin {
-	public fun <init> ()V
-	public synthetic fun apply (Ljava/lang/Object;)V
-	public fun apply (Lorg/gradle/api/Project;)V
-}
-
 public abstract interface class nmcp/NmcpExtension {
 	public abstract fun extraFiles (Ljava/lang/Object;)V
 	public abstract fun publishAllPublicationsToCentralPortal (Lorg/gradle/api/Action;)V
 }
 
-public abstract class nmcp/NmcpPlugin : org/gradle/api/Plugin {
+public abstract interface class nmcp/NmcpSettings {
+	public abstract fun centralPortal (Lorg/gradle/api/Action;)V
+}
+
+public abstract class nmcp/internal/DefaultNmcpAggregationExtensionPlugin : org/gradle/api/Plugin {
 	public fun <init> ()V
 	public synthetic fun apply (Ljava/lang/Object;)V
 	public fun apply (Lorg/gradle/api/Project;)V
 }
 
-public abstract class nmcp/NmcpSettingsPlugin : org/gradle/api/Plugin {
+public abstract class nmcp/internal/DefaultNmcpExtensionPlugin : org/gradle/api/Plugin {
+	public fun <init> ()V
+	public synthetic fun apply (Ljava/lang/Object;)V
+	public fun apply (Lorg/gradle/api/Project;)V
+}
+
+public abstract class nmcp/internal/DefaultNmcpSettings : nmcp/NmcpSettings {
+	public fun <init> (Lorg/gradle/api/initialization/Settings;)V
+	public fun centralPortal (Lorg/gradle/api/Action;)V
+	public abstract fun getObjects ()Lorg/gradle/api/model/ObjectFactory;
+}
+
+public abstract class nmcp/internal/DefaultNmcpSettingsPlugin : org/gradle/api/Plugin {
 	public fun <init> ()V
 	public synthetic fun apply (Ljava/lang/Object;)V
 	public fun apply (Lorg/gradle/api/initialization/Settings;)V

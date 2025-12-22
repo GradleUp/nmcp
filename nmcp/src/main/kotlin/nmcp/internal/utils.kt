@@ -1,6 +1,6 @@
 package nmcp.internal
 
-import gratatouille.wiring.capitalizeFirstLetter
+import gratatouille.capitalizeFirstLetter
 import java.io.File
 import nmcp.CentralPortalOptions
 import nmcp.internal.task.registerNmcpFindDeploymentNameTask

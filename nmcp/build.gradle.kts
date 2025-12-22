@@ -3,21 +3,19 @@ import com.gradleup.librarian.gradle.Librarian
 plugins {
     alias(libs.plugins.kgp)
     alias(libs.plugins.ksp)
-    id("com.gradleup.gratatouille.wiring")
+    id("com.gradleup.gratatouille")
 }
 
 Librarian.module(project)
 
 gratatouille {
-    codeGeneration {
-        addDependencies.set(false)
-    }
+    addDependencies = false
     pluginLocalPublication("com.gradleup.nmcp.settings")
 }
 
 dependencies {
     gratatouille(project(":nmcp-tasks"))
     compileOnly(libs.gradle.min)
-    implementation(libs.gratatouille.wiring.runtime)
+    implementation(libs.gratatouille.runtime)
     testImplementation(libs.kotlin.test)
 }
