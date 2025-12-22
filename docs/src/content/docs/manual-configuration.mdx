@@ -1,0 +1,109 @@
+---
+title: Manual configuration
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+For simple projects, the [settings plugin](/nmcp) is recommended.
+
+For more control, you can configure the `com.gradleup.nmcp.aggregation` and `com.gradleup.nmcp` plugins manually as described in this page.
+
+
+### `com.gradleup.nmcp`
+
+Apply the `com.gradleup.nmcp` plugin to all the projects that need to be published:
+
+```kotlin
+// module-a/build.gradle.kts
+plugins {
+  id("com.gradleup.nmcp").version("1.3.0")
+}
+```
+
+The `com.gradleup.nmcp` creates an [outgoing variant](https://docs.gradle.org/current/userguide/variant_aware_resolution.html#sec:abm-configuration-attributes) containing all the publications of a given project.
+
+<Aside>If you have a convention plugin, it is a natural place to apply `com.gradleup.nmcp`, next to `maven-publish` and the rest of your publishing logic.</Aside>
+
+The outgoing variants are then consumed by the `com.gradleup.nmcp.aggregation` plugin.
+
+### `com.gradleup.nmcp.aggregation`
+
+In the project where you want to upload the deployment (typically your root project), apply the `com.gradleup.nmcp.aggregation` plugin and configure the Central Portal properties:
+
+```kotlin
+// build.gradle.kts
+plugins {
+  id("com.gradleup.nmcp.aggregation").version("1.3.0")
+}
+
+nmcpAggregation {
+  centralPortal {
+    username = TODO("Create a token username at https://central.sonatype.com/")
+    password = TODO("Create a token password at https://central.sonatype.com/")
+
+    // optional: publish manually from the portal
+    publishingType = "USER_MANAGED"
+
+    // optional: configure the name of your publication in the portal UI
+    publicationName = "my-publication:$version"
+
+    // optional: increase the validation timeout to 30 minutes
+    validationTimeout = java.time.Duration.of(30, ChronoUnit.MINUTES)
+
+    // optional: disable waiting for publishing
+    publishingTimeout = java.time.Duration.ZERO
+
+    // optional: send publications serially instead of in parallel (might be slower)
+    uploadSnapshotsParallelism.set(1)
+  }
+}
+
+```
+
+_Note that you may also apply both `com.gradleup.nmcp.aggregation` and `com.gradleup.nmcp` in the same project._
+
+For the aggregation to find the outgoing variant, you need to add the `nmcpAggregation` dependency for each project that you want to publish:
+
+```kotlin
+// build.gradle.kts
+dependencies {
+  // Add all dependencies here
+  nmcpAggregation(project(":module1"))
+  nmcpAggregation(project(":module2"))
+  nmcpAggregation(project(":module3"))
+}
+```
+
+`com.gradleup.nmcp.aggregation` uses a lenient configuration to collect all the project. You may declare a dependency on all projects and the ones that do not apply `com.gradleup.nmcp` _should_ be ignored:
+
+```kotlin
+// build.gradle.kts
+dependencies {
+  /**
+   * You may also do this
+   *
+   * This is a bit more dangerous as it relies on the fact that
+   * the resolution is lenient.
+   * If you find unexpected content in your publications or bump
+   * into resolution errors, list all projects explicitly.
+   */
+  allprojects {
+    nmcpAggregation(project(path))
+  }
+}
+```
+
+Call `publishAggregationToCentralPortal` to publish the aggregation:
+
+```bash
+./gradlew publishAggregationToCentralPortal
+# yay everything is uploaded 🎉
+# go to https://central.sonatype.com/ to release if you used USER_MANAGED
+```
+
+Call `publishAggregationToCentralPortalSnapshots` to publish to the snapshots:
+
+```bash
+./gradlew publishAggregationToCentralPortalSnapshots
+# yay everything is uploaded to "https://central.sonatype.com/repository/maven-snapshots/" 🎉
+```

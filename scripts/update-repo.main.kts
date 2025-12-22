@@ -8,7 +8,13 @@
 import com.gradleup.librarian.cli.updateRepo
 
 updateRepo(args) {
-    file("README.md") {
+    file("docs/src/content/docs/index.mdx") {
+        replacePluginVersion("com.gradleup.nmcp.settings")
+        replacePluginVersion("com.gradleup.nmcp.aggregation")
+        replacePluginVersion("com.gradleup.nmcp")
+    }
+    file("docs/src/content/docs/manual-configuration.mdx") {
+        replacePluginVersion("com.gradleup.nmcp.settings")
         replacePluginVersion("com.gradleup.nmcp.aggregation")
         replacePluginVersion("com.gradleup.nmcp")
     }

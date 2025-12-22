@@ -11,3 +11,29 @@ plugins {
 }
 
 Librarian.root(project)
+
+tasks.register("docsNpmInstall", Exec::class.java) {
+    enabled = file("docs").exists()
+
+    commandLine("npm", "ci")
+    workingDir("docs")
+}
+
+tasks.register("docsNpmBuild", Exec::class.java) {
+    dependsOn("docsNpmInstall")
+
+    enabled = file("docs").exists()
+
+    commandLine("npm", "run", "build")
+    workingDir("docs")
+}
+
+tasks.named("librarianStaticContent").configure {
+    dependsOn("docsNpmBuild")
+
+    val from = file("docs/dist")
+    doLast {
+        from.copyRecursively(outputs.files.single(), overwrite = true)
+    }
+}
+
