@@ -4,7 +4,7 @@
   <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
     <g id="Group" transform="translate(90.000000, 90.000000) rotate(-180.000000) translate(-90.000000, -90.000000) translate(30.000000, 30.000000)">
       <path d="M60,0 C93.137085,0 120,26.862915 120,60" id="Path" stroke="#3498DB" stroke-width="10" stroke-linecap="round"/>
-      <path d="M60,120 C26.862915,120 7.10542736e-15,93.137085 7.10542736e-15,60" id="Path" stroke="#E74C3C" stroke-width="10" stroke-linecap="round"/>
+      <path d="M60,120 C26.862915,120 7.10542736e-15,93.137085 7.10542736e-15,60" id="Path" stroke="#FF6F2E" stroke-width="10" stroke-linecap="round"/>
       <polygon id="Path" fill="#fff" fill-rule="nonzero" points="39 39 81 39 81 81 39 81"/>
     </g>
   </g>
