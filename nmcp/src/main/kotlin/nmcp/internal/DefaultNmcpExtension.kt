@@ -1,16 +1,18 @@
 package nmcp.internal
 
-import gratatouille.wiring.capitalizeFirstLetter
+import gratatouille.GExtension
+import gratatouille.capitalizeFirstLetter
 import nmcp.CentralPortalOptions
 import nmcp.NmcpExtension
 import nmcp.internal.task.registerCleanupDirectoryTask
+import nmcp.nmcpExtensionName
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 
+@GExtension(pluginId = "com.gradleup.nmcp", publicType = NmcpExtension::class, extensionName = nmcpExtensionName)
 internal abstract class DefaultNmcpExtension(private val project: Project): NmcpExtension {
-    private var centralPortalConfigured = false
     private val m2Dir = project.layout.buildDirectory.file("nmcp/m2")
     private val spec = project.objects.newInstance(CentralPortalOptions::class.java)
 

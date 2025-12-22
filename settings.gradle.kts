@@ -21,3 +21,4 @@ pluginManagement {
 rootProject.name = "nmcp-root"
 
 include(":nmcp", ":nmcp-tasks")
+

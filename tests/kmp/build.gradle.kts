@@ -35,9 +35,11 @@ nmcpAggregation {
             password = System.getenv("MAVEN_CENTRAL_PASSWORD")
         }
         publishingType = "USER_MANAGED"
+        check(publicationName.get() == "test") {
+            "Error, expected 'test', got '${publicationName.get()}'."
+        }
     }
 }
-
 
 tasks.register("checkZip") {
     dependsOn("publishAggregationToCentralPortal")

@@ -18,13 +18,22 @@ interface NmcpAggregationExtension {
      *
      * This function is not compatible with breaking project isolation. To be compatible with project isolation,
      * add each subproject to the `nmcpAggregation` configuration dependencies.
+     *
+     * This was provided as a helper function but indirectly encouraged using non-project isolation compatible practices.
+     *
+     * Moving forward, use the `com.gradleup.nmcp.settings` or make a convention plugin that applies `com.gradleup.nmcp`
+     * to all your projects.
      */
+    @Deprecated("Use the settings plugin or a convention plugin instead")
     fun publishAllProjectsProbablyBreakingProjectIsolation()
 
     /**
-     * [allFiles] contains all the files present in the "nmcpAggregation" configuration
+     * [allFiles] contains all the files present in the "nmcpAggregation" configuration.
      *
-     * This [FileCollection] is a multi-rooted [org.gradle.api.file.FileTree] containing only files
+     * This [FileCollection] is a multi-rooted [org.gradle.api.file.FileTree] containing only files.
+     *
+     * [allFiles] may be used to publish manually to other repositories than Maven Central, such as Google Cloud
+     * Storage and or AWS S3.
      */
     val allFiles: FileCollection
 }

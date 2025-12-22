@@ -1,11 +1,15 @@
 package nmcp.internal
 
+import gratatouille.GExtension
+import gratatouille.GPlugin
 import nmcp.CentralPortalOptions
 import nmcp.NmcpAggregationExtension
+import nmcp.nmcpAggregationExtensionName
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.file.FileCollection
 
+@GExtension(pluginId = "com.gradleup.nmcp.aggregation", publicType = NmcpAggregationExtension::class, extensionName = nmcpAggregationExtensionName)
 internal abstract class DefaultNmcpAggregationExtension(private val project: Project) : NmcpAggregationExtension {
     private val spec = project.objects.newInstance(CentralPortalOptions::class.java)
 
@@ -30,6 +34,7 @@ internal abstract class DefaultNmcpAggregationExtension(private val project: Pro
         action.execute(spec)
     }
 
+    @Deprecated("Use the settings plugin or a convention plugin instead")
     override fun publishAllProjectsProbablyBreakingProjectIsolation() {
         check(project === project.rootProject) {
             "publishAllProjectsProbablyBreakingProjectIsolation() must be called from root project"
