@@ -14,17 +14,20 @@ import kotlin.text.substringBeforeLast
 
 @GTask
 internal fun nmcpFindDeploymentName(inputFiles: GInputFiles, outputFile: GOutputFile) {
-  val gavs = inputFiles.mapNotNull {
-    if (!it.normalizedPath.endsWith(".pom")) {
-      return@mapNotNull null
+  val groups = mutableSetOf<String>()
+  val artifacts = mutableSetOf<String>()
+  val versions = mutableSetOf<String>()
+
+  for (file in inputFiles) {
+    if (!file.normalizedPath.endsWith(".pom")) {
+      continue
     }
 
-    Gav.from(it.normalizedPath.substringBeforeLast('/'))
+    val gav = Gav.from(file.normalizedPath.substringBeforeLast('/'))
+    groups.add(gav.groupId)
+    artifacts.add(gav.artifactId)
+    versions.add(gav.baseVersion)
   }
-
-  val groups = gavs.map { it.groupId }.distinct()
-  val artifacts = gavs.map { it.artifactId }.distinct()
-  val versions = gavs.map { it.baseVersion }.distinct()
 
   val deploymentName = buildString {
       append(groups.toDisplayName())
