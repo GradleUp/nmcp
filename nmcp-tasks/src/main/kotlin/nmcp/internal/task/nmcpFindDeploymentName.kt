@@ -64,9 +64,9 @@ private fun longestCommonPrefix(strings: List<String>): String {
     return prefix
 }
 
-private fun List<String>.toDisplayName(): String {
+private fun Set<String>.toDisplayName(): String {
     if (size == 1) {
         return single()
     }
-    return "${longestCommonPrefix(this)}*"
+    return "${longestCommonPrefix(toList())}*"
 }
