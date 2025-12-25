@@ -7,9 +7,18 @@ import nmcp.NmcpAggregationExtension
 import nmcp.nmcpAggregationExtensionName
 import org.gradle.api.Action
 import org.gradle.api.Project
+import org.gradle.api.artifacts.result.ArtifactResult
+import org.gradle.api.artifacts.result.ResolvedArtifactResult
+import org.gradle.api.attributes.Usage
+import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.FileCollection
+import org.gradle.api.file.RegularFileProperty
 
-@GExtension(pluginId = "com.gradleup.nmcp.aggregation", publicType = NmcpAggregationExtension::class, extensionName = nmcpAggregationExtensionName)
+@GExtension(
+    pluginId = "com.gradleup.nmcp.aggregation",
+    publicType = NmcpAggregationExtension::class,
+    extensionName = nmcpAggregationExtensionName,
+)
 internal abstract class DefaultNmcpAggregationExtension(private val project: Project) : NmcpAggregationExtension {
     private val spec = project.objects.newInstance(CentralPortalOptions::class.java)
 
@@ -20,16 +29,26 @@ internal abstract class DefaultNmcpAggregationExtension(private val project: Pro
         it.configureAttributes(project)
     }
 
-    override val allFiles: FileCollection = consumerConfiguration.incoming.artifactView { it.lenient(true) }.files.asFileTree
+    override val allFiles: ConfigurableFileCollection = project.files()
 
     init {
-
+        allFiles.from(
+            consumerConfiguration
+                .incoming
+                .artifactView { it.lenient(true) }
+                .artifacts
+                .resolvedArtifacts
+                .map {
+                    it.filter(::isCompatible).map { it.file }
+                },
+        )
         project.registerPublishToCentralPortalTasks(
             kind = Kind.aggregation,
             inputFiles = allFiles,
-            spec = spec
+            spec = spec,
         )
     }
+
     override fun centralPortal(action: Action<CentralPortalOptions>) {
         action.execute(spec)
     }
@@ -48,4 +67,12 @@ internal abstract class DefaultNmcpAggregationExtension(private val project: Pro
             }
         }
     }
+}
+
+private fun isCompatible(artifactResult: ArtifactResult): Boolean {
+    if (artifactResult !is ResolvedArtifactResult) {
+        return false
+    }
+    val usage = artifactResult.variant.attributes.getAttribute(Usage.USAGE_ATTRIBUTE)
+    return usage?.name == usageValue
 }
