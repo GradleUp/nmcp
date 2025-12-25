@@ -37,16 +37,10 @@ internal fun Project.withRequiredPlugin(id: String, block: () -> Unit) {
 
 internal val nmcpConsumerConfigurationName = "nmcpAggregation"
 internal val nmcpProducerConfigurationName = "nmcpProducer"
-internal val attribute = "com.gradleup.nmcp"
-internal val attributeValue = "bundle"
 internal val usageValue = "nmcp"
 
 internal fun HasConfigurableAttributes<*>.configureAttributes(project: Project) {
     attributes {
-        it.attribute(
-            Attribute.of(attribute, Named::class.java),
-            project.objects.named(Named::class.java, attributeValue),
-        )
         it.attribute(USAGE_ATTRIBUTE, project.objects.named(Usage::class.java, usageValue))
     }
 }
