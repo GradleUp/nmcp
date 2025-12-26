@@ -9,6 +9,7 @@ pluginManagement {
                 content {
                     // gratatouille-processor is only used at build time and is safe to fetch as a snapshot
                     includeModule("com.gradleup.gratatouille", "gratatouille-processor")
+                    includeModule("com.gradleup.tapmoc", "tapmoc-tasks")
                 }
             }
         }
