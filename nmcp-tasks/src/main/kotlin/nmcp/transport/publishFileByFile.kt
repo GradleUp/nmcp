@@ -249,11 +249,8 @@ internal fun Instant.asTimestamp(withDot: Boolean): String {
 
 internal val checksums = setOf("md5", "sha1", "sha256", "sha512")
 
-/**
- * Helper function to add the `<?xml...` preamble as I haven't found how to do it with xmlutils
- */
 internal inline fun <reified T> encodeToXml(t: T): String {
-    return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + xml.encodeToString(t)
+    return xml.encodeToString(t)
 }
 
 private fun ByteArray.digest(name: String): String {

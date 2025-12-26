@@ -1,12 +1,9 @@
 package nmcp.internal.task
 
 import gratatouille.tasks.GInputFile
-import gratatouille.tasks.GInputFiles
 import gratatouille.tasks.GLogger
 import gratatouille.tasks.GTask
 import java.net.SocketTimeoutException
-import java.util.zip.ZipEntry
-import java.util.zip.ZipOutputStream
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
@@ -15,15 +12,12 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import nmcp.transport.nmcpClient
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.Request
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okio.Buffer
-import okio.BufferedSink
 import okio.ByteString
 import okio.use
 
@@ -58,8 +52,10 @@ internal fun nmcpPublishWithPublisherApi(
         )
         .build()
 
+    @Suppress("NAME_SHADOWING")
     val publishingType = publishingType ?: "AUTOMATIC"
 
+    @Suppress("NAME_SHADOWING")
     val baseUrl = baseUrl ?: "https://central.sonatype.com/"
     val url = baseUrl + "api/v1/publisher/upload?publishingType=$publishingType"
 
@@ -73,10 +69,10 @@ internal fun nmcpPublishWithPublisherApi(
             nmcpClient.newCall(it).execute()
         }.use {
             if (!it.isSuccessful) {
-                error("Cannot deploy to maven central (status='${it.code}'): ${it.body?.string()}")
+                error("Cannot deploy to maven central (status='${it.code}'): ${it.body.string()}")
             }
 
-            it.body!!.string()
+            it.body.string()
         }
 
     logger.lifecycle("Nmcp: deployment bundle '$deploymentId' uploaded.")
@@ -180,10 +176,10 @@ private fun verifyStatus(
             }
         }.use {
             if (!it.isSuccessful) {
-                error("Cannot verify deployment $deploymentId status (HTTP status='${it.code}'): ${it.body?.string()}")
+                error("Cannot verify deployment $deploymentId status (HTTP status='${it.code}'): ${it.body.string()}")
             }
 
-            val str = it.body!!.string()
+            val str = it.body.string()
             val element = Json.parseToJsonElement(str)
             check(element is JsonObject) {
                 "Nmcp: unexpected status response for deployment $deploymentId: $str"
@@ -206,33 +202,4 @@ private fun verifyStatus(
                 else -> error("Nmcp: unexpected deploymentState for deployment $deploymentId: $state")
             }
         }
-}
-
-internal class ZipBody(val files: GInputFiles, private val logger: GLogger) : RequestBody() {
-    override fun contentType(): MediaType {
-        return "application/octet-stream".toMediaType()
-    }
-
-    override fun writeTo(sink: BufferedSink) {
-        val stream = ZipOutputStream(sink.outputStream())
-        files.forEach {
-            if (it.file.isDirectory) {
-                return@forEach
-            }
-            // Exclude maven-metadata files or the bundle is not recognized
-            // See https://slack-chats.kotlinlang.org/t/16407246/anyone-tried-the-https-central-sonatype-org-publish-publish-#c8738fe5-8051-4f64-809f-ca67a645216e
-            if (it.file.name.startsWith("maven-metadata")) {
-                return@forEach
-            }
-            logger.info("Nmcp: zip ${it.normalizedPath}")
-            stream.putNextEntry(ZipEntry(it.normalizedPath))
-            it.file.inputStream().use {
-                it.copyTo(stream)
-            }
-            stream.closeEntry()
-        }
-        stream.finish()
-        stream.flush()
-        sink.flush()
-    }
 }

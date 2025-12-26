@@ -103,10 +103,10 @@ internal class HttpTransport(
         }
         if(!response.isSuccessful) {
             response.close()
-            error("Nmcp: cannot GET '$url' (statusCode=${response.code}):\n${response.body!!.string()}")
+            error("Nmcp: cannot GET '$url' (statusCode=${response.code}):\n${response.body.string()}")
         }
 
-        return response.body!!.source()
+        return response.body.source()
     }
 
     override fun put(path: String, body: Content) {
@@ -127,7 +127,7 @@ internal class HttpTransport(
                 check(response.isSuccessful) {
                     buildString {
                         appendLine("Nmcp: cannot PUT '$url' (statusCode=${response.code}).")
-                        appendLine("Response body: ${response.body!!.string()}")
+                        appendLine("Response body: ${response.body.string()}")
                         appendLine("Things to double check:")
                         /**
                          * I have seen 401 for this
