@@ -2,15 +2,27 @@
 title: Maven Central FAQ
 ---
 
+import { Aside } from '@astrojs/starlight/components';
+
 This page is not directly related to Nmcp but lists some of the frequently asked questions about Maven Central that arose during the development of this plugin.
+
+### Q: What is the Portal Publisher API?
+
+The [Portal Publisher API](https://central.sonatype.org/publish/publish-portal-api/) is the new way to upload and manage your [Maven Central](https://central.sonatype.com/) deployments.
+
+The web UI is available at [https://central.sonatype.com/](https://central.sonatype.com/).
 
 ### Q: Do I need to migrate my account?
 
 If your account was created after March 12th 2024, it uses [https://central.sonatype.com/](https://central.sonatype.com/) by default, and you can use this plugin directly.
 
-If your account was created before, and you used to log in to [https://oss.sonatype.org](https://oss.sonatype.org) or [https://central.sonatype.com/](https://central.sonatype.com/), you now need to login to [https://central.sonatype.com/](https://central.sonatype.com/).
+If your account was created before, and you used to log in to [https://oss.sonatype.org](https://oss.sonatype.org) or [https://central.sonatype.com/](https://central.sonatype.com/), you now need to log in to [https://central.sonatype.com/](https://central.sonatype.com/).
 
-Your previous credentials should work. If not, contact the central support at `central-support@sonatype.com`. See [this page](https://central.sonatype.org/pages/ossrh-eol/) for more details.
+Your previous credentials should work to log in the web UI. If not, contact the central support at `central-support@sonatype.com`.
+
+You need to create a user token to use the Central Portal Publisher API programmatically.
+
+See [this page](https://central.sonatype.org/pages/ossrh-eol/) for more details.
 
 ### Q: this requires a lot of changes to my build logic. Do I have to use the new Portal API?
 
@@ -38,7 +50,9 @@ repositories {
 }
 ```
 
-The Portal API is the recommended way moving forward though and it is recommended to migrate.
+<Aside>
+The Portal API is the recommended way moving forward and it is recommended to migrate.
+</Aside>
 
 ### Q: Can I still use `oss.sonatype.org`/`s01.oss.sonatype.org`?
 
@@ -54,22 +68,24 @@ The previous OSSRH had multiple endpoints to create/release/delete staging repos
 
 What better means is very objective, obviously.
 
-Speaking only for myself, I like that:
+Overall, there are a number of advantages to the Central Portal:
 
 * The UI feels more modern.
 * The Portal API is [clearly documented](https://central.sonatype.org/publish/publish-portal-api/).
-* The `zip` approach makes deployments makes everything more atomic. No more weird half-closed staging repos!
-* More generally, uploading everything all at once simplifies everything and removes the heuristics where staging repositories [were created based on your IP], causing split repos and other issues.
+* The [`zip` approach](#q-what-is-the-difference-between-the-portal-api-and-the-previous-ossrh-api) makes deployments more atomic. No more weird half-closed staging repos.
+* More generally, uploading everything all at once simplifies the upload process and removes the heuristics where staging repositories [were created based on your IP](https://central.sonatype.org/publish/publish-portal-ossrh-staging-api/), causing split repos and other issues.
 
-I dislike that the stats are hosted on a different service, which doesn't seem to provide the same access to the raw data as the previous OSSRH. That part is still relatively new so still under investigation.
+There are also a few friction points:
+* the stats are hosted on a different service, which doesn't seem to provide the same access to the raw data as the previous OSSRH. That part is still relatively new so still under investigation.
+* Uploading the zip file in one go is generally slower since you can't upload files as they are built by Gradle. You may create several zips if you upload different projects in parallel, but you won't be able to beat the raw speed of the previous scheme. Since publishing should preferably be done in CI and doesn't use dev machine time, this drawback might not be surfaced.
 
-Uploading everything all at once also is generally slower since you can't really upload files as they are built by Gradle. I guess you theoretically could, but that's not something Nmcp is currently equipped to do. You may create several zips if you upload different projects in parallel, but you won't be able to beat the raw speed of the previous scheme. Since publishing is always done in CI and doesn't use my machine time, this is a trade-off I am comfortable with.
+The migration also broke browsing the SNAPSHOTs, so it's not all sunshine and roses.
 
-That migration also broke browsing the SNAPSHOTs, so it's not all moonlight and roses. But A facelift on OSSRH was certainly needed, and I hope the system will improve gradually from that point.
+But a facelift on OSSRH was certainly needed, and the system will improve gradually from that point.
 
 ### Q: Where do I find the stats in the Central Portal?
 
-See the question above. You can opt in scarf.sh to get your packages download data.
+See the question above. You can opt in [scarf.sh](https://scarf.sh/) to get your download data.
 
 ### Q: What is Sonatype?
 
@@ -77,17 +93,17 @@ See the question above. You can opt in scarf.sh to get your packages download da
 
 ### Q: Can I host commercial software on Maven Central?
 
-Yes, it is discouraged, and the Portal checks requires that you upload a sources jar. But that sources jar may be empty if your project is closed source.
+Yes. It is discouraged, and the Portal checks require that you upload a sources jar. But that sources jar may be empty if your project is closed source.
 
 ### Q: Something went wrong, can I contact Sonatype support?
 
-Yes, you can contact Sonatype support at `central-support@sonatype.com`.
+Yes. You can contact Sonatype support at `central-support@sonatype.com`.
 
 ### Q: How long does it take to publish something on Maven Central?
 
-It depends. I have seen from a couple of minutes to a few hours. The validation step (verifying signatures, source jars, etc...) is usually faster, in the order of minutes per project. The publishing part may take longer.
+It depends. It ranges from a couple of minutes to a few hours. The validation step (verifying signatures, source jars, etc...) is usually faster, in the order of minutes per project. The publishing part may take longer.
 
-If your deployment reaches the `PUBLISHING` state it should become available on Maven Central at some point. I have never seen that step fail so far.
+If your deployment reaches the `PUBLISHING` state it should become available on Maven Central at some point.
 
 ### Q: What API is used to upload SNAPSHOTs?
 
@@ -97,7 +113,7 @@ Nmcp has its [own implementation of a Maven Publisher](https://github.com/gradle
 
 ### Q: Why can't I browse SNAPSHOTs?
 
-Browsing the SNAPSHOTs is currently not working.
+Browsing the SNAPSHOTs is [currently not working](https://kotlinlang.slack.com/archives/C2YH04E3S/p1751317436574959?thread_ts=1751306279.259369&cid=C2YH04E3S).
 
 ### Q: My deployment failed to upload with status `XXX`? What is going on?
 
