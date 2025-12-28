@@ -69,7 +69,8 @@ internal fun Project.registerPublishToCentralPortalTasks(
         else ->  null
     }
     val centralPortalLifecycleTaskName = "publish${name.capitalizeFirstLetter()}ToCentralPortal"
-    val snapshotsLifecycleTaskName = "publish${name.capitalizeFirstLetter()}ToCentralPortalSnapshots"
+    val deprecatedLifecycleTaskName = "publish${name.capitalizeFirstLetter()}ToCentralPortalSnapshots"
+    val snapshotsLifecycleTaskName = "publish${name.capitalizeFirstLetter()}ToCentralSnapshots"
 
     val zipName = "${name}.zip"
     val zipTaskProvider = tasks.register(zipTaskName, Zip::class.java) {
@@ -118,6 +119,14 @@ internal fun Project.registerPublishToCentralPortalTasks(
         it.group = PUBLISH_TASK_GROUP
         it.description = "$description to the Central Snapshots repository."
         it.dependsOn(centralSnapshots)
+    }
+    project.tasks.register(deprecatedLifecycleTaskName) {
+        it.group = PUBLISH_TASK_GROUP
+        it.description = "$description to the Central Snapshots repository."
+        it.dependsOn(snapshotsLifecycleTaskName)
+        it.doLast {
+            println("'$deprecatedLifecycleTaskName' is deprecated and will be removed in a future release. Use '$snapshotsLifecycleTaskName' instead.")
+        }
     }
 
     val m2File = File(System.getProperty("user.home")).resolve(".m2/repository")

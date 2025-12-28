@@ -8,7 +8,7 @@ Nmcp (New Maven Central Publishing) is a plugin that uses the new [Central Porta
 
 Nmcp is compatible with modern Gradle development practices:
 * Compatible with [Configuration Cache](https://docs.gradle.org/current/userguide/configuration_cache_enabling.html).
-* Compatible with [Isolated project](https://docs.gradle.org/current/userguide/isolated_projects.html).
+* Compatible with [Isolated projects](https://docs.gradle.org/current/userguide/isolated_projects.html).
 * Compatible with [multi-project builds](https://docs.gradle.org/current/userguide/multi_project_builds.html).
 * Uses [classloader isolation](https://mbonnin.net/2025-08-24_isolation_101/) to prevent conflicts with other plugins.
 * Uses [Gradle 8.8 lifecycle callbacks ](https://docs.gradle.org/8.8/release-notes.html) for easy configuration.
@@ -21,9 +21,7 @@ For a higher level API use [vanniktech/gradle-maven-publish-plugin](https://gith
 
 ### Requirements
 
-Nmcp requires Java 17+, Gradle 8.8+ for the settings plugin and Gradle 8.2+ otherwise.
-
-
+Nmcp requires Java 17+, Gradle 8.2+ and Gradle 8.8+ for the settings plugin.
 
 ### Configuring the settings plugin
 
@@ -64,15 +62,15 @@ Call `publishAggregationToCentralPortal` to publish the aggregation:
 
 ```bash
 ./gradlew publishAggregationToCentralPortal
-# yay everything is uploaded 🎉
-# go to https://central.sonatype.com/ to release if you used USER_MANAGED
+# Your deployment is uploaded
+# go to https://central.sonatype.com/ to release it if you used USER_MANAGED
 ```
 
-Call `publishAggregationToCentralPortalSnapshots` to publish to the snapshots:
+Call `publishAggregationToCentralSnapshots` to publish to the snapshots:
 
 ```bash
-./gradlew publishAggregationToCentralPortalSnapshots
-# yay everything is uploaded to "https://central.sonatype.com/repository/maven-snapshots/" 🎉
+./gradlew publishAggregationToCentralSnapshots
+# Your snapshots are uploaded to "https://central.sonatype.com/repository/maven-snapshots/"
 ```
 
 Under the hood, the `com.gradle.nmcp.settings` plugin applies the `com.gradleup.nmcp` plugin to all your projects and `com.gradleup.nmcp.aggregation` to your root project.

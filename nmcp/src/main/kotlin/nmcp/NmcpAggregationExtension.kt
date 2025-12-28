@@ -6,10 +6,6 @@ import org.gradle.api.file.FileCollection
 interface NmcpAggregationExtension {
     /**
      * Configures publishing to central portal releases (Maven Central) and central portal snapshots.
-     *
-     * Adds the following tasks:
-     * - nmcpPublishAggregationToCentralPortal
-     * - nmcpPublishAggregationToCentralPortalSnapshots
      */
     fun centralPortal(action: Action<CentralPortalOptions>)
 

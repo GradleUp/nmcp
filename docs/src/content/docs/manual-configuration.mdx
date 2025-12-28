@@ -4,7 +4,7 @@ title: Manual configuration
 
 import { Aside } from '@astrojs/starlight/components';
 
-For simple projects, the [settings plugin](/nmcp) is recommended.
+For simple projects, the [settings plugin](/nmcp#configuring-the-settings-plugin) is recommended.
 
 For more control, you can configure the `com.gradleup.nmcp.aggregation` and `com.gradleup.nmcp` plugins manually as described in this page.
 
@@ -60,7 +60,7 @@ nmcpAggregation {
 
 ```
 
-_Note that you may also apply both `com.gradleup.nmcp.aggregation` and `com.gradleup.nmcp` in the same project._
+_Note that you may apply both `com.gradleup.nmcp.aggregation` and `com.gradleup.nmcp` in the same project._
 
 For the aggregation to find the outgoing variant, you need to add the `nmcpAggregation` dependency for each project that you want to publish:
 
@@ -74,18 +74,17 @@ dependencies {
 }
 ```
 
-`com.gradleup.nmcp.aggregation` uses a lenient configuration to collect all the project. You may declare a dependency on all projects and the ones that do not apply `com.gradleup.nmcp` _should_ be ignored:
+`com.gradleup.nmcp.aggregation` uses a lenient configuration to collect files. You may add all projects and projects that do not apply `com.gradleup.nmcp` are ignored:
 
 ```kotlin
 // build.gradle.kts
 dependencies {
   /**
-   * You may also do this
+   * Add all projects to the `nmcpAggregation` dependency. Projets that do not
+   * apply `com.gradleup.nmcp` are ignored.
    *
-   * This is a bit more dangerous as it relies on the fact that
-   * the resolution is lenient.
-   * If you find unexpected content in your publications or bump
-   * into resolution errors, list all projects explicitly.
+   * Note: if you are using isolated projects, this potentially "over" configures
+   * your build by configuring projects that are not important for publishing.
    */
   allprojects {
     nmcpAggregation(project(path))
@@ -101,9 +100,9 @@ Call `publishAggregationToCentralPortal` to publish the aggregation:
 # go to https://central.sonatype.com/ to release if you used USER_MANAGED
 ```
 
-Call `publishAggregationToCentralPortalSnapshots` to publish to the snapshots:
+Call `publishAggregationToCentralSnapshots` to publish to the snapshots:
 
 ```bash
-./gradlew publishAggregationToCentralPortalSnapshots
-# yay everything is uploaded to "https://central.sonatype.com/repository/maven-snapshots/" 🎉
+./gradlew publishAggregationToCentralSnapshots
+# Your snapshots are uploaded to "https://central.sonatype.com/repository/maven-snapshots/"
 ```
