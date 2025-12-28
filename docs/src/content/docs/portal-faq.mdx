@@ -79,7 +79,7 @@ There are also a few friction points:
 * the stats are hosted on a different service, which doesn't seem to provide the same access to the raw data as the previous OSSRH. That part is still relatively new so still under investigation.
 * Uploading the zip file in one go is generally slower since you can't upload files as they are built by Gradle. You may create several zips if you upload different projects in parallel, but you won't be able to beat the raw speed of the previous scheme. Since publishing should preferably be done in CI and doesn't use dev machine time, this drawback might not be surfaced.
 
-The migration also broke browsing the SNAPSHOTs, so it's not all sunshine and roses.
+The migration also [broke browsing the SNAPSHOTs](#q-why-cant-i-browse-snapshots), so it's not all sunshine and roses.
 
 But a facelift on OSSRH was certainly needed, and the system will improve gradually from that point.
 
