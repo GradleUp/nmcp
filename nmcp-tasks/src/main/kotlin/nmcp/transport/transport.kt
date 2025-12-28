@@ -128,24 +128,31 @@ internal class HttpTransport(
                     buildString {
                         appendLine("Nmcp: cannot PUT '$url' (statusCode=${response.code}).")
                         appendLine("Response body: ${response.body.string()}")
-                        appendLine("Things to double check:")
-                        /**
-                         * I have seen 401 for this
-                         */
-                        appendLine(" - Are your credentials correct?")
-                        appendLine(" - Did you enable the snapshots on your namespace at https://central.sonatype.com/publishing/namespaces?")
-                        /**
-                         * I have seen 400 for this
-                         */
-                        appendLine(" - Is your version ending with `-SNAPSHOT`?")
-                        /**
-                         * I have seen 400 for this.
-                         */
-                        appendLine(" - Does your artifact have a proper extension (.jar, .pom, ...)?")
-                        /**
-                         * I have seen 403 for this.
-                         */
-                        appendLine(" - Is your groupId correct?")
+                        when (response.code) {
+                            429 -> {
+                                appendLine("Too many requests, try again later")
+                            }
+                            else -> {
+                                appendLine("Things to double check:")
+                                /**
+                                 * I have seen 401 for this
+                                 */
+                                appendLine(" - Are your credentials correct?")
+                                appendLine(" - Did you enable the snapshots on your namespace at https://central.sonatype.com/publishing/namespaces?")
+                                /**
+                                 * I have seen 400 for this
+                                 */
+                                appendLine(" - Is your version ending with `-SNAPSHOT`?")
+                                /**
+                                 * I have seen 400 for this.
+                                 */
+                                appendLine(" - Do your artifacts have proper extensions (.jar, .pom, ...)?")
+                                /**
+                                 * I have seen 403 for this.
+                                 */
+                                appendLine(" - Is your groupId correct?")
+                            }
+                        }
                     }
                 }
             }
