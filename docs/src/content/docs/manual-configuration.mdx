@@ -16,7 +16,9 @@ Apply the `com.gradleup.nmcp` plugin to all the projects that need to be publish
 ```kotlin
 // module-a/build.gradle.kts
 plugins {
-  id("com.gradleup.nmcp").version("1.4.0")
+  // Note you don't need to set a plugin version here.
+  // The root project defines the version.
+  id("com.gradleup.nmcp")
 }
 ```
 
@@ -80,8 +82,10 @@ dependencies {
 // build.gradle.kts
 dependencies {
   /**
-   * Add all projects to the `nmcpAggregation` dependency. Projets that do not
-   * apply `com.gradleup.nmcp` are ignored.
+   *
+   * Using `allprojects {}` is also possible.
+   *
+   * Projets that do not apply `com.gradleup.nmcp` are ignored.
    *
    * Note: if you are using isolated projects, this potentially "over" configures
    * your build by configuring projects that are not important for publishing.
@@ -96,8 +100,8 @@ Call `publishAggregationToCentralPortal` to publish the aggregation:
 
 ```bash
 ./gradlew publishAggregationToCentralPortal
-# yay everything is uploaded 🎉
-# go to https://central.sonatype.com/ to release if you used USER_MANAGED
+# Your deployment is uploaded
+# go to https://central.sonatype.com/ to release it if you used USER_MANAGED
 ```
 
 Call `publishAggregationToCentralSnapshots` to publish to the snapshots:
