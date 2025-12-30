@@ -7,6 +7,8 @@
 //@file:Repository("file://~/.m2/repository")
 @file:DependsOn("com.gradleup.librarian:librarian-cli:0.2.2-SNAPSHOT-0cbca80f60a15a0f851a9cd468bfc352db316dd4")
 
+import com.gradleup.librarian.cli.updateRepo
+
 updateRepo(args) {
     file("docs/src/content/docs/index.mdx") {
         replacePluginVersion("com.gradleup.nmcp.settings")
