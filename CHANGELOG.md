@@ -1,4 +1,13 @@
 
+# Version 1.4.1
+_2025-12-30_
+
+Nmcp 1.4.1 refines the aggregation dependency resolution to avoid including by mistake projects that do not apply `com.gradleup.nmcp`.
+
+## 👷 All changes
+* Fix zip files could contain unexpected files https://github.com/GradleUp/nmcp/pull/227
+* Bump Kotlin, OkHttp, xmlutil and a bunch of other dependencies https://github.com/GradleUp/nmcp/pull/228
+
 # Version 1.4.0
 
 Nmcp can now be 100% configured from `settings.gradle[.kts]`:
