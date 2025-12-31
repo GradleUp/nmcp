@@ -60,11 +60,11 @@ internal abstract class DefaultNmcpAggregationExtension(private val project: Pro
         project.registerNmcpPublishFileByFileToFileSystemTask(
             taskName = "nmcpPublishAggregationTo${options.name.get().capitalizeFirstLetter()}Repository",
             inputFiles = allFiles,
-            m2AbsolutePath = project.provider { File(options.path.get()).absolutePath },
+            m2AbsolutePath = project.provider { project.file(options.path.get()).absolutePath },
             parallelism = project.provider { 1 },
         )
     }
-    
+
     @Deprecated("Use the settings plugin or a convention plugin instead")
     override fun publishAllProjectsProbablyBreakingProjectIsolation() {
         check(project === project.rootProject) {
