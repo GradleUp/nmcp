@@ -166,10 +166,10 @@ fun Content.toRequestBody(): RequestBody {
 
 internal class FilesystemTransport(
     private val basePath: String,
-    private val logger: GLogger,
+    private val logger: GLogger?,
 ) : Transport {
     override fun get(path: String): BufferedSource? {
-        logger.info("Nmcp: read '$path'")
+        logger?.info("Nmcp: read '$path'")
         val file = File(basePath).resolve(path)
         if (!file.exists()) {
             return null
@@ -178,7 +178,7 @@ internal class FilesystemTransport(
     }
 
     override fun put(path: String, body: Content) {
-        logger.info("Nmcp: write '$path'")
+        logger?.info("Nmcp: write '$path'")
         File(basePath).resolve(path).apply {
             parentFile.mkdirs()
             sink().buffer().use {

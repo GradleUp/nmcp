@@ -42,7 +42,7 @@ fun publishFileByFile(
     into: File,
 ) {
     return publishFileByFile(
-        FilesystemTransport(into.absolutePath),
+        FilesystemTransport(into.absolutePath, null),
         from.walk().filter { it.isFile }.map {
             FileWithPath(it, it.relativeTo(from).path)
         }.toList(),
