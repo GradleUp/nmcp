@@ -1,4 +1,6 @@
 import com.gradleup.librarian.gradle.Librarian
+import kotlin.jvm.java
+import tapmoc.TapmocExtension
 
 plugins {
     alias(libs.plugins.kgp)
@@ -7,6 +9,11 @@ plugins {
 }
 
 Librarian.module(project)
+extensions.getByType(TapmocExtension::class.java).apply {
+    // Override the default Kotlin version to work with older Gradle
+    kotlin("2.1.0")
+    //kotlin(kotlinVersionForGradle(libs.versions.gradle.api.get().toString()))
+}
 
 gratatouille {
     addDependencies = false

@@ -1,4 +1,5 @@
 import com.gradleup.librarian.gradle.Librarian
+import tapmoc.TapmocExtension
 
 plugins {
     alias(libs.plugins.kgp)
