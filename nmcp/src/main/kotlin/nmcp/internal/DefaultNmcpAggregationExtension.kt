@@ -14,6 +14,7 @@ import org.gradle.api.artifacts.result.ArtifactResult
 import org.gradle.api.artifacts.result.ResolvedArtifactResult
 import org.gradle.api.attributes.Usage
 import org.gradle.api.file.ConfigurableFileCollection
+import org.gradle.api.provider.Property
 
 @GExtension(
     pluginId = "com.gradleup.nmcp.aggregation",
@@ -58,6 +59,12 @@ internal abstract class DefaultNmcpAggregationExtension(private val project: Pro
                 }
                 allNames.add(it.name.lowercase())
             }
+
+            if (!allowEmptyAggregation.orElse(false).get()) {
+                check(consumerConfiguration.dependencies.isNotEmpty()) {
+                    "Nmcp: the aggregation is empty. This is usually a misconfiguration. If this is intentional, set `allowEmptyAggregation` to true."
+                }
+            }
         }
     }
 
@@ -90,6 +97,8 @@ internal abstract class DefaultNmcpAggregationExtension(private val project: Pro
             }
         }
     }
+
+    abstract override val allowEmptyAggregation: Property<Boolean>
 }
 
 private fun isCompatible(artifactResult: ArtifactResult): Boolean {
