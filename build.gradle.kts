@@ -40,5 +40,5 @@ tasks.named("librarianStaticContent").configure {
 
 extensions.getByType(NmcpAggregationExtension::class.java).localRepository {
     this.name = "test"
-    this.path = "build/m23"
+    this.path = "build/m2"
 }
