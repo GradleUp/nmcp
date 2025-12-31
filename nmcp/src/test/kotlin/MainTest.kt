@@ -2,7 +2,7 @@ import java.io.File
 import kotlin.test.Test
 import org.gradle.testkit.runner.GradleRunner
 
-class DuplicateNameTest {
+class MainTest {
   @Test
   fun duplicateName() {
     val dst = File("build/testProject")
@@ -16,9 +16,26 @@ class DuplicateNameTest {
       val result = GradleRunner.create()
           .withProjectDir(dst)
           .withArguments("nmcpZipAggregation")
-          .forwardOutput()
           .buildAndFail()
 
       assert(result.output.contains("duplicate project name"))
   }
+
+    @Test
+    fun emptyAggregation() {
+        val dst = File("build/testProject")
+        val src = File("testProjects/empty-aggregation")
+
+        dst.deleteRecursively()
+        dst.mkdirs()
+
+        src.copyRecursively(dst, overwrite = true)
+
+        val result = GradleRunner.create()
+            .withProjectDir(dst)
+            .withArguments("help")
+            .buildAndFail()
+
+        assert(result.output.contains("Nmcp: the aggregation is empty"))
+    }
 }

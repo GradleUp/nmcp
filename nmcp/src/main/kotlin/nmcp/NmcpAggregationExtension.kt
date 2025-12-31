@@ -2,6 +2,7 @@ package nmcp
 
 import org.gradle.api.Action
 import org.gradle.api.file.FileCollection
+import org.gradle.api.provider.Property
 
 interface NmcpAggregationExtension {
     /**
@@ -37,4 +38,10 @@ interface NmcpAggregationExtension {
      * Storage and or AWS S3.
      */
     val allFiles: FileCollection
+
+    /**
+     * By default, Nmcp errors if the aggregation is empty.
+     * Set this to true to allow empty aggregations.
+     */
+    val allowEmptyAggregation: Property<Boolean>
 }
