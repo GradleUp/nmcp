@@ -20,12 +20,6 @@ pluginManagement {
     }
 }
 
-gradle.lifecycle.afterProject {
-    extensions.getByType(PublishingExtension::class.java).repositories.maven {
-        name = "test"
-        url = uri("file://${rootProject.layout.buildDirectory.get().asFile.resolve("m2").absolutePath}")
-    }
-}
 rootProject.name = "nmcp-root"
 
 include(":nmcp", ":nmcp-tasks")

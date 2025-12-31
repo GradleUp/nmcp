@@ -11,8 +11,6 @@ Librarian.module(project)
 gratatouille {
     addDependencies = false
     pluginLocalPublication("com.gradleup.nmcp.settings")
-    // Remove when https://github.com/GradleUp/nmcp/issues/232 is done.
-    pluginMarker("com.gradleup.nmcp.aggregation")
 }
 
 dependencies {
@@ -25,5 +23,5 @@ dependencies {
 }
 
 tasks.withType(Test::class.java).configureEach {
-    dependsOn("publishAllPublicationsToTestRepository", ":nmcp-tasks:publishAllPublicationsToTestRepository")
+    dependsOn(":nmcpPublishAggregationToTestRepository")
 }
