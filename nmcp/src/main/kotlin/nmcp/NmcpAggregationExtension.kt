@@ -10,6 +10,11 @@ interface NmcpAggregationExtension {
     fun centralPortal(action: Action<CentralPortalOptions>)
 
     /**
+     * Registers an extra task to publish the aggregation to.
+     */
+    fun localRepository(action: Action<LocalRepositoryOptions>)
+
+    /**
      * Applies the `com.gradleup.nmcp` plugin to every project that also applies `maven-publish`.
      *
      * This function is not compatible with breaking project isolation. To be compatible with project isolation,

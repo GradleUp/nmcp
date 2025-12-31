@@ -1,9 +1,12 @@
 package nmcp.internal
 
 import gratatouille.GExtension
-import gratatouille.GPlugin
+import gratatouille.capitalizeFirstLetter
+import java.io.File
 import nmcp.CentralPortalOptions
 import nmcp.NmcpAggregationExtension
+import nmcp.LocalRepositoryOptions
+import nmcp.internal.task.registerNmcpPublishFileByFileToFileSystemTask
 import nmcp.nmcpAggregationExtensionName
 import org.gradle.api.Action
 import org.gradle.api.Project
@@ -11,8 +14,6 @@ import org.gradle.api.artifacts.result.ArtifactResult
 import org.gradle.api.artifacts.result.ResolvedArtifactResult
 import org.gradle.api.attributes.Usage
 import org.gradle.api.file.ConfigurableFileCollection
-import org.gradle.api.file.FileCollection
-import org.gradle.api.file.RegularFileProperty
 
 @GExtension(
     pluginId = "com.gradleup.nmcp.aggregation",
@@ -53,6 +54,17 @@ internal abstract class DefaultNmcpAggregationExtension(private val project: Pro
         action.execute(spec)
     }
 
+    override fun localRepository(action: Action<LocalRepositoryOptions>) {
+        val options = project.objects.newInstance(LocalRepositoryOptions::class.java)
+        action.execute(options)
+        project.registerNmcpPublishFileByFileToFileSystemTask(
+            taskName = "nmcpPublishAggregationTo${options.name.get().capitalizeFirstLetter()}Repository",
+            inputFiles = allFiles,
+            m2AbsolutePath = project.provider { File(options.path.get()).absolutePath },
+            parallelism = project.provider { 1 },
+        )
+    }
+    
     @Deprecated("Use the settings plugin or a convention plugin instead")
     override fun publishAllProjectsProbablyBreakingProjectIsolation() {
         check(project === project.rootProject) {
