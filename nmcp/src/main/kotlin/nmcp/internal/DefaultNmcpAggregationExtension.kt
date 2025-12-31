@@ -48,6 +48,17 @@ internal abstract class DefaultNmcpAggregationExtension(private val project: Pro
             inputFiles = allFiles,
             spec = spec,
         )
+
+        project.afterEvaluate {
+            val allNames = mutableSetOf<String>()
+            project.allprojects {
+                check (!allNames.contains(it.name.lowercase())) {
+                    "Nmcp: duplicate project name: '${it.name}'. This is usually resolved by setting your root project name in your settings.gradle[.kts] file: `rootProject.name = \"\${someUniqueName}\". " +
+                        "See https://github.com/gradle/gradle/issues/36167 for more details"
+                }
+                allNames.add(it.name.lowercase())
+            }
+        }
     }
 
     override fun centralPortal(action: Action<CentralPortalOptions>) {
