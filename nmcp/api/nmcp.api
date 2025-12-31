@@ -10,9 +10,16 @@ public abstract class nmcp/CentralPortalOptions {
 	public abstract fun getValidationTimeout ()Lorg/gradle/api/provider/Property;
 }
 
+public abstract class nmcp/LocalRepositoryOptions {
+	public fun <init> ()V
+	public abstract fun getName ()Lorg/gradle/api/provider/Property;
+	public abstract fun getPath ()Lorg/gradle/api/provider/Property;
+}
+
 public abstract interface class nmcp/NmcpAggregationExtension {
 	public abstract fun centralPortal (Lorg/gradle/api/Action;)V
 	public abstract fun getAllFiles ()Lorg/gradle/api/file/FileCollection;
+	public abstract fun localRepository (Lorg/gradle/api/Action;)V
 	public abstract fun publishAllProjectsProbablyBreakingProjectIsolation ()V
 }
 
