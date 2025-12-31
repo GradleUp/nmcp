@@ -45,7 +45,7 @@ class MetadataTest {
          */
         // language=xml
         val xmlData = """
-            <?xml version='1.1' ?>
+            <?xml version='1.0' encoding='UTF-8' ?>
             <metadata modelVersion="1.1.0">
               <groupId>com.apollographql.apollo</groupId>
               <artifactId>apollo-api-jvm</artifactId>
@@ -111,7 +111,7 @@ class MetadataTest {
     fun versionMetadataIsEncodedSuccessfully() {
         // language=xml
         val xmlData = """
-            <?xml version='1.1' ?>
+            <?xml version='1.0' encoding='UTF-8' ?>
             <metadata modelVersion="1.1.0">
               <groupId>com.apollographql.apollo</groupId>
               <artifactId>apollo-api-jvm</artifactId>
@@ -178,7 +178,7 @@ class MetadataTest {
 
         val result = encodeToXml(metadata)
 
-        assertEquals(xmlData, result,)
+        assertEquals(xmlData, result)
     }
 
     @Test

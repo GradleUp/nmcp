@@ -101,7 +101,7 @@ internal class HttpTransport(
             response.close()
             return null
         }
-        if(!response.isSuccessful) {
+        if (!response.isSuccessful) {
             response.close()
             error("Nmcp: cannot GET '$url' (statusCode=${response.code}):\n${response.body.string()}")
         }
@@ -127,30 +127,23 @@ internal class HttpTransport(
                 check(response.isSuccessful) {
                     buildString {
                         appendLine("Nmcp: cannot PUT '$url' (statusCode=${response.code}).")
-                        appendLine("Response body: ${response.body.string()}")
+                        appendLine("Response body: '${response.body.string()}'")
                         when (response.code) {
+                            400 -> {
+                                appendLine("Things to double check:")
+                                appendLine("Your artifacts have proper extensions (.jar, .pom, ...).")
+                                appendLine("If publishing a XML file, the XML version is 1.0.")
+                                appendLine("If publishing a snapshot, the artifacts version is ending with `-SNAPSHOT`.")
+                            }
+                            401 -> {
+                                appendLine("Check your credentials")
+                                appendLine("If publishing a snapshot, make sure you enabled snapshots on your namespace at https://central.sonatype.com/publishing/namespaces.")
+                            }
+                            403 -> {
+                                appendLine("Check that you are publishing to the correct groupId.")
+                            }
                             429 -> {
                                 appendLine("Too many requests, try again later")
-                            }
-                            else -> {
-                                appendLine("Things to double check:")
-                                /**
-                                 * I have seen 401 for this
-                                 */
-                                appendLine(" - Are your credentials correct?")
-                                appendLine(" - Did you enable the snapshots on your namespace at https://central.sonatype.com/publishing/namespaces?")
-                                /**
-                                 * I have seen 400 for this
-                                 */
-                                appendLine(" - Is your version ending with `-SNAPSHOT`?")
-                                /**
-                                 * I have seen 400 for this.
-                                 */
-                                appendLine(" - Do your artifacts have proper extensions (.jar, .pom, ...)?")
-                                /**
-                                 * I have seen 403 for this.
-                                 */
-                                appendLine(" - Is your groupId correct?")
                             }
                         }
                     }

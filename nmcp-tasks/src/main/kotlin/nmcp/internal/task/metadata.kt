@@ -2,10 +2,10 @@ package nmcp.internal.task
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.StringFormat
-import nl.adaptivity.xmlutil.serialization.XML
+import nl.adaptivity.xmlutil.XmlDeclMode
+import nl.adaptivity.xmlutil.core.XmlVersion
 import nl.adaptivity.xmlutil.serialization.XML1_0
 import nl.adaptivity.xmlutil.serialization.XmlChildrenName
-import nl.adaptivity.xmlutil.serialization.XmlConfig
 import nl.adaptivity.xmlutil.serialization.XmlElement
 import nl.adaptivity.xmlutil.serialization.XmlSerialName
 
@@ -84,4 +84,9 @@ internal data class ArtifactMetadata(
 
 internal val xml: StringFormat = XML1_0.recommended {
     indentString = "  "
+    // Maven Central doesn't understand XML 1.1
+    // See also https://github.com/pdvrieze/xmlutil/issues/324
+    xmlVersion = XmlVersion.XML10
+    // Also set the charset explicitly
+    xmlDeclMode = XmlDeclMode.Charset
 }
