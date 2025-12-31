@@ -1,4 +1,5 @@
 import com.gradleup.librarian.gradle.Librarian
+import nmcp.NmcpAggregationExtension
 
 plugins {
     alias(libs.plugins.kgp).apply(false)
@@ -37,3 +38,7 @@ tasks.named("librarianStaticContent").configure {
     }
 }
 
+extensions.getByType(NmcpAggregationExtension::class.java).localRepository {
+    this.name = "testi"
+    this.path = "build/m23"
+}
