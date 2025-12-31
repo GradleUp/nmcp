@@ -23,5 +23,5 @@ internal fun nmcpPublishFileByFileToFileSystem(
     logger.info("Nmcp: copying files to $m2AbsolutePath")
 
     File(m2AbsolutePath).mkdirs()
-    publishFileByFile(FilesystemTransport(m2AbsolutePath), inputFiles, parallelism)
+    publishFileByFile(FilesystemTransport(m2AbsolutePath, logger), inputFiles, parallelism)
 }
