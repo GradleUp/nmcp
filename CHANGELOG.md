@@ -1,3 +1,14 @@
+# Version 1.4.2
+_2025-12-31_
+
+Version 1.4.2 fixes for snapshots returning 400 on XML 1.1 and handles some configuration errors more gracefully.  
+
+## 👷‍♂️ All changes
+* Make sure to send XML 1.0 (Fixes 400 error when publishing snapshots) https://github.com/GradleUp/nmcp/pull/231
+* Add `NmcpAggregationExtension.localRepository()` https://github.com/GradleUp/nmcp/pull/234
+* Fail if there are duplicate project names https://github.com/GradleUp/nmcp/pull/233
+* Display an error if the aggregation is empty https://github.com/GradleUp/nmcp/pull/236
+
 
 # Version 1.4.1
 _2025-12-30_
