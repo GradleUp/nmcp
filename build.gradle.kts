@@ -1,12 +1,17 @@
 import com.gradleup.librarian.gradle.Librarian
 import nmcp.NmcpAggregationExtension
 
+buildscript {
+    dependencies {
+        classpath(libs.nmcp.tasks) // only needed to upgrade the version for testing
+    }
+}
 plugins {
     alias(libs.plugins.kgp).apply(false)
     alias(libs.plugins.ksp).apply(false)
     alias(libs.plugins.gratatouille).apply(false)
     alias(libs.plugins.librarian).apply(false)
-    alias(libs.plugins.nmcp).apply(false)
+    alias(libs.plugins.nmcp).apply(false) // only needed to upgrade the version for testing
     alias(libs.plugins.compat).apply(false)
     alias(libs.plugins.serialization).apply(false)
 }
