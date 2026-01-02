@@ -21,7 +21,7 @@ export default defineConfig({
 				{ label: 'Quickstart', link: '/', },
         { label: 'Manual configuration', link: '/manual-configuration' },
         { label: 'Debugging', link: '/debugging' },
-        { label: 'Snapshots', link: '/snapshots' },
+        { label: 'Development', link: '/development' },
 				{ label: 'Maven Central FAQ', link: '/portal-faq' },
         { label: 'Programmatic API', link: '/programmatic-api' },
         { label: 'KDoc↗', link: 'https://gradleup.com/nmcp/kdoc/nmcp/index.html' },
