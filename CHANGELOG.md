@@ -1,3 +1,8 @@
+# Version 1.4.3
+_2026-01-02_
+
+Version 1.4.3 adds `NmcpAggregationExtension.allowDuplicateProjectNames` (#239) as an escape hatch for the duplicate name check (#233)
+
 # Version 1.4.2
 _2025-12-31_
 
