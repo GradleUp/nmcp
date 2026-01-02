@@ -1,3 +1,3 @@
 plugins {
-  id("com.gradleup.nmcp.aggregation").version("1.4.3-SNAPSHOT")
+  id("com.gradleup.nmcp.aggregation").version("1.4.4-SNAPSHOT")
 }
