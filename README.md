@@ -15,7 +15,7 @@
 
 ---
 
-Nmcp (New Maven Central Publishing) is a plugin that uses the new [Central Portal publisher API](https://central.sonatype.org/publish/publish-portal-api/) to publish existing publications to Maven Central and Snapshots.
+Nmcp (New Maven Central Publishing) is a plugin that uses the [Central Portal publisher API](https://central.sonatype.org/publish/publish-portal-api/) to publish existing publications to Maven Central and Snapshots.
 
 Nmcp is compatible with modern Gradle development practices:
 * Compatible with [Configuration Cache](https://docs.gradle.org/current/userguide/configuration_cache_enabling.html).
