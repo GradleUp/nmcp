@@ -118,3 +118,7 @@ Browsing the SNAPSHOTs is [currently not working](https://www.linen.dev/s/kotlin
 ### Q: My deployment failed to upload with status `XXX`? What is going on?
 
 The status codes are not documented, but a [community maintained list is available in the source code](https://github.com/GradleUp/nmcp/blob/main/nmcp-tasks/src/main/kotlin/nmcp/transport/transport.kt#L129). If you bump into an unknown status code, please send a PR!
+
+### Q: My deployment failed but the status page is all green?
+
+https://status.maven.org/ is not always up to date, and sometimes the service is down even if the status page doesn't show it. If nothing else works, wait a few hours before retrying.
