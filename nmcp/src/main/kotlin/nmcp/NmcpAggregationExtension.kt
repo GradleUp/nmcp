@@ -44,4 +44,15 @@ interface NmcpAggregationExtension {
      * Set this to true to allow empty aggregations.
      */
     val allowEmptyAggregation: Property<Boolean>
+
+    /**
+     * By default, Nmcp errors if there are duplicate project names because
+     * it confuses the dependency resolution algorithm.
+     *
+     * If you have duplicate project names that do not contribute publishing,
+     * set this to true to allow them.
+     *
+     * See https://github.com/gradle/gradle/issues/36167 for more details.
+     */
+    val allowDuplicateProjectNames: Property<Boolean>
 }

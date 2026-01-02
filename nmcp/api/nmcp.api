@@ -19,6 +19,7 @@ public abstract class nmcp/LocalRepositoryOptions {
 public abstract interface class nmcp/NmcpAggregationExtension {
 	public abstract fun centralPortal (Lorg/gradle/api/Action;)V
 	public abstract fun getAllFiles ()Lorg/gradle/api/file/FileCollection;
+	public abstract fun getAllowDuplicateProjectNames ()Lorg/gradle/api/provider/Property;
 	public abstract fun getAllowEmptyAggregation ()Lorg/gradle/api/provider/Property;
 	public abstract fun localRepository (Lorg/gradle/api/Action;)V
 	public abstract fun publishAllProjectsProbablyBreakingProjectIsolation ()V
