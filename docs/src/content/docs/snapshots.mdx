@@ -1,0 +1,29 @@
+---
+title: Snapshots
+---
+
+In addition to [Maven Central](https://central.sonatype.com/), you can use snapshots repositories to test the latest builds.
+
+### Central snapshots
+
+Central snapshots are available at `https://central.sonatype.com/repository/maven-snapshots/`:
+
+```kotlin
+repositories {
+  maven("https://central.sonatype.com/repository/maven-snapshots/")
+}
+```
+
+### GradleUp snapshots
+
+GradleUp snapshots are available at `http://storage.googleapis.com/gradleup/m2/`:
+
+```kotlin
+repositories {
+  maven("http://storage.googleapis.com/gradleup/m2/")
+}
+```
+
+Those snapshots are suffixed with the git sha1 (e.g. `1.4.3-SNAPSHOT-fee7f67ed80c3d08fc6860c8d05ccb0ce9795a20`). Their retention is 1 year.
+
+Use them when you need reproducible builds and/or predictable retention.
