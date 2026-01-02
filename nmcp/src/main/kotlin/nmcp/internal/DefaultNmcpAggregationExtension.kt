@@ -52,12 +52,14 @@ internal abstract class DefaultNmcpAggregationExtension(private val project: Pro
 
         project.afterEvaluate {
             val allNames = mutableSetOf<String>()
-            project.allprojects {
-                check (!allNames.contains(it.name.lowercase())) {
-                    "Nmcp: duplicate project name: '${it.name}'. This is usually resolved by setting your root project name in your settings.gradle[.kts] file: `rootProject.name = \"\${someUniqueName}\". " +
-                        "See https://github.com/gradle/gradle/issues/36167 for more details"
+            if(!allowDuplicateProjectNames.orElse(false).get()) {
+                project.allprojects {
+                    check(!allNames.contains(it.name.lowercase())) {
+                        "Nmcp: duplicate project name: '${it.name}'. This is usually resolved by setting your root project name in your settings.gradle[.kts] file: `rootProject.name = \"\${someUniqueName}\". " +
+                            "See https://github.com/gradle/gradle/issues/36167 for more details"
+                    }
+                    allNames.add(it.name.lowercase())
                 }
-                allNames.add(it.name.lowercase())
             }
 
             if (!allowEmptyAggregation.orElse(false).get()) {
@@ -99,6 +101,8 @@ internal abstract class DefaultNmcpAggregationExtension(private val project: Pro
     }
 
     abstract override val allowEmptyAggregation: Property<Boolean>
+
+    abstract override val allowDuplicateProjectNames: Property<Boolean>
 }
 
 private fun isCompatible(artifactResult: ArtifactResult): Boolean {
