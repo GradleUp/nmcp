@@ -18,7 +18,7 @@ class MainTest {
           .withArguments("nmcpZipAggregation")
           .buildAndFail()
 
-      assert(result.output.contains("duplicate project name"))
+      assert(result.output.contains("some projects have the same name"))
   }
 
     @Test

@@ -55,8 +55,12 @@ internal abstract class DefaultNmcpAggregationExtension(private val project: Pro
             if(!allowDuplicateProjectNames.orElse(false).get()) {
                 project.allprojects {
                     check(!allNames.contains(it.name.lowercase())) {
-                        "Nmcp: duplicate project name: '${it.name}'. This is usually resolved by setting your root project name in your settings.gradle[.kts] file: `rootProject.name = \"\${someUniqueName}\". " +
-                            "See https://github.com/gradle/gradle/issues/36167 for more details"
+                        """
+                         Nmcp: some projects have the same name: '${'$'}{it.name}'. This creates issues when resolving the aggregation.
+                         You can usually resolve this error by renaming your projects (including possibly your root project).
+                         Or you can disable this check by calling `allowDuplicateProjectNames.set(true)`.
+                         See https://github.com/gradle/gradle/issues/36167 for more details.
+                        """.trimIndent()
                     }
                     allNames.add(it.name.lowercase())
                 }
