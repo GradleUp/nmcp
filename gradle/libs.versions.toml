@@ -25,5 +25,5 @@ serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref 
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 gratatouille = { id = "com.gradleup.gratatouille", version.ref = "gratatouille-plugin" }
 librarian = { id = "com.gradleup.librarian", version = "0.2.2-SNAPSHOT-f89d61cb6d4bd03bb9f48d1c8220262c0d02094c" }
-nmcp = { id = "com.gradleup.nmcp", version = "1.4.2-SNAPSHOT-3ea175c5399af7939f33b6e0decc9012eec4bb29" }
+nmcp = { id = "com.gradleup.nmcp", version = "1.4.3-SNAPSHOT-fee7f67ed80c3d08fc6860c8d05ccb0ce9795a20" }
 compat = { id = "com.gradleup.tapmoc", version = "0.4.1-SNAPSHOT-86d664ab69b813963b91060ecce036be943088ed" }
