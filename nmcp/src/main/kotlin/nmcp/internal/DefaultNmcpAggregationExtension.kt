@@ -2,7 +2,6 @@ package nmcp.internal
 
 import gratatouille.GExtension
 import gratatouille.capitalizeFirstLetter
-import java.io.File
 import nmcp.CentralPortalOptions
 import nmcp.NmcpAggregationExtension
 import nmcp.LocalRepositoryOptions
@@ -48,6 +47,7 @@ internal abstract class DefaultNmcpAggregationExtension(private val project: Pro
             kind = Kind.aggregation,
             inputFiles = allFiles,
             spec = spec,
+            allowEmptyFiles = allowEmptyAggregation
         )
 
         project.afterEvaluate {
@@ -63,12 +63,6 @@ internal abstract class DefaultNmcpAggregationExtension(private val project: Pro
                         """.trimIndent()
                     }
                     allNames.add(it.name.lowercase())
-                }
-            }
-
-            if (!allowEmptyAggregation.orElse(false).get()) {
-                check(consumerConfiguration.dependencies.isNotEmpty()) {
-                    "Nmcp: the aggregation is empty. This is usually a misconfiguration. If this is intentional, set `allowEmptyAggregation` to true."
                 }
             }
         }

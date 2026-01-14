@@ -8,14 +8,14 @@ public final class nmcp/internal/task/CleanupDirectoryEntryPoint$Companion {
 	public final fun run (Ljava/lang/String;)V
 }
 
-public final class nmcp/internal/task/NmcpFindDeploymentNameEntryPoint {
-	public static final field Companion Lnmcp/internal/task/NmcpFindDeploymentNameEntryPoint$Companion;
+public final class nmcp/internal/task/NmcpCheckFilesEntryPoint {
+	public static final field Companion Lnmcp/internal/task/NmcpCheckFilesEntryPoint$Companion;
 	public fun <init> ()V
-	public static final fun run (Ljava/util/List;Ljava/io/File;)V
+	public static final fun run (Ljava/util/List;Ljava/io/File;Z)V
 }
 
-public final class nmcp/internal/task/NmcpFindDeploymentNameEntryPoint$Companion {
-	public final fun run (Ljava/util/List;Ljava/io/File;)V
+public final class nmcp/internal/task/NmcpCheckFilesEntryPoint$Companion {
+	public final fun run (Ljava/util/List;Ljava/io/File;Z)V
 }
 
 public final class nmcp/internal/task/NmcpPublishFileByFileToFileSystemEntryPoint {
