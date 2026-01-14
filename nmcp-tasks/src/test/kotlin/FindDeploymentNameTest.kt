@@ -1,7 +1,7 @@
 import gratatouille.tasks.FileWithPath
 import java.io.File
 import kotlin.test.assertEquals
-import nmcp.internal.task.nmcpFindDeploymentName
+import nmcp.internal.task.nmcpCheckFiles
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
@@ -13,9 +13,10 @@ class FindDeploymentNameTest {
 
     private fun assertDeploymentName(inputFiles: List<String>, expected: String) {
         val output = tmp.newFile("output.txt")
-        nmcpFindDeploymentName(
+        nmcpCheckFiles(
             inputFiles = inputFiles.map { FileWithPath(File(it), normalizedPath = it) },
             outputFile = output,
+            allowEmptyFiles = false
         )
         assertEquals(expected, output.readText())
     }

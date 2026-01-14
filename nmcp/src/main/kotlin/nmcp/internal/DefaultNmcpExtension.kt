@@ -76,7 +76,8 @@ internal abstract class DefaultNmcpExtension(private val project: Project): Nmcp
             project.registerPublishToCentralPortalTasks(
                 kind = Kind.allPublications,
                 inputFiles = m2Files,
-                spec = spec
+                spec = spec,
+                allowEmptyFiles = project.provider { false }
             )
         }
     }

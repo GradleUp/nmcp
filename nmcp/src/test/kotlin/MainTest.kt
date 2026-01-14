@@ -33,9 +33,9 @@ class MainTest {
 
         val result = GradleRunner.create()
             .withProjectDir(dst)
-            .withArguments("help")
+            .withArguments("nmcpZipAggregation")
             .buildAndFail()
 
-        assert(result.output.contains("Nmcp: the aggregation is empty"))
+        assert(result.output.contains("Nmcp: there are no files to publish"))
     }
 }

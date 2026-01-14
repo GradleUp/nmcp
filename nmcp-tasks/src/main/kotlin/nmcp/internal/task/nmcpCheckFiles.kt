@@ -12,9 +12,15 @@ import kotlin.text.endsWith
 import kotlin.text.substringBeforeLast
 
 
+/**
+ * Check the validity of the input files and outputs the name of the deployment
+ */
 @GTask
-internal fun nmcpFindDeploymentName(inputFiles: GInputFiles, outputFile: GOutputFile) {
-  val gavs = inputFiles.mapNotNull {
+internal fun nmcpCheckFiles(inputFiles: GInputFiles, outputFile: GOutputFile, allowEmptyFiles: Boolean) {
+    check(allowEmptyFiles || inputFiles.isNotEmpty()) {
+        "Nmcp: there are no files to publish. Double check your configuration."
+    }
+    val gavs = inputFiles.mapNotNull {
     if (!it.normalizedPath.endsWith(".pom")) {
       return@mapNotNull null
     }

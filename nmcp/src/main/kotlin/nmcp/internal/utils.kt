@@ -3,18 +3,16 @@ package nmcp.internal
 import gratatouille.capitalizeFirstLetter
 import java.io.File
 import nmcp.CentralPortalOptions
-import nmcp.internal.task.registerNmcpFindDeploymentNameTask
+import nmcp.internal.task.registerNmcpCheckFilesTask
 import nmcp.internal.task.registerNmcpPublishFileByFileToFileSystemTask
 import nmcp.internal.task.registerNmcpPublishFileByFileToSnapshotsTask
 import nmcp.internal.task.registerNmcpPublishWithPublisherApiTask
-import org.gradle.api.Action
-import org.gradle.api.Named
 import org.gradle.api.Project
-import org.gradle.api.attributes.Attribute
 import org.gradle.api.attributes.HasConfigurableAttributes
 import org.gradle.api.attributes.Usage
 import org.gradle.api.attributes.Usage.USAGE_ATTRIBUTE
 import org.gradle.api.file.FileCollection
+import org.gradle.api.provider.Provider
 import org.gradle.api.publish.plugins.PublishingPlugin.PUBLISH_TASK_GROUP
 import org.gradle.api.tasks.bundling.Zip
 
@@ -54,6 +52,7 @@ internal fun Project.registerPublishToCentralPortalTasks(
     kind: Kind,
     inputFiles: FileCollection,
     spec: CentralPortalOptions,
+    allowEmptyFiles: Provider<Boolean>
 ) {
     val name = kind.name
 
@@ -61,7 +60,7 @@ internal fun Project.registerPublishToCentralPortalTasks(
     val snapshotTaskName = "nmcpPublish${name.capitalizeFirstLetter()}ToCentralPortalSnapshots"
     val localTaskName = "nmcpPublish${name.capitalizeFirstLetter()}ToMavenLocal"
     val zipTaskName = "nmcpZip${name.capitalizeFirstLetter()}"
-    val findDeploymentNameTaskName = "nmcpFind${name.capitalizeFirstLetter()}DeploymentName"
+    val checkFilesTaskName = "nmcpCheck${name.capitalizeFirstLetter()}Files"
 
     val description = when(name) {
         "aggregation" -> "Publishes the aggregation"
@@ -71,6 +70,12 @@ internal fun Project.registerPublishToCentralPortalTasks(
     val centralPortalLifecycleTaskName = "publish${name.capitalizeFirstLetter()}ToCentralPortal"
     val deprecatedLifecycleTaskName = "publish${name.capitalizeFirstLetter()}ToCentralPortalSnapshots"
     val snapshotsLifecycleTaskName = "publish${name.capitalizeFirstLetter()}ToCentralSnapshots"
+
+    val checkFilesTaskProvider = registerNmcpCheckFilesTask(
+        allowEmptyFiles = allowEmptyFiles.orElse(false),
+        taskName = checkFilesTaskName,
+        inputFiles = inputFiles,
+    )
 
     val zipName = "${name}.zip"
     val zipTaskProvider = tasks.register(zipTaskName, Zip::class.java) {
@@ -84,18 +89,16 @@ internal fun Project.registerPublishToCentralPortalTasks(
                 it.exclude()
             }
         }
+        it.dependsOn(checkFilesTaskProvider)
     }
 
-    val findDeploymentNameTaskProvider = registerNmcpFindDeploymentNameTask(
-        taskName = findDeploymentNameTaskName,
-        inputFiles = inputFiles,
-    )
+
     val task = registerNmcpPublishWithPublisherApiTask(
         taskName = releaseTaskName,
         inputFile = zipTaskProvider.flatMap { it.archiveFile },
         username = spec.username,
         password = spec.password,
-        publicationName = spec.publicationName.orElse(findDeploymentNameTaskProvider.flatMap { it.outputFile }.map { it.asFile.readText() }),
+        publicationName = spec.publicationName.orElse(checkFilesTaskProvider.flatMap { it.outputFile }.map { it.asFile.readText() }),
         publishingType = spec.publishingType,
         baseUrl = spec.baseUrl,
         validationTimeoutSeconds = spec.validationTimeout.map { it.seconds },
