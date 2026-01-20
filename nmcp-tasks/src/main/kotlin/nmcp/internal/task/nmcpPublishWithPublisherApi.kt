@@ -11,6 +11,8 @@ import kotlin.time.TimeSource.Monotonic.markNow
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
+import nmcp.transport.Success
+import nmcp.transport.executeWithRetries
 import nmcp.transport.nmcpClient
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -60,20 +62,17 @@ internal fun nmcpPublishWithPublisherApi(
     val url = baseUrl + "api/v1/publisher/upload?publishingType=$publishingType"
 
     logger.lifecycle("Uploading deployment to '$url'")
-    val deploymentId = Request.Builder()
+    val request = Request.Builder()
         .post(body)
         .addHeader("Authorization", "Bearer $token")
         .url(url)
         .build()
-        .let {
-            nmcpClient.newCall(it).execute()
-        }.use {
-            if (!it.isSuccessful) {
-                error("Cannot deploy to maven central (status='${it.code}'): ${it.body.string()}")
-            }
+    val result = executeWithRetries(logger, nmcpClient, request)
 
-            it.body.string()
-        }
+    if (result !is Success) {
+        error("Cannot upload deployment to maven central: ($result)}")
+    }
+    val deploymentId = result.body.use { it.readUtf8() }
 
     logger.lifecycle("Nmcp: deployment bundle '$deploymentId' uploaded.")
 
@@ -118,6 +117,7 @@ private fun waitFor(
         }
 
         val status = verifyStatus(
+            logger = logger,
             deploymentId = deploymentId,
             baseUrl = baseUrl,
             token = token,
@@ -136,9 +136,6 @@ private fun waitFor(
 }
 
 private sealed interface Status
-
-// A deployment has successfully been uploaded to Maven Central
-private data object UNKNOWN_QUERY_LATER : Status
 
 // A deployment is uploaded and waiting for processing by the validation service
 private data object PENDING : Status
@@ -159,47 +156,42 @@ private data object PUBLISHED : Status
 private class FAILED(val error: String) : Status
 
 private fun verifyStatus(
+    logger: GLogger,
     deploymentId: String,
     baseUrl: String,
     token: String,
 ): Status {
-    Request.Builder()
+    val request = Request.Builder()
         .post(ByteString.EMPTY.toRequestBody())
         .addHeader("Authorization", "Bearer $token")
         .url(baseUrl + "api/v1/publisher/status?id=$deploymentId")
         .build()
-        .let {
-            try {
-                nmcpClient.newCall(it).execute()
-            } catch (_: SocketTimeoutException) {
-                return UNKNOWN_QUERY_LATER
-            }
-        }.use {
-            if (!it.isSuccessful) {
-                error("Cannot verify deployment $deploymentId status (HTTP status='${it.code}'): ${it.body.string()}")
-            }
+    val result = executeWithRetries(logger, nmcpClient, request)
+    if (result !is Success) {
+        error("Cannot verify deployment $deploymentId status ($result)")
+    }
 
-            val str = it.body.string()
-            val element = Json.parseToJsonElement(str)
-            check(element is JsonObject) {
-                "Nmcp: unexpected status response for deployment $deploymentId: $str"
-            }
+    val str = result.body.use { it.readUtf8() }
+    val element = Json.parseToJsonElement(str)
+    check(element is JsonObject) {
+        "Nmcp: unexpected status response for deployment $deploymentId: $str"
+    }
 
-            val state = element["deploymentState"]
-            check(state is JsonPrimitive && state.isString) {
-                "Nmcp: unexpected deploymentState for deployment $deploymentId: $state"
-            }
+    val state = element["deploymentState"]
+    check(state is JsonPrimitive && state.isString) {
+        "Nmcp: unexpected deploymentState for deployment $deploymentId: $state"
+    }
 
-            return when (state.content) {
-                "PENDING" -> PENDING
-                "VALIDATING" -> VALIDATING
-                "VALIDATED" -> VALIDATED
-                "PUBLISHING" -> PUBLISHING
-                "PUBLISHED" -> PUBLISHED
-                "FAILED" -> {
-                    FAILED(element["errors"].toString())
-                }
-                else -> error("Nmcp: unexpected deploymentState for deployment $deploymentId: $state")
-            }
+    return when (state.content) {
+        "PENDING" -> PENDING
+        "VALIDATING" -> VALIDATING
+        "VALIDATED" -> VALIDATED
+        "PUBLISHING" -> PUBLISHING
+        "PUBLISHED" -> PUBLISHED
+        "FAILED" -> {
+            FAILED(element["errors"].toString())
         }
+        else -> error("Nmcp: unexpected deploymentState for deployment $deploymentId: $state")
+    }
+
 }
