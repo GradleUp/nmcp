@@ -25,4 +25,9 @@ interface NmcpExtension {
      * a [org.gradle.api.file.DirectoryProperty] so that the files also contain their relative path.
      */
     fun extraFiles(files: Any)
+
+    /**
+     * Applies the `maven-publish` plugin and creates publications.
+     */
+    fun mavenPublish(action: Action<MavenPublishOptions>)
 }

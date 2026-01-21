@@ -1,3 +1,5 @@
+import org.gradle.internal.impldep.kotlinx.serialization.json.JsonNull.content
+
 pluginManagement {
     listOf(
         repositories,
@@ -11,6 +13,13 @@ pluginManagement {
                     includeModule("com.gradleup.gratatouille", "gratatouille-processor")
                     includeModule("com.gradleup.tapmoc", "tapmoc-tasks")
                     includeModule("com.gradleup.nmcp", "nmcp-tasks")
+                }
+            }
+            google {
+                content {
+                    includeGroup("com.android.application")
+                    includeGroup("com.android.tools.build")
+                    includeGroup("com.android")
                 }
             }
         }

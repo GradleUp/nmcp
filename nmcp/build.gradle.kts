@@ -9,6 +9,7 @@ plugins {
 }
 
 Librarian.module(project)
+
 extensions.getByType(TapmocExtension::class.java).apply {
     // Override the default Kotlin version to work with older Gradle
     kotlin("2.1.0")
@@ -23,6 +24,7 @@ gratatouille {
 dependencies {
     gratatouille(project(":nmcp-tasks"))
     compileOnly(libs.gradle.min)
+    compileOnly(libs.agp)
     implementation(libs.gratatouille.runtime)
 
     testImplementation(libs.kotlin.test)

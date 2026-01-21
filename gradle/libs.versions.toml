@@ -13,6 +13,7 @@ okhttp = "com.squareup.okhttp3:okhttp:5.3.2"
 mockwebserver = "com.squareup.okhttp3:mockwebserver:5.3.2"
 #noinspection NewerVersionAvailable
 gradle-min = { module = "dev.gradleplugins:gradle-api", version.ref = "gradle-api" }
+agp = { module = "com.android.application:com.android.application.gradle.plugin", version = "9.0.0" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test" }
 xmlutil = "io.github.pdvrieze.xmlutil:serialization:1.0.0-rc1"
 kgp = { module = "org.jetbrains.kotlin.jvm:org.jetbrains.kotlin.jvm.gradle.plugin", version.ref = "kgp" }
