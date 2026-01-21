@@ -103,7 +103,9 @@ Yes. You can contact Sonatype support at `central-support@sonatype.com`.
 
 It depends. It ranges from a couple of minutes to a few hours. The validation step (verifying signatures, source jars, etc...) is usually faster, in the order of minutes per project. The publishing part may take longer.
 
-If your deployment reaches the `PUBLISHING` state it should become available on Maven Central at some point.
+If your deployment stays in the `VALIDATING` state more than a couple of hours, it is probably an infrastructure error. Email `central-support` and/or retry later.
+
+If your deployment reaches the `PUBLISHING` state, it means it's all good. The deployment should become available on Maven Central at some point.
 
 ### Q: What API is used to upload SNAPSHOTs?
 
