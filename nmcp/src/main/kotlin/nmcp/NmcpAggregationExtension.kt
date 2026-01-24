@@ -26,7 +26,10 @@ interface NmcpAggregationExtension {
      * Moving forward, use the `com.gradleup.nmcp.settings` or make a convention plugin that applies `com.gradleup.nmcp`
      * to all your projects.
      */
-    @Deprecated("Use the settings plugin or a convention plugin instead")
+    @Deprecated("publishAllProjectsProbablyBreakingProjectIsolation() breaks project isolation. This API is convenient" +
+        "and there are no plans to remove it in the short term but it is marked as deprecated as a signal that it's not" +
+        "compatible with the latest Gradle features.\n" +
+        "If you want to enable isolated project, you should look using settings plugin or a convention plugin instead")
     fun publishAllProjectsProbablyBreakingProjectIsolation()
 
     /**
