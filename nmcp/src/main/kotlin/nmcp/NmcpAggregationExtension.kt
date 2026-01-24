@@ -29,7 +29,7 @@ interface NmcpAggregationExtension {
     @Deprecated("publishAllProjectsProbablyBreakingProjectIsolation() breaks project isolation. This API is convenient" +
         "and there are no plans to remove it in the short term but it is marked as deprecated as a signal that it's not" +
         "compatible with the latest Gradle features.\n" +
-        "If you want to enable isolated project, you should look using settings plugin or a convention plugin instead")
+        "If you want to enable isolated projects, you should look at settings plugin or a convention plugin instead.")
     fun publishAllProjectsProbablyBreakingProjectIsolation()
 
     /**
