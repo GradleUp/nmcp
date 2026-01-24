@@ -1,3 +1,12 @@
+# Version 1.4.4
+_2026-01-24_
+
+Nmcp 1.4.4 retries more aggressively when Sonatype is flaky, and makes it more explicit that `publishAllProjectsProbablyBreakingProjectIsolation()` is still OK to use if you don't mind about project isolation.
+
+* Implement retry for snapshots/deployment upload/status check (https://github.com/GradleUp/nmcp/pull/244)
+* Move the empty files check to execution (https://github.com/GradleUp/nmcp/pull/243)
+* Update deprecation message (https://github.com/GradleUp/nmcp/pull/247)
+
 # Version 1.4.3
 _2026-01-02_
 
