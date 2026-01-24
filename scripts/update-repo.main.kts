@@ -12,7 +12,10 @@ import com.gradleup.librarian.cli.updateRepo
 updateRepo(
     args,
     setVersion = {
-        file("nmcp/testProjec/duplicate-name/build.gradle.kts") {
+        file("nmcp/testProjects/duplicate-name/build.gradle.kts") {
+            replacePluginVersion("com.gradleup.nmcp.aggregation")
+        }
+        file("nmcp/testProjects/empty-aggregation/build.gradle.kts") {
             replacePluginVersion("com.gradleup.nmcp.aggregation")
         }
     },
