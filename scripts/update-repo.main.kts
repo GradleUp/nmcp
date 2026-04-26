@@ -3,14 +3,12 @@
 @file:Repository("https://repo.maven.apache.org/maven2/")
 @file:Repository("https://dl.google.com/android/maven2/")
 @file:Repository("https://storage.googleapis.com/gradleup/m2")
-@file:Repository("https://jitpack.io")
 //@file:Repository("file://~/.m2/repository")
-@file:DependsOn("com.gradleup.librarian:librarian-cli:0.2.2-SNAPSHOT-f89d61cb6d4bd03bb9f48d1c8220262c0d02094c")
+@file:DependsOn("com.gradleup.librarian:librarian-cli:0.2.2-SNAPSHOT-b89fe292839b757bf152e8369a88991052d32d0b")
 
-import com.gradleup.librarian.cli.updateRepo
+import com.gradleup.librarian.repo.updateRepo
 
 updateRepo(
-    args,
     setVersion = {
         file("nmcp/testProjects/duplicate-name/build.gradle.kts") {
             replacePluginVersion("com.gradleup.nmcp.aggregation")
@@ -19,7 +17,7 @@ updateRepo(
             replacePluginVersion("com.gradleup.nmcp.aggregation")
         }
     },
-    setDocsVersion = {
+    setVersionInDocs = {
         file("docs/src/content/docs/index.mdx") {
             replacePluginVersion("com.gradleup.nmcp.settings")
             replacePluginVersion("com.gradleup.nmcp.aggregation")

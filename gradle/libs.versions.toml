@@ -19,7 +19,7 @@ kgp = { module = "org.jetbrains.kotlin.jvm:org.jetbrains.kotlin.jvm.gradle.plugi
 coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2"
 gratatouille-runtime = { module = "com.gradleup.gratatouille:gratatouille-runtime", version.ref = "gratatouille-runtime" }
 gratatouille-tasks-runtime = { module = "com.gradleup.gratatouille:gratatouille-tasks-runtime", version.ref = "gratatouille-runtime" }
-nmcp-tasks = {module = "com.gradleup.nmcp:nmcp-tasks", version.ref = "nmcp"}
+nmcp-tasks = { module = "com.gradleup.nmcp:nmcp-tasks", version.ref = "nmcp" }
 
 [plugins]
 kgp = { id = "org.jetbrains.kotlin.jvm", version.ref = "kgp" }
