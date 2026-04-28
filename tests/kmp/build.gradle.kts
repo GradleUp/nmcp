@@ -22,12 +22,12 @@ buildscript {
 
 val mockServer = MockWebServer()
 
-if (gradle.startParameter.taskNames.contains("publishAggregationToCentralPortal")) {
-    mockServer.enqueue(MockResponse().setBody("599ab6f5-dd08-4e7b-ae5a-85b45031715a"))
-    mockServer.enqueue(MockResponse().setBody("{\"deploymentState\": \"VALIDATED\"}"))
-} else if (gradle.startParameter.taskNames.contains("nmcpPublishCentralPortalDeployment")) {
+if (gradle.startParameter.taskNames.contains("nmcpPublishCentralPortalDeployment")) {
     mockServer.enqueue(MockResponse())
     mockServer.enqueue(MockResponse().setBody("{\"deploymentState\": \"PUBLISHED\"}"))
+} else {
+    mockServer.enqueue(MockResponse().setBody("599ab6f5-dd08-4e7b-ae5a-85b45031715a"))
+    mockServer.enqueue(MockResponse().setBody("{\"deploymentState\": \"VALIDATED\"}"))
 }
 mockServer.start()
 
