@@ -21,8 +21,15 @@ buildscript {
 }
 
 val mockServer = MockWebServer()
-mockServer.enqueue(MockResponse())
-mockServer.enqueue(MockResponse().setBody("{\"deploymentState\": \"PUBLISHED\"}"))
+
+if (gradle.startParameter.taskNames.contains("nmcpPublishDeployment")) {
+    mockServer.enqueue(MockResponse())
+    mockServer.enqueue(MockResponse().setBody("{\"deploymentState\": \"PUBLISHED\"}"))
+} else {
+    mockServer.enqueue(MockResponse().setBody("599ab6f5-dd08-4e7b-ae5a-85b45031715a"))
+    mockServer.enqueue(MockResponse().setBody("{\"deploymentState\": \"VALIDATED\"}"))
+}
+mockServer.start()
 
 nmcpAggregation {
     centralPortal {

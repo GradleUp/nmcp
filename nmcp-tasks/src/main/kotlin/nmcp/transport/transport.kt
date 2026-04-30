@@ -195,7 +195,7 @@ internal fun executeWithRetries(logger: GLogger, client: OkHttpClient, request: 
             return result
         }
 
-        logger.lifecycle("Nmcp: put '${request.url}' failed (${result}), retrying... (attempt ${attempt + 1}/${attemptCount})")
+        logger.lifecycle("Nmcp: ${request.method} '${request.url}' failed (${result}), retrying... (attempt ${attempt + 1}/${attemptCount})")
         Thread.sleep(2.0.pow(attempt.toDouble()).toLong() * 1_000)
         attempt++
     }
@@ -262,4 +262,3 @@ internal class FilesystemTransport(
         }
     }
 }
-

@@ -4,6 +4,7 @@ import gratatouille.capitalizeFirstLetter
 import java.io.File
 import nmcp.CentralPortalOptions
 import nmcp.internal.task.registerNmcpCheckFilesTask
+import nmcp.internal.task.registerNmcpPublishDeploymentTask
 import nmcp.internal.task.registerNmcpPublishFileByFileToFileSystemTask
 import nmcp.internal.task.registerNmcpPublishFileByFileToSnapshotsTask
 import nmcp.internal.task.registerNmcpPublishWithPublisherApiTask
@@ -93,7 +94,7 @@ internal fun Project.registerPublishToCentralPortalTasks(
     }
 
 
-    val task = registerNmcpPublishWithPublisherApiTask(
+    val releaseTask = registerNmcpPublishWithPublisherApiTask(
         taskName = releaseTaskName,
         inputFile = zipTaskProvider.flatMap { it.archiveFile },
         username = spec.username,
@@ -107,7 +108,18 @@ internal fun Project.registerPublishToCentralPortalTasks(
     project.tasks.register(centralPortalLifecycleTaskName) {
         it.group = PUBLISH_TASK_GROUP
         it.description = "$description to the Central Releases repository."
-        it.dependsOn(task)
+        it.dependsOn(releaseTask)
+    }
+
+    if (kind == Kind.aggregation) {
+        registerNmcpPublishDeploymentTask(
+            taskName = "nmcpPublishDeployment",
+            username = spec.username,
+            password = spec.password,
+            baseUrl = spec.baseUrl,
+            deploymentId = project.providers.gradleProperty("nmcpDeploymentId"),
+            publishingTimeoutSeconds = spec.publishingTimeout.map { it.seconds },
+        )
     }
 
     val centralSnapshots = registerNmcpPublishFileByFileToSnapshotsTask(
@@ -145,7 +157,7 @@ internal fun Project.registerPublishToCentralPortalTasks(
      * This gives feedback to the user before compiling all projects.
      */
     project.gradle.taskGraph.whenReady {
-        if (it.hasTask(taskPath(project, task.name))) {
+        if (it.hasTask(taskPath(project, releaseTask.name))) {
             val publishingType = spec.publishingType.orNull
             val validValues = listOf("AUTOMATIC", "USER_MANAGED")
             check(publishingType == null || publishingType in validValues) {
