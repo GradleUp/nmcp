@@ -6,10 +6,12 @@
 //@file:Repository("file://~/.m2/repository")
 @file:DependsOn("com.gradleup.librarian:librarian-cli:0.2.2-SNAPSHOT-b89fe292839b757bf152e8369a88991052d32d0b")
 
+import com.gradleup.librarian.repo.librarianSetVersion
 import com.gradleup.librarian.repo.updateRepo
 
 updateRepo(
     setVersion = {
+        librarianSetVersion()
         file("nmcp/testProjects/duplicate-name/build.gradle.kts") {
             replacePluginVersion("com.gradleup.nmcp.aggregation")
         }
