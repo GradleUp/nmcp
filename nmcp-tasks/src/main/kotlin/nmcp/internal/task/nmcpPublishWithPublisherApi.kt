@@ -77,7 +77,7 @@ internal fun nmcpPublishWithPublisherApi(
             check(publishingTimeoutSeconds == null) {
                 "Nmcp: 'publishingTimeout' has no effect if 'publishingType' is USER_MANAGED. Either set 'publishingType = AUTOMATIC' or remove 'publishingTimeout'"
             }
-            logger.lifecycle("Nmcp: deployment has passed validation, publish it manually from the Central Portal UI or call './gradlew nmcpPublishCentralPortalDeployment -PnmcpDeploymentId=$deploymentId'.")
+            logger.lifecycle("Nmcp: deployment has passed validation, publish it manually from the Central Portal UI or call './gradlew nmcpPublishDeployment -PnmcpDeploymentId=$deploymentId'.")
         }
     } else {
         logger.lifecycle("Nmcp: deployment is validating... Check the central portal UI to verify its status.")

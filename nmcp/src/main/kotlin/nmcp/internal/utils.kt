@@ -113,7 +113,7 @@ internal fun Project.registerPublishToCentralPortalTasks(
 
     if (kind == Kind.aggregation) {
         registerNmcpPublishDeploymentTask(
-            taskName = "nmcpPublishCentralPortalDeployment",
+            taskName = "nmcpPublishDeployment",
             username = spec.username,
             password = spec.password,
             baseUrl = spec.baseUrl,

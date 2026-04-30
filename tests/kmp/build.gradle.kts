@@ -22,7 +22,7 @@ buildscript {
 
 val mockServer = MockWebServer()
 
-if (gradle.startParameter.taskNames.contains("nmcpPublishCentralPortalDeployment")) {
+if (gradle.startParameter.taskNames.contains("nmcpPublishDeployment")) {
     mockServer.enqueue(MockResponse())
     mockServer.enqueue(MockResponse().setBody("{\"deploymentState\": \"PUBLISHED\"}"))
 } else {
