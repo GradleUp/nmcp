@@ -1,3 +1,19 @@
+# Version 1.6.0
+_2026-06-21_
+
+Nmcp 1.6.0 stop publishing the following checksums:
+
+* signature checksums (`.asc.md5`, `.asc.sha1`, `.asc.sha256`, `.asc.sha512`)
+* all non-required checksums (`.sha256`, `.sha512`)
+* all `maven-metadata` checksums (for local publishing, `maven-metadata.xml` is never sent to Central Portal)
+
+You can send the checksums by setting `publishAllChecksums`
+```
+nmcpAggregation {
+  publishAllChecksums.set(true)
+}
+```
+
 # Version 1.5.0
 _2026-04-30_
 
