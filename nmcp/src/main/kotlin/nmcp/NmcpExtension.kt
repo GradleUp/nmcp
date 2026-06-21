@@ -2,6 +2,7 @@ package nmcp
 
 import org.gradle.api.Action
 import org.gradle.api.file.FileCollection
+import org.gradle.api.provider.Property
 
 interface NmcpExtension {
     /**

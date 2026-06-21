@@ -13,6 +13,7 @@ import org.gradle.api.attributes.HasConfigurableAttributes
 import org.gradle.api.attributes.Usage
 import org.gradle.api.attributes.Usage.USAGE_ATTRIBUTE
 import org.gradle.api.file.FileCollection
+import org.gradle.api.file.RegularFile
 import org.gradle.api.provider.Provider
 import org.gradle.api.publish.plugins.PublishingPlugin.PUBLISH_TASK_GROUP
 import org.gradle.api.tasks.bundling.Zip
@@ -53,8 +54,9 @@ internal fun Project.registerPublishToCentralPortalTasks(
     kind: Kind,
     inputFiles: FileCollection,
     spec: CentralPortalOptions,
-    allowEmptyFiles: Provider<Boolean>
-) {
+    allowEmptyFiles: Provider<Boolean>,
+    publishAllChecksums: Provider<Boolean>
+): Provider<RegularFile> {
     val name = kind.name
 
     val releaseTaskName = "nmcpPublish${name.capitalizeFirstLetter()}ToCentralPortal"
@@ -84,19 +86,31 @@ internal fun Project.registerPublishToCentralPortalTasks(
         it.destinationDirectory.set(project.layout.buildDirectory.dir("nmcp/zip"))
         it.archiveFileName.set(zipName)
         it.eachFile {
-            // Exclude maven-metadata files, or the bundle is not recognized
-            // See https://slack-chats.kotlinlang.org/t/16407246/anyone-tried-the-https-central-sonatype-org-publish-publish-#c8738fe5-8051-4f64-809f-ca67a645216e
-            if (it.name.startsWith("maven-metadata")) {
-                it.exclude()
+            val publishAllChecksums = publishAllChecksums.getOrElse(false)
+            when {
+                it.name.startsWith("maven-metadata") -> {
+                    // Exclude maven-metadata files, or the bundle is not recognized
+                    // See https://slack-chats.kotlinlang.org/t/16407246/anyone-tried-the-https-central-sonatype-org-publish-publish-#c8738fe5-8051-4f64-809f-ca67a645216e
+                    it.exclude()
+                }
+                !publishAllChecksums && (it.name.endsWith(".sha256") || it.name.endsWith(".sha512")) -> {
+                    // It's not clear if those are used, and it reduces the number of files in the deployment
+                    it.exclude()
+                }
+                !publishAllChecksums && (it.name.endsWith(".asc.md5") || it.name.endsWith(".asc.sha1")) -> {
+                    // It's not clear if those are used, and it reduces the number of files in the deployment
+                    it.exclude()
+                }
             }
         }
         it.dependsOn(checkFilesTaskProvider)
     }
 
+    val zipProvider = zipTaskProvider.flatMap { it.archiveFile }
 
     val releaseTask = registerNmcpPublishWithPublisherApiTask(
         taskName = releaseTaskName,
-        inputFile = zipTaskProvider.flatMap { it.archiveFile },
+        inputFile = zipProvider,
         username = spec.username,
         password = spec.password,
         publicationName = spec.publicationName.orElse(checkFilesTaskProvider.flatMap { it.outputFile }.map { it.asFile.readText() }),
@@ -148,7 +162,7 @@ internal fun Project.registerPublishToCentralPortalTasks(
     registerNmcpPublishFileByFileToFileSystemTask(
         taskName = localTaskName,
         m2AbsolutePath = project.provider { m2File.absolutePath },
-        inputFiles = inputFiles,
+        inputFiles = zipTree(zipProvider),
         parallelism = spec.uploadSnapshotsParallelism.orElse(defaultParallelism),
     )
 
@@ -171,6 +185,8 @@ internal fun Project.registerPublishToCentralPortalTasks(
             }
         }
     }
+
+    return zipProvider
 }
 
 private fun taskPath(project: Project, taskName: String): String {

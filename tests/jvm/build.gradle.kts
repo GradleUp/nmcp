@@ -3,15 +3,8 @@ import nmcp.NmcpAggregationExtension
 plugins {
     id("base")
     alias(libs.plugins.kgp).apply(false)
+    id("com.gradleup.nmcp.aggregation")
 }
-
-buildscript {
-    dependencies {
-        classpath("com.gradleup.nmcp:nmcp")
-    }
-}
-
-apply(plugin = "com.gradleup.nmcp.aggregation")
 
 group = "net.mbonnin.tnmcp"
 version = "0.0.3"
@@ -85,7 +78,8 @@ subprojects {
     }
 }
 
-extensions.getByType<NmcpAggregationExtension>().apply {
+nmcpAggregation {
+    @Suppress("DEPRECATION")
     publishAllProjectsProbablyBreakingProjectIsolation()
 
     centralPortal {

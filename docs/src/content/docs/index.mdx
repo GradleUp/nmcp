@@ -54,6 +54,9 @@ nmcpSettings {
 
     // optional: send publications serially instead of in parallel (might be slower)
     uploadSnapshotsParallelism.set(1)
+
+    // optional: publish all checksums (md5, sha1, sha256, sha512, including for signature files)
+    publishAllChecksums.set(true)
   }
 }
 ```
