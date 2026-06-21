@@ -4,8 +4,13 @@ pluginManagement {
       mavenCentral()
     }
   }
+    includeBuild("../../")
 }
 
 includeBuild("../../")
+
+plugins {
+    id("com.gradleup.nmcp.settings").apply(false)
+}
 
 include(":module1", ":module2")

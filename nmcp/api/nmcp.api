@@ -21,12 +21,14 @@ public abstract interface class nmcp/NmcpAggregationExtension {
 	public abstract fun getAllFiles ()Lorg/gradle/api/file/FileCollection;
 	public abstract fun getAllowDuplicateProjectNames ()Lorg/gradle/api/provider/Property;
 	public abstract fun getAllowEmptyAggregation ()Lorg/gradle/api/provider/Property;
+	public abstract fun getPublishAllChecksums ()Lorg/gradle/api/provider/Property;
 	public abstract fun localRepository (Lorg/gradle/api/Action;)V
 	public abstract fun publishAllProjectsProbablyBreakingProjectIsolation ()V
 }
 
 public abstract interface class nmcp/NmcpExtension {
 	public abstract fun extraFiles (Ljava/lang/Object;)V
+	public abstract fun getPublishAllChecksums ()Lorg/gradle/api/provider/Property;
 	public abstract fun publishAllPublicationsToCentralPortal (Lorg/gradle/api/Action;)V
 }
 

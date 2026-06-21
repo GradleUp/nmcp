@@ -77,7 +77,8 @@ internal abstract class DefaultNmcpExtension(private val project: Project): Nmcp
                 kind = Kind.allPublications,
                 inputFiles = m2Files,
                 spec = spec,
-                allowEmptyFiles = project.provider { false }
+                allowEmptyFiles = project.provider { false },
+                publishAllChecksums = publishAllChecksums,
             )
         }
     }

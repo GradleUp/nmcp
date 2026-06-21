@@ -47,7 +47,8 @@ internal abstract class DefaultNmcpAggregationExtension(private val project: Pro
             kind = Kind.aggregation,
             inputFiles = allFiles,
             spec = spec,
-            allowEmptyFiles = allowEmptyAggregation
+            allowEmptyFiles = allowEmptyAggregation,
+            publishAllChecksums = publishAllChecksums,
         )
 
         project.afterEvaluate {
@@ -99,6 +100,8 @@ internal abstract class DefaultNmcpAggregationExtension(private val project: Pro
     }
 
     abstract override val allowEmptyAggregation: Property<Boolean>
+
+    abstract override val publishAllChecksums: Property<Boolean>
 
     abstract override val allowDuplicateProjectNames: Property<Boolean>
 }

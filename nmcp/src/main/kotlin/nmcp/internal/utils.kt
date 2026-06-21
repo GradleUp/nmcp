@@ -53,7 +53,8 @@ internal fun Project.registerPublishToCentralPortalTasks(
     kind: Kind,
     inputFiles: FileCollection,
     spec: CentralPortalOptions,
-    allowEmptyFiles: Provider<Boolean>
+    allowEmptyFiles: Provider<Boolean>,
+    publishAllChecksums: Provider<Boolean>
 ) {
     val name = kind.name
 
@@ -78,16 +79,27 @@ internal fun Project.registerPublishToCentralPortalTasks(
         inputFiles = inputFiles,
     )
 
+    val publishAllChecksums = publishAllChecksums.getOrElse(false)
     val zipName = "${name}.zip"
     val zipTaskProvider = tasks.register(zipTaskName, Zip::class.java) {
         it.from(inputFiles)
         it.destinationDirectory.set(project.layout.buildDirectory.dir("nmcp/zip"))
         it.archiveFileName.set(zipName)
         it.eachFile {
-            // Exclude maven-metadata files, or the bundle is not recognized
-            // See https://slack-chats.kotlinlang.org/t/16407246/anyone-tried-the-https-central-sonatype-org-publish-publish-#c8738fe5-8051-4f64-809f-ca67a645216e
-            if (it.name.startsWith("maven-metadata")) {
-                it.exclude()
+            when {
+                it.name.startsWith("maven-metadata") -> {
+                    // Exclude maven-metadata files, or the bundle is not recognized
+                    // See https://slack-chats.kotlinlang.org/t/16407246/anyone-tried-the-https-central-sonatype-org-publish-publish-#c8738fe5-8051-4f64-809f-ca67a645216e
+                    it.exclude()
+                }
+                !publishAllChecksums && (it.name.endsWith(".sha256") || it.name.endsWith(".sha512")) -> {
+                    // It's not clear if those are used, and it reduces the number of files in the deployment
+                    it.exclude()
+                }
+                !publishAllChecksums && (it.name.endsWith(".asc.md5") || it.name.endsWith(".asc.sha1")) -> {
+                    // It's not clear if those are used, and it reduces the number of files in the deployment
+                    it.exclude()
+                }
             }
         }
         it.dependsOn(checkFilesTaskProvider)
