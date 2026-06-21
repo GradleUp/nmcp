@@ -121,7 +121,7 @@ private fun publishGav(
             val newName = newArtifact.fileName()
             renamedFiles.add(FileWithPath(it.file, "$gavPath/${newName}"))
 
-            if (newArtifact.extension.substringAfterLast('.') !in checksums) {
+            if (newArtifact.extension.substringAfterLast('.') !in setOf("md5", "sha1", "sha256", "sha512")) {
                 snapshotVersions.add(
                     VersionMetadata.SnapshotVersion(
                         classifier = newArtifact.classifier,
@@ -130,6 +130,8 @@ private fun publishGav(
                         updated = lastUpdated.asTimestamp(false),
                     ),
                 )
+            } else {
+                // Ignore the checksums in the list of files
             }
         }
 
@@ -220,9 +222,6 @@ private fun publishGav(
 
     val bytes = encodeToXml(newArtifactMetadata).toByteArray()
     transport.put(artifactMetadataPath, bytes)
-    checksums.forEach {
-        transport.put("$artifactMetadataPath.$it", bytes.digest(it.uppercase()))
-    }
 }
 
 
@@ -246,8 +245,6 @@ internal fun Instant.asTimestamp(withDot: Boolean): String {
         now.second,
     )
 }
-
-internal val checksums = setOf("md5", "sha1", "sha256", "sha512")
 
 internal inline fun <reified T> encodeToXml(t: T): String {
     return xml.encodeToString(t)
