@@ -26,14 +26,4 @@ interface NmcpExtension {
      * a [org.gradle.api.file.DirectoryProperty] so that the files also contain their relative path.
      */
     fun extraFiles(files: Any)
-
-    /**
-     * By default, Nmcp tries to avoid publishing the checksums.
-     * Especially, it filters out the `.sha256` and `.sha512` files, as well as all the signature checksums
-     * (`.asc.md5`, `.asc.sha1`, `.asc.sha256`, `.asc.sha512`).
-     * This is to play nicer with [Maven Central publishing limits](https://central.sonatype.org/publish/maven-central-publishing-limits/).
-     *
-     * Default: false
-     */
-    val publishAllChecksums: Property<Boolean>
 }

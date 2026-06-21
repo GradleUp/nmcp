@@ -13,7 +13,10 @@ import org.gradle.api.artifacts.result.ArtifactResult
 import org.gradle.api.artifacts.result.ResolvedArtifactResult
 import org.gradle.api.attributes.Usage
 import org.gradle.api.file.ConfigurableFileCollection
+import org.gradle.api.file.FileCollection
+import org.gradle.api.file.RegularFile
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.Provider
 
 @GExtension(
     pluginId = "com.gradleup.nmcp.aggregation",
@@ -32,6 +35,8 @@ internal abstract class DefaultNmcpAggregationExtension(private val project: Pro
 
     override val allFiles: ConfigurableFileCollection = project.files()
 
+    private val zipProvider: Provider<RegularFile>
+
     init {
         allFiles.from(
             consumerConfiguration
@@ -43,12 +48,12 @@ internal abstract class DefaultNmcpAggregationExtension(private val project: Pro
                     it.filter(::isCompatible).map { it.file }
                 },
         )
-        project.registerPublishToCentralPortalTasks(
+        zipProvider = project.registerPublishToCentralPortalTasks(
             kind = Kind.aggregation,
             inputFiles = allFiles,
             spec = spec,
             allowEmptyFiles = allowEmptyAggregation,
-            publishAllChecksums = publishAllChecksums,
+            publishAllChecksums = publishAllChecksums
         )
 
         project.afterEvaluate {
@@ -78,7 +83,7 @@ internal abstract class DefaultNmcpAggregationExtension(private val project: Pro
         action.execute(options)
         project.registerNmcpPublishFileByFileToFileSystemTask(
             taskName = "nmcpPublishAggregationTo${options.name.get().capitalizeFirstLetter()}Repository",
-            inputFiles = allFiles,
+            inputFiles = project.zipTree(zipProvider),
             m2AbsolutePath = project.provider { project.file(options.path.get()).absolutePath },
             parallelism = project.provider { 1 },
         )

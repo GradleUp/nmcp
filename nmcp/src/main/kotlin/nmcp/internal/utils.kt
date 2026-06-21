@@ -13,6 +13,7 @@ import org.gradle.api.attributes.HasConfigurableAttributes
 import org.gradle.api.attributes.Usage
 import org.gradle.api.attributes.Usage.USAGE_ATTRIBUTE
 import org.gradle.api.file.FileCollection
+import org.gradle.api.file.RegularFile
 import org.gradle.api.provider.Provider
 import org.gradle.api.publish.plugins.PublishingPlugin.PUBLISH_TASK_GROUP
 import org.gradle.api.tasks.bundling.Zip
@@ -55,7 +56,7 @@ internal fun Project.registerPublishToCentralPortalTasks(
     spec: CentralPortalOptions,
     allowEmptyFiles: Provider<Boolean>,
     publishAllChecksums: Provider<Boolean>
-) {
+): Provider<RegularFile> {
     val name = kind.name
 
     val releaseTaskName = "nmcpPublish${name.capitalizeFirstLetter()}ToCentralPortal"
@@ -79,13 +80,13 @@ internal fun Project.registerPublishToCentralPortalTasks(
         inputFiles = inputFiles,
     )
 
-    val publishAllChecksums = publishAllChecksums.getOrElse(false)
     val zipName = "${name}.zip"
     val zipTaskProvider = tasks.register(zipTaskName, Zip::class.java) {
         it.from(inputFiles)
         it.destinationDirectory.set(project.layout.buildDirectory.dir("nmcp/zip"))
         it.archiveFileName.set(zipName)
         it.eachFile {
+            val publishAllChecksums = publishAllChecksums.getOrElse(false)
             when {
                 it.name.startsWith("maven-metadata") -> {
                     // Exclude maven-metadata files, or the bundle is not recognized
@@ -105,10 +106,11 @@ internal fun Project.registerPublishToCentralPortalTasks(
         it.dependsOn(checkFilesTaskProvider)
     }
 
+    val zipProvider = zipTaskProvider.flatMap { it.archiveFile }
 
     val releaseTask = registerNmcpPublishWithPublisherApiTask(
         taskName = releaseTaskName,
-        inputFile = zipTaskProvider.flatMap { it.archiveFile },
+        inputFile = zipProvider,
         username = spec.username,
         password = spec.password,
         publicationName = spec.publicationName.orElse(checkFilesTaskProvider.flatMap { it.outputFile }.map { it.asFile.readText() }),
@@ -160,7 +162,7 @@ internal fun Project.registerPublishToCentralPortalTasks(
     registerNmcpPublishFileByFileToFileSystemTask(
         taskName = localTaskName,
         m2AbsolutePath = project.provider { m2File.absolutePath },
-        inputFiles = inputFiles,
+        inputFiles = zipTree(zipProvider),
         parallelism = spec.uploadSnapshotsParallelism.orElse(defaultParallelism),
     )
 
@@ -183,6 +185,8 @@ internal fun Project.registerPublishToCentralPortalTasks(
             }
         }
     }
+
+    return zipProvider
 }
 
 private fun taskPath(project: Project, taskName: String): String {

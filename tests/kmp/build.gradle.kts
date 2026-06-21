@@ -69,7 +69,7 @@ tasks.register("checkZip") {
             }
         }
 
-        //println(paths.sorted().joinToString(",\n"))
+//        println(paths.sorted().joinToString(",\n"))
         check(
             paths.sorted().equals(
                 listOf(

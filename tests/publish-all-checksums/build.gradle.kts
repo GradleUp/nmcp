@@ -1,29 +1,29 @@
 import nmcp.NmcpAggregationExtension
 
 plugins {
-    id("java")
-    id("com.gradleup.nmcp")
-    id("maven-publish")
-    id("signing")
-    id("com.gradleup.nmcp.aggregation")
+  id("java")
+  id("com.gradleup.nmcp")
+  id("maven-publish")
+  id("signing")
+  id("com.gradleup.nmcp.aggregation")
 }
 
 group = "net.mbonnin.tnmcp.checksums"
 version = "0.0.0-SNAPSHOT"
 
 publishing {
-    publications {
-        create("default", MavenPublication::class.java) {
-            from(components.getByName("java"))
-        }
+  publications {
+    create("default", MavenPublication::class.java) {
+      from(components.getByName("java"))
     }
+  }
 }
 
 signing {
-    sign(publishing.publications)
-    // This is a test-only key, it's OK to have it in source control
-    useInMemoryPgpKeys(
-        """
+  sign(publishing.publications)
+  // This is a test-only key, it's OK to have it in source control
+  useInMemoryPgpKeys(
+    """
             -----BEGIN PGP PRIVATE KEY BLOCK-----
 
             lFgEajfv+hYJKwYBBAHaRw8BAQdAAtZjfx7pt7TkHKxX6UC9ORR73co/I6+S6t7u
@@ -41,31 +41,40 @@ signing {
             =PPy4
             -----END PGP PRIVATE KEY BLOCK-----
         """.trimIndent(),
-        ""
-    )
+    ""
+  )
 }
 
 val testDirectory = "build/m2"
 
 nmcpAggregation {
-    localRepository {
-        name = "test"
-        path = testDirectory
-    }
+  localRepository {
+    name = "test"
+    path = testDirectory
+  }
+  publishAllChecksums.set(true)
 }
 
 dependencies {
-    nmcpAggregation(project)
+  nmcpAggregation(project)
+}
+
+tasks.named("nmcpPublishAggregationToTestRepository") {
+  val dir = project.file(testDirectory)
+  doFirst {
+    dir.deleteRecursively()
+  }
 }
 
 tasks.named("check") {
-    dependsOn("nmcpPublishAggregationToTestRepository")
-    doLast {
-        check(project.file(testDirectory).walk().any {
-          it.name.endsWith(".asc.sha512")
-        })
-        check(project.file(testDirectory).walk().any {
-            it.name.endsWith(".asc.sha256")
-        })
-    }
+  dependsOn("nmcpPublishAggregationToTestRepository")
+  val dir = project.file(testDirectory)
+  doLast {
+    check(dir.walk().any {
+      it.name.endsWith(".asc.sha512")
+    })
+    check(dir.walk().any {
+      it.name.endsWith(".asc.sha256")
+    })
+  }
 }
