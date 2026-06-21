@@ -28,7 +28,6 @@ public abstract interface class nmcp/NmcpAggregationExtension {
 
 public abstract interface class nmcp/NmcpExtension {
 	public abstract fun extraFiles (Ljava/lang/Object;)V
-	public abstract fun getPublishAllChecksums ()Lorg/gradle/api/provider/Property;
 	public abstract fun publishAllPublicationsToCentralPortal (Lorg/gradle/api/Action;)V
 }
 
