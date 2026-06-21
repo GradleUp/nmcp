@@ -1,3 +1,14 @@
+# Version 1.5.0
+_2026-04-30_
+
+Nmcp 1.5.0 adds `nmcpPublishDeployment()` to publish an existing deployment to the Central Portal (#251):
+
+```
+./gradlew nmcpPublishDeployment -PnmcpDeploymentId=$deploymentId'
+```
+
+Many thanks @marcphilipp for the contribution!
+
 # Version 1.4.4
 _2026-01-24_
 
