@@ -1,22 +1,22 @@
 [versions]
-kgp = "2.3.0"
-ksp = "2.3.4"
-gratatouille-runtime = "0.2.1"
-gratatouille-plugin = "0.2.1"
+kgp = "2.4.0"
+ksp = "2.3.9"
+gratatouille-runtime = "0.2.3"
+gratatouille-plugin = "0.2.3"
 gradle-api = "8.8"
-nmcp = "1.4.4-SNAPSHOT-dfc48516d359dd9920a19344f1a56d8243d4ae0a"
+nmcp = "1.6.0-SNAPSHOT-cf04ce0cb3c82c5f942ee16dad606acbd27d41e1"
 
 [libraries]
-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0"
-okio = "com.squareup.okio:okio:3.16.4"
-okhttp = "com.squareup.okhttp3:okhttp:5.3.2"
-mockwebserver = "com.squareup.okhttp3:mockwebserver:5.3.2"
+json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0"
+okio = "com.squareup.okio:okio:3.17.0"
+okhttp = "com.squareup.okhttp3:okhttp:5.4.0"
+mockwebserver = "com.squareup.okhttp3:mockwebserver:5.4.0"
 #noinspection NewerVersionAvailable
 gradle-min = { module = "dev.gradleplugins:gradle-api", version.ref = "gradle-api" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test" }
-xmlutil = "io.github.pdvrieze.xmlutil:serialization:1.0.0-rc1"
+xmlutil = "io.github.pdvrieze.xmlutil:serialization:1.0.0-rc3"
 kgp = { module = "org.jetbrains.kotlin.jvm:org.jetbrains.kotlin.jvm.gradle.plugin", version.ref = "kgp" }
-coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2"
+coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.11.0"
 gratatouille-runtime = { module = "com.gradleup.gratatouille:gratatouille-runtime", version.ref = "gratatouille-runtime" }
 gratatouille-tasks-runtime = { module = "com.gradleup.gratatouille:gratatouille-tasks-runtime", version.ref = "gratatouille-runtime" }
 nmcp-tasks = { module = "com.gradleup.nmcp:nmcp-tasks", version.ref = "nmcp" }
@@ -26,6 +26,6 @@ kgp = { id = "org.jetbrains.kotlin.jvm", version.ref = "kgp" }
 serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kgp" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 gratatouille = { id = "com.gradleup.gratatouille", version.ref = "gratatouille-plugin" }
-librarian = { id = "com.gradleup.librarian", version = "0.2.2-SNAPSHOT-e8574739fa730c6118181ba7b8cf7f559a568fd0" }
+librarian = { id = "com.gradleup.librarian", version = "0.2.2-SNAPSHOT-c9acea74270d7e1dd5899eb4e480cf93b1835651" }
 nmcp = { id = "com.gradleup.nmcp", version.ref = "nmcp" }
-compat = { id = "com.gradleup.tapmoc", version = "0.4.1-SNAPSHOT-86d664ab69b813963b91060ecce036be943088ed" }
+compat = { id = "com.gradleup.tapmoc", version = "0.4.2" }
