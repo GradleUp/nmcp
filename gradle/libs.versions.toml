@@ -4,7 +4,7 @@ ksp = "2.3.9"
 gratatouille-runtime = "0.2.3"
 gratatouille-plugin = "0.2.3"
 gradle-api = "8.8"
-nmcp = "1.6.0-SNAPSHOT-cf04ce0cb3c82c5f942ee16dad606acbd27d41e1"
+nmcp = "1.6.0-SNAPSHOT-942bcd8ecd2e30f8da2574f89db977f18bdd5659"
 
 [libraries]
 json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0"
