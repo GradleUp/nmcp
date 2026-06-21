@@ -32,3 +32,4 @@ dependencies {
 tasks.withType(Test::class.java).configureEach {
     dependsOn(":nmcpPublishAggregationToTestRepository")
 }
+
