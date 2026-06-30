@@ -83,6 +83,7 @@ internal abstract class DefaultNmcpExtension(private val project: Project): Nmcp
         }
     }
 
+    @Deprecated("This duplicates the com.gradleup.nmcp.aggregation functionality. Either apply com.gradleup.nmcp.aggregation or the settings plugin to publish an aggregation.")
     override fun publishAllPublicationsToCentralPortal(action: Action<CentralPortalOptions>) {
         action.execute(spec)
     }

@@ -11,6 +11,7 @@ interface NmcpExtension {
      * - Adds `nmcpPublishAllPublicationsToCentralPortal`
      * - Adds `nmcpPublishAllPublicationsToCentralPortalSnapshots`
      */
+    @Deprecated("This duplicates the com.gradleup.nmcp.aggregation functionality. Either apply com.gradleup.nmcp.aggregation or the settings plugin to publish an aggregation.")
     fun publishAllPublicationsToCentralPortal(action: Action<CentralPortalOptions>)
 
     /**
