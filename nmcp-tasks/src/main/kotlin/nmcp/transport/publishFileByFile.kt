@@ -155,7 +155,7 @@ private fun publishGav(
 
         val bytes = encodeToXml(versionMetadata).toByteArray()
         transport.put(versionMetadataPath, bytes)
-        setOf("md5", "sha1", "sha512").forEach {
+        publishedChecksums.forEach {
             transport.put("$versionMetadataPath.$it", bytes.digest(it.uppercase()))
         }
     } else {
@@ -222,6 +222,9 @@ private fun publishGav(
 
     val bytes = encodeToXml(newArtifactMetadata).toByteArray()
     transport.put(artifactMetadataPath, bytes)
+    publishedChecksums.forEach {
+        transport.put("$artifactMetadataPath.$it", bytes.digest(it.uppercase()))
+    }
 }
 
 
@@ -258,3 +261,5 @@ private fun ByteArray.digest(name: String): String {
 
     return digest.toByteString().hex()
 }
+
+private val publishedChecksums = setOf("md5", "sha1", "sha512")
