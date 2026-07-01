@@ -1,3 +1,17 @@
+# Version 1.6.1
+_2026-07-01_
+
+Restores _some_ checksums:
+
+* `maven-metadata.md5`, `maven-metadata.sha1` (because `maven` outputs a scary warning without them)
+* All the `.sha512` checksums (because Gradle uses them to validate caches contents)
+
+All in all, nmcp now publishes `.md5`, `.sha1`, `.sha512` for all files except for signature files (`.asc`) where no checksums are required.
+
+Long term, I'd love to drop the `.md5` and `.sha1` checksums. That would require both maven and Sonatype to stop requesting them.
+
+Many thanks to @marcphilipp and @leonard84 for helping me navigate this issue 💙 
+
 # Version 1.6.0
 _2026-06-21_
 
