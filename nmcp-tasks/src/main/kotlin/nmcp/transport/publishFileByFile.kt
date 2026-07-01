@@ -155,6 +155,9 @@ private fun publishGav(
 
         val bytes = encodeToXml(versionMetadata).toByteArray()
         transport.put(versionMetadataPath, bytes)
+        setOf("md5", "sha1", "sha512").forEach {
+            transport.put("$versionMetadataPath.$it", bytes.digest(it.uppercase()))
+        }
     } else {
         /**
          * Not a snapshot, plainly update all the files

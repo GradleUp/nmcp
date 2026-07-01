@@ -93,12 +93,27 @@ internal fun Project.registerPublishToCentralPortalTasks(
                     // See https://slack-chats.kotlinlang.org/t/16407246/anyone-tried-the-https-central-sonatype-org-publish-publish-#c8738fe5-8051-4f64-809f-ca67a645216e
                     it.exclude()
                 }
-                !publishAllChecksums && (it.name.endsWith(".sha256") || it.name.endsWith(".sha512")) -> {
-                    // It's not clear if those are used, and it reduces the number of files in the deployment
+                !publishAllChecksums && (it.name.endsWith(".sha256")) -> {
+                    /**
+                     * Stripping `.sha256` checksums leaves out:
+                     * - md5 and sha1 checksums:
+                     *    - required by Maven Central checks
+                     *    - used by Maven for "transport" verification
+                     * - sha512:
+                     *    - secure way for Gradle to to "security verification"
+                     *
+                     * see also https://maven.apache.org/resolver/about-checksums.html:
+                     *
+                     * ```
+                     * Hence, the usual argument that "XXX algorithm is unsafe, deprecated, not secure anymore" does not stand in use case of Maven Resolver: there is nothing secure being involved with checksums. Moreover, this is true not only for SHA-1 algorithm, but even for its "elder brother" MD5. Both algorithms are still widely used today as "transport integrity validation" or "error detection" (aka "bit-rot detection").
+                     * ```
+                     */
                     it.exclude()
                 }
-                !publishAllChecksums && (it.name.endsWith(".asc.md5") || it.name.endsWith(".asc.sha1")) -> {
-                    // It's not clear if those are used, and it reduces the number of files in the deployment
+                !publishAllChecksums && (it.name.endsWith(".asc.md5") || it.name.endsWith(".asc.sha1") || it.name.endsWith(".asc.sha256") || it.name.endsWith(".asc.sha512")) -> {
+                    /**
+                     * For signatures, we don't need checksums
+                     */
                     it.exclude()
                 }
             }
