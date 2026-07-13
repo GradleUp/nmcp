@@ -59,20 +59,21 @@ internal fun Project.registerPublishToCentralPortalTasks(
 ): Provider<RegularFile> {
     val name = kind.name
 
-    val releaseTaskName = "nmcpPublish${name.capitalizeFirstLetter()}ToCentralPortal"
-    val snapshotTaskName = "nmcpPublish${name.capitalizeFirstLetter()}ToCentralPortalSnapshots"
-    val localTaskName = "nmcpPublish${name.capitalizeFirstLetter()}ToMavenLocal"
-    val zipTaskName = "nmcpZip${name.capitalizeFirstLetter()}"
     val checkFilesTaskName = "nmcpCheck${name.capitalizeFirstLetter()}Files"
+    val zipTaskName = "nmcpZip${name.capitalizeFirstLetter()}"
+    val centralPortalTaskName = "nmcpPublish${name.capitalizeFirstLetter()}ToCentralPortal"
+    val centralSnapshotTaskName = "nmcpPublish${name.capitalizeFirstLetter()}ToCentralPortalSnapshots"
+    val mavenLocalTaskName = "nmcpPublish${name.capitalizeFirstLetter()}ToMavenLocal"
+
+    val centralPortalLifecycleTaskName = "publish${name.capitalizeFirstLetter()}ToCentralPortal"
+    val snapshotsLifecycleTaskName = "publish${name.capitalizeFirstLetter()}ToCentralSnapshots"
+    val deprecatedSnapshotsLifecycleTaskName = "publish${name.capitalizeFirstLetter()}ToCentralPortalSnapshots"
 
     val description = when(name) {
         "aggregation" -> "Publishes the aggregation"
         "allPublications" -> "Publishes all the maven publications"
         else ->  null
     }
-    val centralPortalLifecycleTaskName = "publish${name.capitalizeFirstLetter()}ToCentralPortal"
-    val deprecatedLifecycleTaskName = "publish${name.capitalizeFirstLetter()}ToCentralPortalSnapshots"
-    val snapshotsLifecycleTaskName = "publish${name.capitalizeFirstLetter()}ToCentralSnapshots"
 
     val checkFilesTaskProvider = registerNmcpCheckFilesTask(
         allowEmptyFiles = allowEmptyFiles.orElse(false),
@@ -83,6 +84,10 @@ internal fun Project.registerPublishToCentralPortalTasks(
     val zipName = "${name}.zip"
     val zipTaskProvider = tasks.register(zipTaskName, Zip::class.java) {
         it.from(inputFiles)
+        /**
+         * For aggregations, this is a user visible task for the user to inspect the contents before upload
+         */
+        it.group = if (kind == Kind.aggregation) PUBLISH_TASK_GROUP else null
         it.destinationDirectory.set(project.layout.buildDirectory.dir("nmcp/zip"))
         it.archiveFileName.set(zipName)
         it.eachFile {
@@ -123,8 +128,10 @@ internal fun Project.registerPublishToCentralPortalTasks(
 
     val zipProvider = zipTaskProvider.flatMap { it.archiveFile }
 
-    val releaseTask = registerNmcpPublishWithPublisherApiTask(
-        taskName = releaseTaskName,
+    val centralPortalTask = registerNmcpPublishWithPublisherApiTask(
+        taskName = centralPortalTaskName,
+        taskGroup = PUBLISH_TASK_GROUP,
+        taskDescription = "$description to the Central Releases repository.",
         inputFile = zipProvider,
         username = spec.username,
         password = spec.password,
@@ -134,15 +141,30 @@ internal fun Project.registerPublishToCentralPortalTasks(
         validationTimeoutSeconds = spec.validationTimeout.map { it.seconds },
         publishingTimeoutSeconds = spec.publishingTimeout.map { it.seconds },
     )
-    project.tasks.register(centralPortalLifecycleTaskName) {
-        it.group = PUBLISH_TASK_GROUP
-        it.description = "$description to the Central Releases repository."
-        it.dependsOn(releaseTask)
-    }
+    val centralSnapshotsTask = registerNmcpPublishFileByFileToSnapshotsTask(
+        taskName = centralSnapshotTaskName,
+        taskGroup = PUBLISH_TASK_GROUP,
+        taskDescription = "$description to the Central Snapshots repository.",
+        username = spec.username,
+        password = spec.password,
+        snapshotsUrl = project.provider { "https://central.sonatype.com/repository/maven-snapshots/" },
+        inputFiles = inputFiles,
+        parallelism = spec.uploadSnapshotsParallelism.orElse(defaultParallelism),
+    )
+    val m2File = File(System.getProperty("user.home")).resolve(".m2/repository")
+    registerNmcpPublishFileByFileToFileSystemTask(
+        taskName = mavenLocalTaskName,
+        taskGroup = PUBLISH_TASK_GROUP,
+        taskDescription = "$description to the ~/.m2 Maven Local repository.",
+        m2AbsolutePath = project.provider { m2File.absolutePath },
+        inputFiles = zipTree(zipProvider),
+        parallelism = spec.uploadSnapshotsParallelism.orElse(defaultParallelism),
+    )
 
     if (kind == Kind.aggregation) {
         registerNmcpPublishDeploymentTask(
             taskName = "nmcpPublishDeployment",
+            taskGroup = PUBLISH_TASK_GROUP,
             username = spec.username,
             password = spec.password,
             baseUrl = spec.baseUrl,
@@ -151,42 +173,29 @@ internal fun Project.registerPublishToCentralPortalTasks(
         )
     }
 
-    val centralSnapshots = registerNmcpPublishFileByFileToSnapshotsTask(
-        taskName = snapshotTaskName,
-        username = spec.username,
-        password = spec.password,
-        snapshotsUrl = project.provider { "https://central.sonatype.com/repository/maven-snapshots/" },
-        inputFiles = inputFiles,
-        parallelism = spec.uploadSnapshotsParallelism.orElse(defaultParallelism),
-    )
-    project.tasks.register(snapshotsLifecycleTaskName) {
-        it.group = PUBLISH_TASK_GROUP
-        it.description = "$description to the Central Snapshots repository."
-        it.dependsOn(centralSnapshots)
+    /**
+     * TODO: those lifecycle tasks probably need to be deprecated and removed.
+     * I'm using the `nmcp$Foo` most of the time personally and keeping the number of tasks low is probably better.
+     */
+    project.tasks.register(centralPortalLifecycleTaskName) {
+        it.dependsOn(centralPortalTask)
     }
-    project.tasks.register(deprecatedLifecycleTaskName) {
-        it.group = PUBLISH_TASK_GROUP
-        it.description = "$description to the Central Snapshots repository."
+    project.tasks.register(snapshotsLifecycleTaskName) {
+        it.dependsOn(centralSnapshotsTask)
+    }
+    project.tasks.register(deprecatedSnapshotsLifecycleTaskName) {
         it.dependsOn(snapshotsLifecycleTaskName)
         it.doLast {
-            println("'$deprecatedLifecycleTaskName' is deprecated and will be removed in a future release. Use '$snapshotsLifecycleTaskName' instead.")
+            println("'$deprecatedSnapshotsLifecycleTaskName' is deprecated and will be removed in a future release. Use '$centralSnapshotTaskName' instead.")
         }
     }
-
-    val m2File = File(System.getProperty("user.home")).resolve(".m2/repository")
-    registerNmcpPublishFileByFileToFileSystemTask(
-        taskName = localTaskName,
-        m2AbsolutePath = project.provider { m2File.absolutePath },
-        inputFiles = zipTree(zipProvider),
-        parallelism = spec.uploadSnapshotsParallelism.orElse(defaultParallelism),
-    )
 
     /**
      * Detect early if the username and/or password are missing.
      * This gives feedback to the user before compiling all projects.
      */
     project.gradle.taskGraph.whenReady {
-        if (it.hasTask(taskPath(project, releaseTask.name))) {
+        if (it.hasTask(taskPath(project, centralPortalTask.name))) {
             val publishingType = spec.publishingType.orNull
             val validValues = listOf("AUTOMATIC", "USER_MANAGED")
             check(publishingType == null || publishingType in validValues) {
