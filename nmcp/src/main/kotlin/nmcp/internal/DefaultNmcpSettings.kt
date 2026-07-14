@@ -34,7 +34,8 @@ abstract class DefaultNmcpSettings(settings: Settings): NmcpSettings {
                 }
 
                 project.allprojects {
-                    project.dependencies.add(nmcpConsumerConfigurationName, project.dependencies.create(it))
+                    project.dependencies.add(nmcpConsumerConfigurationName,
+                        project.dependencies.project(mapOf("path" to it.path)))
                 }
             }
             project.pluginManager.withPlugin("maven-publish") {
