@@ -10,6 +10,7 @@ import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
+import org.gradle.util.GradleVersion
 
 @GExtension(pluginId = "com.gradleup.nmcp", publicType = NmcpExtension::class, extensionName = nmcpExtensionName)
 internal abstract class DefaultNmcpExtension(private val project: Project): NmcpExtension {
@@ -25,7 +26,12 @@ internal abstract class DefaultNmcpExtension(private val project: Project): Nmcp
             it.isCanBeConsumed = true
             it.isCanBeResolved = false
             // See https://github.com/GradleUp/nmcp/issues/2
-            it.isVisible = false
+            // Without this, the publications end up being published as part of `assemble`.
+            // `Configuration.setVisible(boolean)` is deprecated as of Gradle 9.8 (and inert since),
+            // so only call it on older Gradle versions to stay warning-clean on 9.8+.
+            if (GradleVersion.current() < GradleVersion.version("9.8")) {
+                it.isVisible = false
+            }
 
             it.configureAttributes(project)
         }
