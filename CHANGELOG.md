@@ -1,3 +1,13 @@
+# Version 1.6.2
+_2026-08-31_
+
+Compatibility with Gradle 9.8.0-milestone-2 and fixed some warnings about Gradle 10 incompatibility. Many thanks @snazy and @breskeby for the contributions 💙
+
+## 👷‍♂️ All changes:
+* Add a group and description to all `nmcp`-prefixed tasks (#269)
+* Fix Gradle 10 issue in `DefaultNmcpSettings` (#270)
+* Remove deprecated `Configuration.setVisible(boolean)` call on Gradle 9.8+ (#271)
+
 # Version 1.6.1
 _2026-07-01_
 
