@@ -61,10 +61,13 @@ interface NmcpAggregationExtension {
 
     /**
      * By default, Nmcp tries to avoid publishing the checksums.
-     * Especially, it filters out the `.sha256` and `.sha512` files, as well as all the signature checksums
-     * (`.asc.md5`, `.asc.sha1`, `.asc.sha256`, `.asc.sha512`).
+     * Especially, it filters out:
+     * - `.sha256` checksums
+     * - `.asc.md5`, `.asc.sha1`, `.asc.sha256`, `.asc.sha512` checksums
+     *
      * This is to play nicer with [Maven Central publishing limits](https://central.sonatype.org/publish/maven-central-publishing-limits/).
      *
+     * Note: Gradle 9.7 filters out `asc.*` checksums. In this case, this option only controls whether the `.sha256` checksums are published.
      * Default: false
      */
     val publishAllChecksums: Property<Boolean>
