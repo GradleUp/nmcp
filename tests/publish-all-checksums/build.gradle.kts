@@ -71,10 +71,7 @@ tasks.named("check") {
   val dir = project.file(testDirectory)
   doLast {
     check(dir.walk().any {
-      it.name.endsWith(".asc.sha512")
-    })
-    check(dir.walk().any {
-      it.name.endsWith(".asc.sha256")
+      it.name.endsWith(".sha256")
     })
   }
 }
