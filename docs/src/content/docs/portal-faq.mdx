@@ -124,3 +124,17 @@ The status codes are not documented, but a [community maintained list is availab
 ### Q: My deployment failed but the status page is all green?
 
 https://status.maven.org/ is not always up to date, and sometimes the service is down even if the status page doesn't show it. If nothing else works, wait a few hours before retrying.
+
+### Q: My usage page is all red? What is going on?
+
+Starting in June 2026, [Sonatype started monitoring usage](https://central.sonatype.org/news/20260716_publisher_pro_update/) for publishers and notifying them when above quota through the [usage center](https://central.sonatype.com/publishing/usage).
+
+This is especially problematic for Kotlin Multiplatform projects because of the large volume of files for each different platform. As of September 2026, quotas haven't been enforced yet. [Some users have reported](https://bsky.app/profile/speekha.bsky.social/post/3mu5og3vrmk2s) that they could get an extemption. You can ask at `central-support@sonatype.com`.
+
+To mitigate this issue:
+
+* Gradle 9.7+: doesn't publish the `.asc.md5`, `.asc.sha1`, `.asc.sha256` and `.asc.sha512` checksums.
+* Nmcp 1.6.1+: doesn't publish the `.sha256` checksums.
+* Kotlin 2.5 is [planned to introduce `.kar` files](https://youtrack.jetbrains.com/issue/KT-87910/Implement-Kotlin-Archive-.kar-publication-format).
+
+This is all in flux...
