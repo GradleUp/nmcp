@@ -26,7 +26,7 @@ import org.gradle.api.provider.Provider
 internal abstract class DefaultNmcpAggregationExtension(private val project: Project) : NmcpAggregationExtension {
     private val spec = project.objects.newInstance(CentralPortalOptions::class.java)
 
-    internal val consumerConfiguration = project.configurations.create(nmcpConsumerConfigurationName) {
+    internal val consumerConfiguration = project.configurations.register(nmcpConsumerConfigurationName) {
         it.isCanBeResolved = true
         it.isCanBeConsumed = false
 
@@ -40,13 +40,18 @@ internal abstract class DefaultNmcpAggregationExtension(private val project: Pro
     init {
         allFiles.from(
             consumerConfiguration
-                .incoming
-                .artifactView { it.lenient(true) }
-                .artifacts
-                .resolvedArtifacts
                 .map {
-                    it.filter(::isCompatible).map { it.file }
-                },
+                    it.incoming
+                    .artifactView {
+                        it.lenient(lenient.getOrElse(false))
+                    }
+                    .artifacts
+                    .resolvedArtifacts
+                    .map {
+                        it.filter(::isCompatible).map { it.file }
+                    }
+                }
+
         )
         zipProvider = project.registerPublishToCentralPortalTasks(
             kind = Kind.aggregation,
@@ -99,7 +104,9 @@ internal abstract class DefaultNmcpAggregationExtension(private val project: Pro
             aproject.pluginManager.withPlugin("maven-publish") {
                 aproject.pluginManager.apply("com.gradleup.nmcp")
 
-                consumerConfiguration.dependencies.add(aproject.dependencies.create(aproject))
+                consumerConfiguration.configure {
+                    it.dependencies.add(aproject.dependencies.create(aproject))
+                }
             }
         }
     }

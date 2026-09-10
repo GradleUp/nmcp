@@ -18,6 +18,9 @@ updateRepo(
         file("nmcp/testProjects/empty-aggregation/build.gradle.kts") {
             replacePluginVersion("com.gradleup.nmcp.aggregation")
         }
+        file("nmcp/testProjects/non-lenient/build.gradle.kts") {
+            replacePluginVersion("com.gradleup.nmcp.aggregation")
+        }
     },
     setVersionInDocs = {
         file("docs/src/content/docs/index.mdx") {
