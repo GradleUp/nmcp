@@ -22,15 +22,19 @@ abstract class DefaultNmcpSettings(settings: Settings): NmcpSettings {
             if (project.rootProject == project) {
                 project.pluginManager.apply("com.gradleup.nmcp.aggregation")
 
-                project.extensions.getByType(NmcpAggregationExtension::class.java).centralPortal {
-                    it.username.set(spec.username)
-                    it.password.set(spec.password)
-                    it.publishingType.set(spec.publishingType)
-                    it.publicationName.set(spec.publicationName)
-                    it.validationTimeout.set(spec.validationTimeout)
-                    it.publishingTimeout.set(spec.publishingTimeout)
-                    it.baseUrl.set(spec.baseUrl)
-                    it.uploadSnapshotsParallelism.set(spec.uploadSnapshotsParallelism)
+                project.extensions.getByType(NmcpAggregationExtension::class.java).apply {
+                    // subprojects may not all apply com.gradleup.nmcp
+                    lenient.set(true)
+                    centralPortal {
+                        it.username.set(spec.username)
+                        it.password.set(spec.password)
+                        it.publishingType.set(spec.publishingType)
+                        it.publicationName.set(spec.publicationName)
+                        it.validationTimeout.set(spec.validationTimeout)
+                        it.publishingTimeout.set(spec.publishingTimeout)
+                        it.baseUrl.set(spec.baseUrl)
+                        it.uploadSnapshotsParallelism.set(spec.uploadSnapshotsParallelism)
+                    }
                 }
 
                 project.allprojects {

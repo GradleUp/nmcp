@@ -21,10 +21,9 @@ interface NmcpExtension {
      *
      * Use this to add publications whose files are not known until execution time.
      *
-     * @param files the files to be added.
-     * The given paths are evaluated as per [org.gradle.api.Project.files].
-     * Typically, [files] is built from a [org.gradle.api.file.FileTree] or
-     * a [org.gradle.api.file.DirectoryProperty] so that the files also contain their relative path.
+     * @param artifactNotation the files to be added.
+     * The given paths are evaluated as per [org.gradle.api.artifacts.dsl.ArtifactHandler.add].
+     * Typically, [artifactNotation] is a directory or a task producing a directory.
      */
-    fun extraFiles(files: Any)
+    fun extraFiles(artifactNotation: Any)
 }

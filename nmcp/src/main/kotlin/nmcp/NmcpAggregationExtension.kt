@@ -71,4 +71,14 @@ interface NmcpAggregationExtension {
      * Default: false
      */
     val publishAllChecksums: Property<Boolean>
+
+    /**
+     * By default, the aggregation is not lenient so that configuration errors are easier to debug.
+     * Sometimes, it's easier to just do `allprojects {}` and collect all subprojects, even those that do not apply the `com.gradleup.nmcp` plugin.
+     * The settings plugin uses this for an example.
+     *
+     * In those cases, set `lenient.set(true)` to ignore those subprojects.
+     *
+     */
+    val lenient: Property<Boolean>
 }
