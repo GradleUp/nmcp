@@ -21,25 +21,25 @@ internal fun nmcpCheckFiles(inputFiles: GInputFiles, outputFile: GOutputFile, al
         "Nmcp: there are no files to publish. Double check your configuration."
     }
     val gavs = inputFiles.mapNotNull {
-    if (!it.normalizedPath.endsWith(".pom")) {
-      return@mapNotNull null
+        if (!it.normalizedPath.endsWith(".pom")) {
+            return@mapNotNull null
+        }
+
+        Gav.from(it.normalizedPath.substringBeforeLast('/'))
     }
 
-    Gav.from(it.normalizedPath.substringBeforeLast('/'))
-  }
+    val groups = gavs.map { it.groupId }.distinct()
+    val artifacts = gavs.map { it.artifactId }.distinct()
+    val versions = gavs.map { it.baseVersion }.distinct()
 
-  val groups = gavs.map { it.groupId }.distinct()
-  val artifacts = gavs.map { it.artifactId }.distinct()
-  val versions = gavs.map { it.baseVersion }.distinct()
-
-  val deploymentName = buildString {
-      append(groups.toDisplayName())
-      append(':')
-      append(artifacts.toDisplayName())
-      append(':')
-      append(versions.toDisplayName())
-  }
-  outputFile.writeText(deploymentName)
+    val deploymentName = buildString {
+        append(groups.toDisplayName())
+        append(':')
+        append(artifacts.toDisplayName())
+        append(':')
+        append(versions.toDisplayName())
+    }
+    outputFile.writeText(deploymentName)
 }
 
 private fun longestCommonPrefix(strings: List<String>): String {
