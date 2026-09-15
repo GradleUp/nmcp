@@ -137,6 +137,7 @@ internal class HttpTransport(
                         appendLine("Your artifacts have proper extensions (.jar, .pom, ...).")
                         appendLine("If publishing a XML file, the XML version is 1.0.")
                         appendLine("If publishing a snapshot, the artifacts version is ending with `-SNAPSHOT`.")
+                        appendLine("If this is a new project, you will need to publish a release before publisihng a snapshot.")
                     }
                     401 -> {
                         appendLine("Check your credentials")
