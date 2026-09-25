@@ -94,7 +94,7 @@ plugins {
   id("com.gradleup.nmcp.setting").version("1.4.0")
 }
 
-nmcpAggregation {
+nmcpSettings {
   centralPortal {
     username = TODO()
     password = TODO()
