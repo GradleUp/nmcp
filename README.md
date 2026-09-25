@@ -24,7 +24,7 @@ Nmcp is compatible with modern Gradle development practices:
 * Uses [classloader isolation](https://mbonnin.net/2025-08-24_isolation_101/) to prevent conflicts with other plugins.
 * Uses [Gradle 8.8 lifecycle callbacks ](https://docs.gradle.org/8.8/release-notes.html) for easy configuration.
 
-Nmcp is used in [Apollo Kotlin](https://github.com/apollographql/apollo-kotlin), [Koin](https://github.com/InsertKoinIO/koin), [Kotest](https://github.com/kotest/kotest), [Minestorm](https://github.com/Minestom/Minestom) and [many other projects](https://github.com/search?q=com.gradleup.nmcp&type=code).
+Nmcp is used in [Apollo Kotlin](https://github.com/apollographql/apollo-kotlin), [Koin](https://github.com/InsertKoinIO/koin), [Kotest](https://github.com/kotest/kotest), [Minestom](https://github.com/Minestom/Minestom) and [many other projects](https://github.com/search?q=com.gradleup.nmcp&type=code).
 
 ## 📚 Documentation
 
